@@ -4,6 +4,7 @@ import "./globals.css";
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
+import { MenuProvider } from "@/providers/menu";
 config.autoAddCss = false; // Prevent Font Awesome from adding its own CSS
 
 const geistSans = Geist({
@@ -31,7 +32,11 @@ export default function RootLayout({
             lang="en"
             className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
         >
-            <body className="min-h-full flex flex-col">{children}</body>
+            <body className="min-h-full flex flex-col">
+                <MenuProvider>
+                    {children}
+                </MenuProvider>
+            </body>
         </html>
     );
 }

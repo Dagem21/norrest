@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+import { MenuContext } from "@/providers/menu";
+import { useContext, useState } from "react";
 
 type MenuItem = {
     label: string;
@@ -13,9 +15,11 @@ const menuItems: MenuItem[] = [
 ];
 
 const Sidebar = () => {
+    const menuContext = useContext(MenuContext);
     return (
-        <div className="absolute min-h-screen max-w-96 bg-gray-900 me-6 rounded-lg top-0">
-            <aside className="h-full text-gray-200 p-6 rounded-lg">
+        menuContext?.showMenu &&
+        <div className="fixed min-h-screen w-full max-w-96 bg-gray-900 me-6 rounded-e-lg top-0 left-0 z-10">
+            <aside className="h-full text-gray-200 p-6">
                 <div className="flex items-center mb-6 gap-3">
                     <span className="w-8 h-8 rounded-full object-cover border border-gray-600 flex items-center justify-center text-gray-400">
                         N
