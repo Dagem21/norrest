@@ -1,11 +1,8 @@
 "use client";
 
-export default function CompanyUserForm() {
+export default function CompanyUserForm({ handleNextStep }: { handleNextStep: () => void }) {
     return (
-        <form className="w-full shadow shadow-md shadow-gray-500 p-6">
-            <h2 className="text-2xl font-bold text-center mb-6 text-gray-400">
-                Register Employees.
-            </h2>
+        <form className="w-full p-6">
             <div className="mb-6">
                 <label htmlFor="email" className="block mb-2.5 text-sm text-gray-400">
                     Company Name
