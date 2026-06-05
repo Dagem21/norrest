@@ -16,11 +16,9 @@ interface MenuProviderProps {
 }
 
 export const MenuProvider = ({ children }: MenuProviderProps) => {
-    const [showMenu, setShowMenu] = useState<boolean>(true); // Default to showing the menu
+    const [showMenu, setShowMenu] = useState<boolean>(false); // Default to showing the menu
 
     return (
-        <MenuContext.Provider value={{ showMenu, setShowMenu }}>
-            {children}
-        </MenuContext.Provider>
+        <MenuContext.Provider value={{ showMenu, setShowMenu }}>{children}</MenuContext.Provider>
     );
 };
