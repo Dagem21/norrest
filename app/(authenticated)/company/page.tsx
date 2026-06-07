@@ -1,9 +1,14 @@
 "use client";
 
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import MenuItemForm from "@/components/forms/menu/menuItem";
+import Modal from "@/components/modal";
+import { faGear, faPlus, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 
 export default function Company() {
+    const [isModalOpen, setModalOpen] = useState(false);
+
     return (
         <div className="flex flex-col flex-1 items-center font-sans">
             <div className="flex flex-col w-full h-screen">
@@ -31,6 +36,28 @@ export default function Company() {
                                 </h1>
                             </div>
                         </div>
+                        <div className="flex gap-2 mt-2">
+                            <div className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300">
+                                <FontAwesomeIcon
+                                    className="m-2"
+                                    icon={faGear}
+                                    size="lg"
+                                />
+                                <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
+                                    Settings
+                                </h1>
+                            </div>
+                            <div className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300">
+                                <FontAwesomeIcon
+                                    className="m-2"
+                                    icon={faUsers}
+                                    size="lg"
+                                />
+                                <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
+                                    Employees
+                                </h1>
+                            </div>
+                        </div>
                     </div>
                     <div className="relative flex flex-col gap-2 w-screen h-fit sm:w-4/7">
                         <div className="p-2 bg-taupe-200 dark:bg-taupe-600 rounded-lg">
@@ -39,6 +66,7 @@ export default function Company() {
                                     className="absolute top-2 right-2 cursor-pointer"
                                     icon={faPlus}
                                     size="lg"
+                                    onClick={() => setModalOpen(true)}
                                 />
                             </div>
                             <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
@@ -53,7 +81,7 @@ export default function Company() {
                         </div>
                         <div className="flex gap-2 flex-wrap justify-center">
                             <div className="flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2 cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300">
-                                <h1 className="text-sm text-start text-taupe-600 dark:text-taupe-200">
+                                <h1 className="text-sm text-center text-taupe-600 dark:text-taupe-200">
                                     All Orders
                                 </h1>
                                 <div className="p-2">
@@ -63,8 +91,8 @@ export default function Company() {
                                 </div>
                             </div>
                             <div className="flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2 cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300">
-                                <h1 className="text-sm text-start text-taupe-600 dark:text-taupe-200">
-                                    Employees
+                                <h1 className="text-sm text-center text-taupe-600 dark:text-taupe-200">
+                                    Incoming Orders
                                 </h1>
                                 <div className="p-2">
                                     <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
@@ -73,8 +101,8 @@ export default function Company() {
                                 </div>
                             </div>
                             <div className="flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2 cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300">
-                                <h1 className="text-sm text-start text-taupe-600 dark:text-taupe-200">
-                                    All Orders
+                                <h1 className="text-sm text-center text-taupe-600 dark:text-taupe-200">
+                                    Pending Orders
                                 </h1>
                                 <div className="p-2">
                                     <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
@@ -86,6 +114,9 @@ export default function Company() {
                     </div>
                 </div>
             </div>
+            <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="Add Menu Item">
+                <MenuItemForm />
+            </Modal>
         </div>
     );
 }
