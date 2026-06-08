@@ -4,6 +4,7 @@ import MenuItemForm from "@/components/forms/menu/menuItem";
 import Modal from "@/components/modal";
 import { faGear, faPlus, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function Company() {
@@ -37,26 +38,24 @@ export default function Company() {
                             </div>
                         </div>
                         <div className="flex gap-2 mt-2">
-                            <div className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300">
-                                <FontAwesomeIcon
-                                    className="m-2"
-                                    icon={faGear}
-                                    size="lg"
-                                />
+                            <Link
+                                className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
+                                href={`/company/${1}/settings`}
+                            >
+                                <FontAwesomeIcon className="m-2" icon={faGear} size="lg" />
                                 <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
                                     Settings
                                 </h1>
-                            </div>
-                            <div className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300">
-                                <FontAwesomeIcon
-                                    className="m-2"
-                                    icon={faUsers}
-                                    size="lg"
-                                />
+                            </Link>
+                            <Link
+                                className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
+                                href={`/company/${1}/employees`}
+                            >
+                                <FontAwesomeIcon className="m-2" icon={faUsers} size="lg" />
                                 <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
                                     Employees
                                 </h1>
-                            </div>
+                            </Link>
                         </div>
                     </div>
                     <div className="relative flex flex-col gap-2 w-screen h-fit sm:w-4/7">

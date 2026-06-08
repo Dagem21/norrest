@@ -10,6 +10,7 @@ import {
     faShippingFast,
 } from "@fortawesome/free-solid-svg-icons";
 import { faInstagram, faTelegram, faTiktok, faTwitter } from "@fortawesome/free-brands-svg-icons";
+import Link from "next/dist/client/link";
 
 export default function Home() {
     return (
@@ -45,9 +46,12 @@ export default function Home() {
                                 </li>
                             </ul>
                             <div className="flex flex-col items-center mt-2">
-                                <a className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 cursor-pointer">
+                                <Link
+                                    className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 cursor-pointer"
+                                    href="/explore"
+                                >
                                     Explore Now
-                                </a>
+                                </Link>
                             </div>
                         </div>
                         <div className="w-full sm:w-1/2 lg:w-2/5 bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 mx-2 mb-4">
@@ -68,12 +72,12 @@ export default function Home() {
                                 </li>
                             </ul>
                             <div className="flex flex-col items-center mt-2">
-                                <a
+                                <Link
                                     className="px-6 py-2 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-600 hover:text-white transition duration-300 cursor-pointer"
                                     href="/register"
                                 >
                                     Register Now
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </div>
