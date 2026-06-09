@@ -1,18 +1,24 @@
 "use client";
 
 import MenuItemForm from "@/components/forms/menu/menuItem";
-import Modal from "@/components/modal";
+import Modal from "@/components/ui/modal";
+import { MenuContext } from "@/providers/menu";
 import { faGear, faPlus, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
-export default function Company() {
+export default function Branch() {
     const [isModalOpen, setModalOpen] = useState(false);
+    const menuContext = useContext(MenuContext);
+
+    useEffect(() => {
+        menuContext?.setTitle("Company Name");
+    });
 
     return (
-        <div className="flex flex-col flex-1 items-center font-sans">
-            <div className="flex flex-col w-full h-screen">
+        <div className="flex flex-col flex-1 items-center">
+            <div className="flex flex-col w-full">
                 <div className="flex flex-wrap justify-center gap-2 w-full">
                     <div className="h-fit w-screen sm:w-2/7">
                         <div className="p-2 bg-taupe-200 dark:bg-taupe-600 rounded-lg">
@@ -79,7 +85,10 @@ export default function Company() {
                             </div>
                         </div>
                         <div className="flex gap-2 flex-wrap justify-center">
-                            <div className="flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2 cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300">
+                            <Link
+                                className="flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2 cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
+                                href={`/company/${1}/orders?status=all`}
+                            >
                                 <h1 className="text-sm text-center text-taupe-600 dark:text-taupe-200">
                                     All Orders
                                 </h1>
@@ -88,8 +97,11 @@ export default function Company() {
                                         0
                                     </h1>
                                 </div>
-                            </div>
-                            <div className="flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2 cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300">
+                            </Link>
+                            <Link
+                                className="flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2 cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
+                                href={`/company/${1}/orders?status=incoming`}
+                            >
                                 <h1 className="text-sm text-center text-taupe-600 dark:text-taupe-200">
                                     Incoming Orders
                                 </h1>
@@ -98,8 +110,11 @@ export default function Company() {
                                         0
                                     </h1>
                                 </div>
-                            </div>
-                            <div className="flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2 cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300">
+                            </Link>
+                            <Link
+                                className="flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2 cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
+                                href={`/company/${1}/orders?status=pending`}
+                            >
                                 <h1 className="text-sm text-center text-taupe-600 dark:text-taupe-200">
                                     Pending Orders
                                 </h1>
@@ -108,7 +123,7 @@ export default function Company() {
                                         0
                                     </h1>
                                 </div>
-                            </div>
+                            </Link>
                         </div>
                     </div>
                 </div>

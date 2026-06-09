@@ -5,6 +5,8 @@ import { createContext, ReactNode, useState } from "react";
 interface MenuContextType {
     showMenu: boolean;
     setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
+    title: string;
+    setTitle: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // 2. Create the context with a default value
@@ -16,9 +18,12 @@ interface MenuProviderProps {
 }
 
 export const MenuProvider = ({ children }: MenuProviderProps) => {
-    const [showMenu, setShowMenu] = useState<boolean>(false); // Default to showing the menu
+    const [showMenu, setShowMenu] = useState<boolean>(false);
+    const [title, setTitle] = useState<string>("");
 
     return (
-        <MenuContext.Provider value={{ showMenu, setShowMenu }}>{children}</MenuContext.Provider>
+        <MenuContext.Provider value={{ showMenu, setShowMenu, title, setTitle }}>
+            {children}
+        </MenuContext.Provider>
     );
 };

@@ -1,19 +1,19 @@
 "use client";
 import { MenuContext } from "@/providers/menu";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { faBuilding, faClose, faGear, faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext } from "react";
+import { ReactNode, useContext } from "react";
 
 type MenuItem = {
     label: string;
     href: string;
-    icon?: string;
+    icon?: ReactNode;
 };
 
 const menuItems: MenuItem[] = [
-    { label: "Dashboard", href: "/dashboard", icon: "🏠" },
-    { label: "Company", href: "/company", icon: "🏢" },
-    { label: "Settings", href: "/settings", icon: "⚙️" },
+    { label: "Dashboard", href: "/dashboard", icon: <FontAwesomeIcon icon={faHome} /> },
+    { label: "Company", href: "/company", icon: <FontAwesomeIcon icon={faBuilding} /> },
+    { label: "Settings", href: "/settings", icon: <FontAwesomeIcon icon={faGear} /> },
 ];
 
 const Sidebar = () => {
@@ -48,7 +48,7 @@ const Sidebar = () => {
                     <ul className="sidebar__list">
                         {menuItems.map((item) => (
                             <li key={item.href} className="my-2">
-                                <a href={item.href} className="sidebar__link">
+                                <a href={item.href} className="font-bold">
                                     {item.icon && <span className="me-2">{item.icon}</span>}
                                     <span>{item.label}</span>
                                 </a>

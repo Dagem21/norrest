@@ -12,7 +12,7 @@ export default function AuthenticatedLayout({
 }>) {
     const menuContext = useContext(MenuContext);
     return (
-        <div className="relative min-h-full bg-cover bg-center bg-white dark:bg-taupe-900">
+        <div className="relative h-screen bg-cover bg-center bg-white dark:bg-taupe-900 overflow-y-auto">
             <Sidebar />
             <div className="sticky top-0 left-0 z-9 p-2 bg-white dark:bg-taupe-900">
                 <div className="flex items-center justify-between p-4 shadow-lg bg-taupe-200 dark:bg-taupe-600 rounded-lg">
@@ -23,6 +23,9 @@ export default function AuthenticatedLayout({
                             menuContext?.setShowMenu(true);
                         }}
                     />
+                    <h1 className="text-md font-bold text-center text-taupe-600 dark:text-taupe-200">
+                        {menuContext?.title}
+                    </h1>
                     <FontAwesomeIcon className="cursor-pointer" icon={faSignOut} />
                 </div>
             </div>

@@ -1,30 +1,37 @@
 "use client";
 
 import EmployeeForm from "@/components/forms/user/addEmployee";
-import Modal from "@/components/modal";
+import Modal from "@/components/ui/modal";
 import PageNavigator from "@/components/pageNavigator";
+import { MenuContext } from "@/providers/menu";
 import { formatDate } from "@/utils/formatDate";
 import { faBan, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import Button from "@/components/ui/button";
 
-export default function Company() {
+export default function Employee() {
     const [isModalOpen, setModalOpen] = useState(false);
+    const menuContext = useContext(MenuContext);
+
+    useEffect(() => {
+        menuContext?.setTitle("Employees");
+    });
 
     return (
-        <div className="flex flex-col flex-1 items-center font-sans">
-            <div className="flex flex-col w-full h-screen">
+        <div className="flex flex-col flex-1 items-center">
+            <div className="flex flex-col w-full">
                 <div className="w-full py-4 px-2 bg-taupe-200 dark:bg-taupe-600 rounded-lg overflow-x-auto">
                     <div className="flex justify-between items-center mb-4">
                         <h1 className="text-lg font-bold text-taupe-600 dark:text-taupe-300">
                             Employees Directory
                         </h1>
-                        <button
-                            className="flex items-center gap-1 bg-taupe-400 dark:bg-taupe-800 px-3 py-2 hover:bg-taupe-700 text-white font-bold rounded"
+
+                        <Button
+                            type="button"
                             onClick={() => setModalOpen(true)}
-                        >
-                            <FontAwesomeIcon icon={faPlus} />
-                        </button>
+                            icon={<FontAwesomeIcon icon={faPlus} />}
+                        />
                     </div>
                     <div className="relative overflow-x-auto bg-neutral-primary-soft shadow-xl rounded-lg">
                         <table className="w-full text-sm text-left rtl:text-right text-body">

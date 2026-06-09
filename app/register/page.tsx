@@ -12,7 +12,7 @@ export default function Register() {
     };
 
     return (
-        <div className="flex flex-col flex-1 items-center font-sans">
+        <div className="flex flex-col flex-1 items-center">
             <div className="flex flex-col items-center justify-center w-full min-h-screen bg-cover bg-center bg-gray-800 dark:bg-white rounded-lg p-2">
                 <div className="w-full sm:w-full md:w-2/3 lg:w-3/5 xl:w-2/5 bg-white dark:bg-gray-800 shadow shadow-xl shadow-gray-500 rounded-lg p-2">
                     <div className="w-full px-6 py-2">
