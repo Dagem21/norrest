@@ -13,16 +13,16 @@ export default function Register() {
 
     return (
         <div className="flex flex-col flex-1 items-center">
-            <div className="flex flex-col items-center justify-center w-full min-h-screen bg-cover bg-center bg-gray-800 dark:bg-white rounded-lg p-2">
-                <div className="w-full sm:w-full md:w-2/3 lg:w-3/5 xl:w-2/5 bg-white dark:bg-gray-800 shadow shadow-xl shadow-gray-500 rounded-lg p-2">
+            <div className="flex flex-col items-center justify-center w-full h-screen p-2 bg-taupe-100 dark:bg-taupe-900">
+                <div className="w-full sm:w-full md:w-2/3 lg:w-3/5 xl:w-2/5 bg-taupe-200 dark:bg-taupe-600 shadow rounded-lg p-2">
                     <div className="w-full px-6 py-2">
-                        <h2 className="text-2xl font-bold text-center mb-6 text-gray-400">
+                        <h2 className="text-2xl font-bold text-center mb-6">
                             {step === 1 && "Start your Journey"}
                             {step === 2 && "Almost there!"}
                             {step === 3 && "Last step"}
                         </h2>
                         <div className="mb-6">
-                            <ol className="flex items-center justify-center w-full text-sm font-medium text-center text-body sm:text-base text-gray-400">
+                            <ol className="flex items-center justify-center w-full text-sm font-medium text-center text-body sm:text-base">
                                 <li
                                     className={`flex md:w-full ${step > 1 && "text-blue-500"} items-center text-fg-brand sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-default after:border-px after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}
                                 >
@@ -108,7 +108,7 @@ export default function Register() {
                             </ol>
                         </div>
                     </div>
-                    <hr className="mb-2 mx-6 text-gray-600" />
+                    <hr className="mb-2 mx-6" />
                     {step === 1 && <CompanyAdminRegisterForm handleNextStep={handleNextStep} />}
                     {step === 2 && <CompanyRegisterForm handleNextStep={handleNextStep} />}
                     {step === 3 && <CompanyUserForm handleNextStep={handleNextStep} />}

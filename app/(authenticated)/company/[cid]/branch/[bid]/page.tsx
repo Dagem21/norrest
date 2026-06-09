@@ -46,7 +46,7 @@ export default function Branch() {
                         <div className="flex gap-2 mt-2">
                             <Link
                                 className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
-                                href={`/company/${1}/settings`}
+                                href={`/company/${1}/branch/${1}/settings`}
                             >
                                 <FontAwesomeIcon className="m-2" icon={faGear} size="lg" />
                                 <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
@@ -55,7 +55,7 @@ export default function Branch() {
                             </Link>
                             <Link
                                 className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
-                                href={`/company/${1}/employees`}
+                                href={`/company/${1}/branch/${1}/employees`}
                             >
                                 <FontAwesomeIcon className="m-2" icon={faUsers} size="lg" />
                                 <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">

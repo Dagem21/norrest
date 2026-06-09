@@ -1,4 +1,6 @@
 "use client";
+import Button from "@/components/ui/button";
+import Input from "@/components/ui/input";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
@@ -21,68 +23,65 @@ export default function CompanyAdminRegisterForm({
         <form className="w-full p-6" onSubmit={handleSubmit}>
             <div className="grid gap-6 mb-6 md:grid-cols-3">
                 <div>
-                    <label htmlFor="email" className="block mb-2.5 text-sm text-gray-400">
+                    <label htmlFor="email" className="block mb-2.5 text-sm">
                         First Name
                     </label>
-                    <input
-                        className="w-full bg-transparent placeholder:text-slate-400 text-slate-200 text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                        placeholder="Type here..."
-                    />
+                    <Input placeholder="Type here..." end="" start="" />
                 </div>
                 <div>
-                    <label htmlFor="email" className="block mb-2.5 text-sm text-gray-400">
+                    <label htmlFor="email" className="block mb-2.5 text-sm">
                         Father Name
                     </label>
                     <input
-                        className="w-full bg-transparent placeholder:text-slate-400 text-slate-200 text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                        className="w-full bg-transparent text-sm border border-gray-400 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                         placeholder="Type here..."
                     />
                 </div>
                 <div>
-                    <label htmlFor="email" className="block mb-2.5 text-sm text-gray-400">
+                    <label htmlFor="email" className="block mb-2.5 text-sm">
                         Last Name
                     </label>
                     <input
-                        className="w-full bg-transparent placeholder:text-slate-400 text-slate-200 text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                        className="w-full bg-transparent text-sm border border-gray-400 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                         placeholder="Type here..."
                     />
                 </div>
             </div>
             <div className="grid gap-6 mb-6 md:grid-cols-2">
                 <div>
-                    <label htmlFor="email" className="block mb-2.5 text-sm text-gray-400">
+                    <label htmlFor="email" className="block mb-2.5 text-sm">
                         Email
                     </label>
                     <input
-                        className="w-full bg-transparent placeholder:text-slate-400 text-slate-200 text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                        className="w-full bg-transparent text-sm border border-gray-400 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                         placeholder="Type here..."
                     />
                 </div>
                 <div>
-                    <label htmlFor="phone" className="block mb-2.5 text-sm text-gray-400">
+                    <label htmlFor="phone" className="block mb-2.5 text-sm">
                         Phone number
                     </label>
                     <input
-                        className="w-full bg-transparent placeholder:text-slate-400 text-slate-200 text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                        className="w-full bg-transparent text-sm border border-gray-400 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                         placeholder="Type here..."
                     />
                 </div>
             </div>
             <div className="grid gap-6 mb-6 md:grid-cols-2">
                 <div>
-                    <label htmlFor="password" className="block mb-2.5 text-sm text-gray-400">
+                    <label htmlFor="password" className="block mb-2.5 text-sm">
                         Password
                     </label>
-                    <div className="flex w-full bg-transparent placeholder:text-slate-400 text-slate-200 text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow">
+                    <div className="flex w-full bg-transparent text-sm border border-gray-400 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow">
                         <input
-                            className="w-full bg-transparent placeholder:text-slate-400 text-slate-200 text-sm border-0 rounded-md focus:outline-none"
+                            className="w-full bg-transparent text-sm border-0 rounded-md focus:outline-none"
                             placeholder="Type here..."
                             type={isPasswordVisible.password ? "text" : "password"}
                         />
                         <div className="ms-2">
                             <FontAwesomeIcon
                                 icon={isPasswordVisible.password ? faEyeSlash : faEye}
-                                className="cursor-pointer text-gray-400"
+                                className="cursor-pointer"
                                 onClick={() =>
                                     setIsPasswordVisible((prev) => ({
                                         ...prev,
@@ -96,20 +95,20 @@ export default function CompanyAdminRegisterForm({
                 <div>
                     <label
                         htmlFor="confirm_password"
-                        className="block mb-2.5 text-sm text-gray-400"
+                        className="block mb-2.5 text-sm"
                     >
                         Confirm password
                     </label>
-                    <div className="flex w-full bg-transparent placeholder:text-slate-400 text-slate-200 text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow">
+                    <div className="flex w-full bg-transparent text-sm border border-gray-400 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow">
                         <input
-                            className="w-full bg-transparent placeholder:text-slate-400 text-slate-200 text-sm border-0 rounded-md focus:outline-none"
+                            className="w-full bg-transparent text-sm border-0 rounded-md focus:outline-none"
                             placeholder="Type here..."
                             type={isPasswordVisible.confirmPassword ? "text" : "password"}
                         />
                         <div className="ms-2">
                             <FontAwesomeIcon
                                 icon={isPasswordVisible.confirmPassword ? faEyeSlash : faEye}
-                                className="cursor-pointer text-gray-400"
+                                className="cursor-pointer"
                                 onClick={() =>
                                     setIsPasswordVisible((prev) => ({
                                         ...prev,
@@ -127,11 +126,11 @@ export default function CompanyAdminRegisterForm({
                         id="remember"
                         type="checkbox"
                         value=""
-                        className="w-4 h-4 border border-gray-600 rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft"
+                        className="w-4 h-4 border border-gray-400 rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft"
                         required
                     />
                 </div>
-                <label htmlFor="remember" className="ms-2 text-sm font-medium text-gray-400">
+                <label htmlFor="remember" className="ms-2 text-sm font-medium">
                     I agree with the{" "}
                     <a href="#" className="text-fg-brand hover:underline">
                         terms and conditions
@@ -140,12 +139,9 @@ export default function CompanyAdminRegisterForm({
                 </label>
             </div>
             <div className="flex items-center justify-center">
-                <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-500 text-sm text-white rounded-lg hover:bg-blue-600 transition duration-300 cursor-pointer"
-                >
-                    Continue
-                </button>
+                <Button
+                    text="Continue"
+                    type="submit" />
             </div>
         </form>
     );
