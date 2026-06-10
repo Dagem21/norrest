@@ -1,7 +1,7 @@
 "use client";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { faAt, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
@@ -26,25 +26,19 @@ export default function CompanyAdminRegisterForm({
                     <label htmlFor="email" className="block mb-2.5 text-sm">
                         First Name
                     </label>
-                    <Input placeholder="Type here..." end="" start="" />
+                    <Input placeholder="Type here..." />
                 </div>
                 <div>
                     <label htmlFor="email" className="block mb-2.5 text-sm">
                         Father Name
                     </label>
-                    <input
-                        className="w-full bg-transparent text-sm border border-gray-400 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                        placeholder="Type here..."
-                    />
+                    <Input placeholder="Type here..." />
                 </div>
                 <div>
                     <label htmlFor="email" className="block mb-2.5 text-sm">
                         Last Name
                     </label>
-                    <input
-                        className="w-full bg-transparent text-sm border border-gray-400 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                        placeholder="Type here..."
-                    />
+                    <Input placeholder="Type here..." />
                 </div>
             </div>
             <div className="grid gap-6 mb-6 md:grid-cols-2">
@@ -52,19 +46,13 @@ export default function CompanyAdminRegisterForm({
                     <label htmlFor="email" className="block mb-2.5 text-sm">
                         Email
                     </label>
-                    <input
-                        className="w-full bg-transparent text-sm border border-gray-400 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                        placeholder="Type here..."
-                    />
+                    <Input placeholder="Type here..." start={<FontAwesomeIcon icon={faAt} />} />
                 </div>
                 <div>
                     <label htmlFor="phone" className="block mb-2.5 text-sm">
                         Phone number
                     </label>
-                    <input
-                        className="w-full bg-transparent text-sm border border-gray-400 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                        placeholder="Type here..."
-                    />
+                    <Input placeholder="Type here..." start="+251" />
                 </div>
             </div>
             <div className="grid gap-6 mb-6 md:grid-cols-2">
@@ -72,13 +60,11 @@ export default function CompanyAdminRegisterForm({
                     <label htmlFor="password" className="block mb-2.5 text-sm">
                         Password
                     </label>
-                    <div className="flex w-full bg-transparent text-sm border border-gray-400 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow">
-                        <input
-                            className="w-full bg-transparent text-sm border-0 rounded-md focus:outline-none"
-                            placeholder="Type here..."
-                            type={isPasswordVisible.password ? "text" : "password"}
-                        />
-                        <div className="ms-2">
+                    <Input
+                        type={isPasswordVisible.password ? "text" : "password"}
+                        placeholder="Type here..."
+                        start="***"
+                        end={
                             <FontAwesomeIcon
                                 icon={isPasswordVisible.password ? faEyeSlash : faEye}
                                 className="cursor-pointer"
@@ -89,8 +75,8 @@ export default function CompanyAdminRegisterForm({
                                     }))
                                 }
                             />
-                        </div>
-                    </div>
+                        }
+                    />
                 </div>
                 <div>
                     <label
@@ -99,13 +85,11 @@ export default function CompanyAdminRegisterForm({
                     >
                         Confirm password
                     </label>
-                    <div className="flex w-full bg-transparent text-sm border border-gray-400 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow">
-                        <input
-                            className="w-full bg-transparent text-sm border-0 rounded-md focus:outline-none"
-                            placeholder="Type here..."
-                            type={isPasswordVisible.confirmPassword ? "text" : "password"}
-                        />
-                        <div className="ms-2">
+                    <Input
+                        type={isPasswordVisible.confirmPassword ? "text" : "password"}
+                        placeholder="Type here..."
+                        start="***"
+                        end={
                             <FontAwesomeIcon
                                 icon={isPasswordVisible.confirmPassword ? faEyeSlash : faEye}
                                 className="cursor-pointer"
@@ -116,8 +100,8 @@ export default function CompanyAdminRegisterForm({
                                     }))
                                 }
                             />
-                        </div>
-                    </div>
+                        }
+                    />
                 </div>
             </div>
             <div className="flex items-start mb-6">

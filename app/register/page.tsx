@@ -13,7 +13,7 @@ export default function Register() {
 
     return (
         <div className="flex flex-col flex-1 items-center">
-            <div className="flex flex-col items-center justify-center w-full h-screen p-2 bg-taupe-100 dark:bg-taupe-900">
+            <div className="flex flex-col items-center justify-center w-full p-2 bg-taupe-100 dark:bg-taupe-900">
                 <div className="w-full sm:w-full md:w-2/3 lg:w-3/5 xl:w-2/5 bg-taupe-200 dark:bg-taupe-600 shadow rounded-lg p-2">
                     <div className="w-full px-6 py-2">
                         <h2 className="text-2xl font-bold text-center mb-6">
@@ -22,9 +22,9 @@ export default function Register() {
                             {step === 3 && "Last step"}
                         </h2>
                         <div className="mb-6">
-                            <ol className="flex items-center justify-center w-full text-sm font-medium text-center text-body sm:text-base">
+                            <ol className="flex items-center justify-center w-full text-sm font-bold text-center text-body sm:text-base">
                                 <li
-                                    className={`flex md:w-full ${step > 1 && "text-blue-500"} items-center text-fg-brand sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-default after:border-px after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}
+                                    className={`flex md:w-full ${step > 1 && "text-taupe-900"} items-center text-fg-brand sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-default after:border-px after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}
                                 >
                                     <span className="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-fg-disabled">
                                         {step > 1 ? (
@@ -53,7 +53,7 @@ export default function Register() {
                                     </span>
                                 </li>
                                 <li
-                                    className={`flex md:w-full ${step > 2 && "text-blue-500"} items-center text-fg-brand sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-default after:border-px after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}
+                                    className={`flex md:w-full ${step > 2 && "text-taupe-900"} items-center text-fg-brand sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-default after:border-px after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}
                                 >
                                     <span className="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-fg-disabled">
                                         {step > 2 ? (
@@ -81,7 +81,7 @@ export default function Register() {
                                         <span className="hidden sm:inline-flex sm:ms-2">Info</span>
                                     </span>
                                 </li>
-                                <li className={`flex items-center ${step > 3 && "text-blue-500"}`}>
+                                <li className={`flex items-center ${step > 3 && "text-taupe-900"}`}>
                                     {step > 3 ? (
                                         <svg
                                             className="w-5 h-5 me-1.5"
