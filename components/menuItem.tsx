@@ -18,7 +18,7 @@ export default function MenuItem({
     discount,
 }: MenuItemProps) {
     return (
-        <div className="flex items-center justify-between p-2 shadow-lg text">
+        <div className="flex items-center justify-between p-2 shadow-lg cursor-pointer">
             <div className="flex items-center">
                 <div>
                     <Image className="w-15 h-15 rounded-lg object-cover" src={image} alt={name} />
