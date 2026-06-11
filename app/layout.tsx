@@ -30,9 +30,9 @@ export default function RootLayout({
     return (
         <html
             lang="en"
-            className={`${geistSans.variable} ${geistMono.variable} h-screen antialiased bg-taupe-200 dark:bg-taupe-900`}
+            className={`${geistSans.variable} ${geistMono.variable} h-screen antialiased bg-taupe-100 dark:bg-taupe-900`}
         >
-            <body className="flex flex-col font-sans bg-taupe-200 dark:bg-taupe-900">
+            <body className="flex flex-col font-sans bg-taupe-100 dark:bg-taupe-900">
                 <MenuProvider>{children}</MenuProvider>
             </body>
         </html>
