@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faInstagram, faTelegram, faTiktok, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import Button from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Home() {
     return (
@@ -72,15 +73,18 @@ export default function Home() {
                 </div>
             </div>
 
-            <div className="flex flex-col items-center justify-center w-full min-h-screen bg-taupe-400 dark:bg-taupe-200 overflow-y-auto">
+            <div className="flex flex-col items-center justify-center w-full min-h-screen bg-taupe-200 dark:bg-taupe-900 overflow-y-auto">
                 <div className="flex flex-wrap items-center justify-center w-full h-full pt-6">
                     <div className="w-full rounded-lg">
-                        <h2 className="text-taupe-200 dark:text-taupe-900 text-lg text-center font-bold mb-4">
+                        <h2 className="text-taupe-900 dark:text-taupe-200 text-lg text-center font-bold mb-4">
                             Top Rated Restaurants
                         </h2>
                         <ul className="flex flex-wrap justify-center space-y-1 text-sm w-full rounded-lg px-2 gap-2">
-                            <li className="text-taupe-600 dark:text-taupe-400 hover:text-taupe-900 dark:hover:text-taupe-100 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
-                                <div className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-200 dark:bg-taupe-900 shadow-md shadow-taupe-500 dark:shadow-taupe-600">
+                            <li className="text-taupe-900 dark:text-taupe-200 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
+                                <Link
+                                    href={`/menu`}
+                                    className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-400 dark:bg-taupe-600"
+                                >
                                     <Image
                                         src={profile}
                                         alt="Picture of the author"
@@ -90,10 +94,13 @@ export default function Home() {
                                         <p className="text-sm font-bold">The Gourmet Kitchen</p>
                                         <p className="text-xs">Italian Cuisine</p>
                                     </div>
-                                </div>
+                                </Link>
                             </li>
-                            <li className="text-taupe-600 dark:text-taupe-400 hover:text-taupe-900 dark:hover:text-taupe-100 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
-                                <div className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-200 dark:bg-taupe-900 shadow-md shadow-taupe-500 dark:shadow-taupe-600">
+                            <li className="text-taupe-900 dark:text-taupe-200 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
+                                <Link
+                                    href={`/menu`}
+                                    className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-400 dark:bg-taupe-600"
+                                >
                                     <Image
                                         src={profile}
                                         alt="Picture of the author"
@@ -103,10 +110,13 @@ export default function Home() {
                                         <p className="text-sm font-bold">Pizza Paradise</p>
                                         <p className="text-xs">Italian Cuisine</p>
                                     </div>
-                                </div>
+                                </Link>
                             </li>
-                            <li className="text-taupe-600 dark:text-taupe-400 hover:text-taupe-900 dark:hover:text-taupe-100 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
-                                <div className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-200 dark:bg-taupe-900 shadow-md shadow-taupe-500 dark:shadow-taupe-600">
+                            <li className="text-taupe-900 dark:text-taupe-200 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
+                                <Link
+                                    href={`/menu`}
+                                    className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-400 dark:bg-taupe-600"
+                                >
                                     <Image
                                         src={profile}
                                         alt="Picture of the author"
@@ -116,10 +126,13 @@ export default function Home() {
                                         <p className="text-sm font-bold">Sushi World</p>
                                         <p className="text-xs">Japanese Cuisine</p>
                                     </div>
-                                </div>
+                                </Link>
                             </li>
-                            <li className="text-taupe-600 dark:text-taupe-400 hover:text-taupe-900 dark:hover:text-taupe-100 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
-                                <div className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-200 dark:bg-taupe-900 shadow-md shadow-taupe-500 dark:shadow-taupe-600">
+                            <li className="text-taupe-900 dark:text-taupe-200 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
+                                <Link
+                                    href={`/menu`}
+                                    className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-400 dark:bg-taupe-600"
+                                >
                                     <Image
                                         src={profile}
                                         alt="Picture of the author"
@@ -129,10 +142,13 @@ export default function Home() {
                                         <p className="text-sm font-bold">The Gourmet Kitchen</p>
                                         <p className="text-xs">Italian Cuisine</p>
                                     </div>
-                                </div>
+                                </Link>
                             </li>
-                            <li className="text-taupe-600 dark:text-taupe-400 hover:text-taupe-900 dark:hover:text-taupe-100 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
-                                <div className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-200 dark:bg-taupe-900 shadow-md shadow-taupe-500 dark:shadow-taupe-600">
+                            <li className="text-taupe-900 dark:text-taupe-200 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
+                                <Link
+                                    href={`/menu`}
+                                    className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-400 dark:bg-taupe-600"
+                                >
                                     <Image
                                         src={profile}
                                         alt="Picture of the author"
@@ -142,10 +158,13 @@ export default function Home() {
                                         <p className="text-sm font-bold">Pizza Paradise</p>
                                         <p className="text-xs">Italian Cuisine</p>
                                     </div>
-                                </div>
+                                </Link>
                             </li>
-                            <li className="text-taupe-600 dark:text-taupe-400 hover:text-taupe-900 dark:hover:text-taupe-100 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
-                                <div className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-200 dark:bg-taupe-900 shadow-md shadow-taupe-500 dark:shadow-taupe-600">
+                            <li className="text-taupe-900 dark:text-taupe-200 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
+                                <Link
+                                    href={`/menu`}
+                                    className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-400 dark:bg-taupe-600"
+                                >
                                     <Image
                                         src={profile}
                                         alt="Picture of the author"
@@ -155,11 +174,11 @@ export default function Home() {
                                         <p className="text-sm font-bold">Sushi World</p>
                                         <p className="text-xs">Japanese Cuisine</p>
                                     </div>
-                                </div>
+                                </Link>
                             </li>
                         </ul>
                         <div className="mt-2 flex items-center justify-center">
-                            <h2 className="text-sm font-bold text-center mb-4 cursor-pointer w-fit hover:text-taupe-900">
+                            <h2 className="text-sm font-bold text-center mb-4 cursor-pointer">
                                 see more <FontAwesomeIcon icon={faAngleDown} />
                             </h2>
                         </div>

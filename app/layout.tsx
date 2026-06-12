@@ -32,7 +32,7 @@ export default function RootLayout({
             lang="en"
             className={`${geistSans.variable} ${geistMono.variable} h-screen antialiased bg-taupe-100 dark:bg-taupe-900`}
         >
-            <body className="flex flex-col font-sans bg-taupe-100 dark:bg-taupe-900">
+            <body className="flex flex-col font-sans text-taupe-600 dark:text-taupe-200 bg-taupe-100 dark:bg-taupe-900">
                 <MenuProvider>{children}</MenuProvider>
             </body>
         </html>

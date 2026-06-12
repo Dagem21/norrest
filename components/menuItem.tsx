@@ -24,7 +24,7 @@ export default function MenuItem({
                     <Image className="w-15 h-15 rounded-lg object-cover" src={image} alt={name} />
                 </div>
                 <div className="mx-2 tracking-wide">
-                    <h1 className="text-md font-bold">{name}</h1>
+                    <h1 className="text-sm font-bold">{name}</h1>
                     <p className="text-xs">{description}</p>
                     <p className="text-xs">{categories}</p>
                 </div>

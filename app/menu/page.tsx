@@ -6,17 +6,22 @@ import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import ViewMenuItem from "@/components/forms/menu/viewMenuItem";
 import Button from "@/components/ui/button";
-import profile from "../../assets/images/fi3.png";
+import profile from "../../assets/images/radblu.jpg";
+import food from "../../assets/images/fi3.png";
+import ViewOrder from "@/components/forms/order/viewOrder";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUtensils } from "@fortawesome/free-solid-svg-icons";
 
 export default function Branch() {
     const menuContext = useContext(MenuContext);
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState({
         price: 500.0,
         name: "Pizza",
         categories: "Breakfast",
         description: "breakfast food",
-        image: profile,
+        image: food,
         discount: 0.1,
     });
 
@@ -26,22 +31,40 @@ export default function Branch() {
 
     return (
         <div className="flex flex-col flex-1 items-center bg-taupe-100 dark:bg-taupe-900 p-2">
-            <div className="flex flex-col w-full">
-                <div className="flex flex-wrap justify-center gap-2 w-full">
-                    <div className="relative flex flex-col gap-2 w-screen h-fit sm:w-4/7">
+            <div className="flex flex-col w-screen">
+                <div className="flex flex-wrap justify-center gap-2 w-full px-2">
+                    <div className="relative flex flex-col gap-2 h-fit w-full sm:w-4/7">
                         <div className="bg-taupe-200 dark:bg-taupe-600 p-2 rounded-lg flex flex-col items-center">
                             <Image
                                 className="w-15 h-15 object-cover"
                                 src={profile}
                                 alt={"Company profile"}
                             />
-                            <h1 className="text-md font-bold">{"Company Name"}</h1>
+                            <h1 className="text-sm font-bold mt-2">{"Company Name"}</h1>
                         </div>
                         <div className="p-2 bg-taupe-200 dark:bg-taupe-600 rounded-lg">
-                            <h1 className="text-sm font-semibold text-center text-taupe-600 dark:text-taupe-200">
-                                Menu
-                            </h1>
-                            <hr className="m-3 border-taupe-500 dark:border-taupe-400" />
+                            <div className="flex items-center">
+                                <h1 className="flex-1 text-md font-semibold text-center text-taupe-600 dark:text-taupe-200">
+                                    Menu
+                                </h1>
+                                <FontAwesomeIcon
+                                    icon={faUtensils}
+                                    title="Your order"
+                                    onClick={() => setIsOrderModalOpen(true)}
+                                />
+                            </div>
+                            <div className="container flex px-2 border-t border-b my-2 py-2 border-taupe-500 dark:border-taupe-400">
+                                <ul className="flex gap-2 overflow-x-auto text-xs">
+                                    <li className="shadow px-3 py-2 cursor-pointer">BreakFast</li>
+                                    <li className="shadow px-3 py-2 cursor-pointer">Lunch</li>
+                                    <li className="shadow px-3 py-2 cursor-pointer">Dinner</li>
+                                    <li className="shadow px-3 py-2 cursor-pointer">Drinks</li>
+                                    <li className="shadow px-3 py-2 cursor-pointer">BreakFast</li>
+                                    <li className="shadow px-3 py-2 cursor-pointer">Lunch</li>
+                                    <li className="shadow px-3 py-2 cursor-pointer">Dinner</li>
+                                    <li className="shadow px-3 py-2 cursor-pointer">Drinks</li>
+                                </ul>
+                            </div>
                             {/* <div className="pb-2">
                                 <h1 className="text-sm text-center text-taupe-600 dark:text-taupe-200">
                                     No items in menu.
@@ -54,7 +77,7 @@ export default function Branch() {
                                         name="Pizza"
                                         categories="Breakfast"
                                         description="breakfast food"
-                                        image={profile}
+                                        image={food}
                                     />
                                 </div>
                                 <div onClick={() => setModalOpen(true)}>
@@ -63,7 +86,7 @@ export default function Branch() {
                                         name="Pizza"
                                         categories="Breakfast"
                                         description="breakfast food"
-                                        image={profile}
+                                        image={food}
                                     />
                                 </div>
                             </div>
@@ -75,7 +98,11 @@ export default function Branch() {
                 <div className="flex flex-col p-2 cursor-pointer">
                     <div className="flex items-center flex-wrap shadow-lg">
                         <div>
-                            <Image className="w-screen sm:max-w-sm rounded-lg object-cover" src={selectedItem?.image} alt={selectedItem?.name} />
+                            <Image
+                                className="w-screen sm:max-w-sm rounded-lg object-cover"
+                                src={selectedItem?.image}
+                                alt={selectedItem?.name}
+                            />
                         </div>
                     </div>
                     <div className="flex flex-col justify-between my-2">
@@ -89,7 +116,10 @@ export default function Branch() {
                                 </span>
                                 {selectedItem?.discount && (
                                     <span className="font-bold text-sm text-taupe-200">
-                                        $ {selectedItem?.price - selectedItem?.price * selectedItem?.discount} Birr
+                                        ${" "}
+                                        {selectedItem?.price -
+                                            selectedItem?.price * selectedItem?.discount}{" "}
+                                        Birr
                                     </span>
                                 )}
                             </div>
@@ -105,6 +135,29 @@ export default function Branch() {
                     </div>
                 </div>
             </ViewMenuItem>
+
+            <ViewOrder isOpen={isOrderModalOpen} onClose={() => setIsOrderModalOpen(false)}>
+                <h1 className="flex-1 text-md font-semibold text-center text-taupe-600 dark:text-taupe-200">
+                    Your Orders
+                </h1>
+                <MenuItem
+                    price={500.0}
+                    name="Pizza"
+                    categories="Breakfast"
+                    description="breakfast food"
+                    image={food}
+                />
+                <MenuItem
+                    price={500.0}
+                    name="Pizza"
+                    categories="Breakfast"
+                    description="breakfast food"
+                    image={food}
+                />
+                <div className="flex items-center justify-center mt-2">
+                    <Button text="Order" />
+                </div>
+            </ViewOrder>
         </div>
     );
 }
