@@ -16,7 +16,7 @@ import Link from "next/link";
 export default function Home() {
     return (
         <div className="flex flex-col flex-1 items-center font-sans bg-taupe-100 dark:bg-taupe-900">
-            <div className="flex flex-col items-center justify-center w-full min-h-screen bg-taupe-200 dark:bg-taupe-900 rounded-lg">
+            <div id="home" className="flex flex-col items-center justify-center w-full min-h-screen bg-taupe-200 dark:bg-taupe-900 rounded-lg">
                 <div className="w-full">
                     <div className="flex flex-col items-center gap-6">
                         <h1 className="text-3xl font-bold">Welcome to Food Haven</h1>
@@ -45,10 +45,11 @@ export default function Home() {
                                 </li>
                             </ul>
                             <div className="flex flex-col items-center mt-2">
-                                <Button text="Explore" />
+                                <a href="#explore-restaurants"
+                                    className={`bg-taupe-600 dark:bg-taupe-800 mx-2 hover:bg-taupe-500 text-white font-bold py-2 px-4 rounded-lg`}>Explore</a>
                             </div>
                         </div>
-                        <div className="w-full sm:w-1/2 lg:w-2/5 bg-taupe-400 dark:bg-taupe-600 rounded-lg shadow-md p-6 mx-2 mb-4">
+                        <div className="w-full sm:w-1/2 lg:w-2/5 bg-taupe-400 dark:bg-taupe-600 rounded-lg shadow-md p-6 mx-2">
                             <h2 className="text-lg text-center font-bold mb-4">
                                 Register Your Restaurant
                             </h2>
@@ -66,15 +67,18 @@ export default function Home() {
                                 </li>
                             </ul>
                             <div className="flex flex-col items-center mt-2">
-                                <Button text="Register" style="secondary" />
+                                <Link href="/register"
+                                    className={`border border-taupe-600 dark:border-taupe-800 mx-2 hover:bg-taupe-500 text-white font-bold py-2 px-4 rounded-lg`}>
+                                    Register
+                                </Link>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="flex flex-col items-center justify-center w-full min-h-screen bg-taupe-200 dark:bg-taupe-900 overflow-y-auto">
-                <div className="flex flex-wrap items-center justify-center w-full h-full pt-6">
+            <div id="explore-restaurants" className="flex flex-col items-center justify-center w-full min-h-screen bg-taupe-200 dark:bg-taupe-900 overflow-y-auto">
+                <div className="flex flex-wrap items-center justify-center w-full h-full">
                     <div className="w-full rounded-lg">
                         <h2 className="text-taupe-900 dark:text-taupe-200 text-lg text-center font-bold mb-4">
                             Top Rated Restaurants
@@ -186,7 +190,7 @@ export default function Home() {
                 </div>
             </div>
 
-            <div className="flex flex-col w-full min-h-screen bg-taupe-400 dark:bg-taupe-200">
+            <div id="explore-services" className="flex flex-col w-full min-h-screen bg-taupe-400 dark:bg-taupe-200">
                 <div className="flex flex-col w-full h-screen">
                     <div className="flex flex-col justify-center w-full rounded-lg mb-6 grow-1">
                         <h2 className="text-lg text-center font-bold mb-4">Services</h2>

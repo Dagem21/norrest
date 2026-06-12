@@ -43,17 +43,16 @@ export default function Branch() {
                             <h1 className="text-sm font-bold mt-2">{"Company Name"}</h1>
                         </div>
                         <div className="p-2 bg-taupe-200 dark:bg-taupe-600 rounded-lg">
-                            <div className="flex items-center">
+                            <div className="relative flex items-center">
                                 <h1 className="flex-1 text-md font-semibold text-center text-taupe-600 dark:text-taupe-200">
                                     Menu
                                 </h1>
-                                <FontAwesomeIcon
-                                    icon={faUtensils}
-                                    title="Your order"
-                                    onClick={() => setIsOrderModalOpen(true)}
-                                />
+                                <div className="absolute top-0 right-0 flex gap-2 items-center cursor-pointer font-semibold"
+                                    onClick={() => setIsOrderModalOpen(true)}>
+                                    Orders
+                                </div>
                             </div>
-                            <div className="container flex px-2 border-t border-b my-2 py-2 border-taupe-500 dark:border-taupe-400">
+                            <div className="container flex px-2] my-2 py-2 border-taupe-500 dark:border-taupe-400 [&::-webkit-scrollbar]:hidden">
                                 <ul className="flex gap-2 overflow-x-auto text-xs">
                                     <li className="shadow px-3 py-2 cursor-pointer">BreakFast</li>
                                     <li className="shadow px-3 py-2 cursor-pointer">Lunch</li>

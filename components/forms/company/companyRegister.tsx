@@ -38,6 +38,17 @@ export default function CompanyRegisterForm({ handleNextStep }: { handleNextStep
                 </label>
                 <Input placeholder="Type here..." />
             </div>
+            <div className="mb-6 grid gap-6 mb-6 md:grid-cols-2">
+                <div>
+                    <label htmlFor="website" className="block mb-2.5 text-sm">
+                        Company Picture (Logo)
+                    </label>
+                    <Input type="file" placeholder="Type here..." />
+                </div>
+                <div>
+                    // show selected image here
+                </div>
+            </div>
             <div className="flex items-center justify-center">
                 <Button text="Continue" type="submit" />
                 <Button text="Skip" type="button" style="secondary" />
