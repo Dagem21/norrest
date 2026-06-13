@@ -12,7 +12,7 @@ export default function Input({ start, end, className = "", error, ...rest }: In
     return (
         <div
             className={`flex items-center text-sm border border-gray-400 rounded-md transition duration-300 ease shadow-sm 
-            hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow ${className} ${error?.message && 'border-red-400'}`}
+            hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow ${className} ${error?.message && "border-red-400"}`}
         >
             {start && (
                 <div className="flex items-center h-full border-e border-gray-400 py-2 px-4 select-none">
@@ -20,17 +20,13 @@ export default function Input({ start, end, className = "", error, ...rest }: In
                 </div>
             )}
 
-            <input
-                className="w-full p-2 outline-none rounded-md"
-                {...rest}
-            />
+            <input className="w-full p-2 outline-none rounded-md accent-taupe-900" {...rest} />
 
-            {
-                error?.message &&
+            {error?.message && (
                 <div className="me-1" title={error.message}>
                     <FontAwesomeIcon icon={faCircleExclamation} color="red" />
                 </div>
-            }
+            )}
 
             {end && (
                 <div className="flex items-center h-full border-s border-gray-400 py-2 px-4 select-none">

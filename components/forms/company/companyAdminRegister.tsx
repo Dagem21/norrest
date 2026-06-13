@@ -14,14 +14,17 @@ export default function CompanyAdminRegisterForm({
     handleNextStep: () => void;
 }) {
     const {
-        register, formState: { errors }, handleSubmit, watch
+        register,
+        formState: { errors },
+        handleSubmit,
+        watch,
     } = useForm({
         resolver: yupResolver(adminUserSchema),
-        mode: "onChange"
+        mode: "onChange",
     });
 
-    const password = watch('Password');
-    const confirmPassword = watch('ConfirmPassword');
+    const password = watch("Password");
+    const confirmPassword = watch("ConfirmPassword");
 
     const [isPasswordVisible, setIsPasswordVisible] = useState({
         password: false,
@@ -29,70 +32,70 @@ export default function CompanyAdminRegisterForm({
     });
 
     const handleRegister = (data: any) => {
-        console.log(data)
+        console.log(data);
         handleNextStep();
     };
     return (
         <form className="w-full p-6" onSubmit={handleSubmit(handleRegister)}>
-            <div className="grid gap-6 mb-6 md:grid-cols-3">
+            <div className="grid gap-4 mb-4 md:grid-cols-3">
                 <div>
-                    <label htmlFor="email" className="block mb-2.5 text-sm">
+                    <label htmlFor="email" className="block mb-2 text-sm">
                         First Name
                     </label>
                     <Input
                         placeholder="Type here..."
-                        {...register('FirstName')}
+                        {...register("FirstName")}
                         error={errors?.FirstName}
                     />
                 </div>
                 <div>
-                    <label htmlFor="email" className="block mb-2.5 text-sm">
+                    <label htmlFor="email" className="block mb-2 text-sm">
                         Father Name
                     </label>
                     <Input
                         placeholder="Type here..."
-                        {...register('FatherName')}
+                        {...register("FatherName")}
                         error={errors?.FatherName}
                     />
                 </div>
                 <div>
-                    <label htmlFor="email" className="block mb-2.5 text-sm">
+                    <label htmlFor="email" className="block mb-2 text-sm">
                         Last Name
                     </label>
                     <Input
                         placeholder="Type here..."
-                        {...register('LastName')}
+                        {...register("LastName")}
                         error={errors?.LastName}
                     />
                 </div>
             </div>
-            <div className="grid gap-6 mb-6 md:grid-cols-2">
+            <div className="grid gap-4 mb-4 md:grid-cols-2">
                 <div>
-                    <label htmlFor="email" className="block mb-2.5 text-sm">
+                    <label htmlFor="email" className="block mb-2 text-sm">
                         Email
                     </label>
                     <Input
                         placeholder="Type here..."
                         start={<FontAwesomeIcon icon={faAt} />}
-                        {...register('Email')}
+                        {...register("Email")}
                         error={errors?.Email}
                     />
                 </div>
                 <div>
-                    <label htmlFor="phone" className="block mb-2.5 text-sm">
+                    <label htmlFor="phone" className="block mb-2 text-sm">
                         Phone number
                     </label>
                     <Input
                         placeholder="Type here..."
                         start="+251"
-                        {...register('PhoneNumber')}
+                        {...register("PhoneNumber")}
                         error={errors?.PhoneNumber}
                     />
                 </div>
             </div>
-            <div className="grid gap-6 mb-6 md:grid-cols-2">
+            <div className="grid gap-4 mb-4 md:grid-cols-2">
                 <div>
-                    <label htmlFor="password" className="block mb-2.5 text-sm">
+                    <label htmlFor="password" className="block mb-2 text-sm">
                         Password
                     </label>
                     <Input
@@ -111,25 +114,24 @@ export default function CompanyAdminRegisterForm({
                                 }
                             />
                         }
-                        {...register('Password')}
+                        {...register("Password")}
                         error={errors?.Password}
                     />
                 </div>
                 <div>
-                    <label
-                        htmlFor="confirm_password"
-                        className="block mb-2.5 text-sm"
-                    >
+                    <label htmlFor="confirm_password" className="block mb-2 text-sm">
                         Confirm password
                     </label>
                     <Input
                         type={isPasswordVisible.confirmPassword ? "text" : "password"}
                         placeholder="Type here..."
-                        start={(password && password === confirmPassword) ?
-                            <FontAwesomeIcon
-                                icon={faCheckCircle}
-                                color="green"
-                            /> : "***"}
+                        start={
+                            password && password === confirmPassword ? (
+                                <FontAwesomeIcon icon={faCheckCircle} color="green" />
+                            ) : (
+                                "***"
+                            )
+                        }
                         end={
                             <FontAwesomeIcon
                                 icon={isPasswordVisible.confirmPassword ? faEyeSlash : faEye}
@@ -142,7 +144,7 @@ export default function CompanyAdminRegisterForm({
                                 }
                             />
                         }
-                        {...register('ConfirmPassword')}
+                        {...register("ConfirmPassword")}
                         error={errors?.ConfirmPassword}
                     />
                 </div>
@@ -166,11 +168,11 @@ export default function CompanyAdminRegisterForm({
                 </label>
             </div>
             <div className="flex items-center justify-center">
-                <Button
-                    text="Continue"
-                    type="submit" />
+                <Button text="Continue" type="submit" />
             </div>
-            <h1 className="text-center mt-2 text-xs">Already registered? <span className="text-sm">Sign In</span></h1>
+            <h1 className="text-center mt-2 text-xs">
+                Already registered? <span className="text-sm">Sign In</span>
+            </h1>
         </form>
     );
 }
