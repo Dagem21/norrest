@@ -1,10 +1,10 @@
 import * as yup from "yup";
 
 const companySchema = yup.object().shape({
-    CompanyID: yup.string(),
+    companyID: yup.string(),
     name: yup.string().required("Name is required."),
-    Email: yup.string().required("Email is required."),
-    PhoneNumber: yup
+    email: yup.string().required("Email is required."),
+    phoneNumber: yup
         .string()
         .matches(/^[0-9]+$/, "Enter a valid phone number.")
         .required("Phone number is required.")
@@ -14,7 +14,7 @@ const companySchema = yup.object().shape({
         .test("first-digit", "Provide a valid Phone Number", (value) => {
             return String(value).startsWith("9") || String(value).startsWith("7");
         }),
-    Website: yup.string(),
+    website: yup.string(),
     picture: yup
         .mixed()
         .required("Document is required.")

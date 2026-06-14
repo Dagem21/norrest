@@ -1,15 +1,17 @@
 "use client";
 
 import MenuItemForm from "@/components/forms/menu/menuItem";
+import QrGenerator from "@/components/QRGenerator";
 import Modal from "@/components/ui/modal";
 import { MenuContext } from "@/providers/menu";
-import { faGear, faPlus, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faGear, faPlus, faQrcode, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 
 export default function Branch() {
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isQRModalOpen, setQRModalOpen] = useState(false);
     const menuContext = useContext(MenuContext);
 
     useEffect(() => {
@@ -66,17 +68,27 @@ export default function Branch() {
                     </div>
                     <div className="relative flex flex-col gap-2 w-screen h-fit sm:w-4/7">
                         <div className="p-2 bg-taupe-200 dark:bg-taupe-600 rounded-lg">
-                            <div>
-                                <FontAwesomeIcon
-                                    className="absolute top-2 right-2 cursor-pointer"
-                                    icon={faPlus}
-                                    size="lg"
-                                    onClick={() => setModalOpen(true)}
-                                />
+                            <div className="flex items-center justify-between px-2">
+                                <div>
+                                    <FontAwesomeIcon
+                                        className="cursor-pointer"
+                                        icon={faQrcode}
+                                        size="lg"
+                                        onClick={() => setQRModalOpen(true)}
+                                    />
+                                </div>
+                                <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
+                                    Menu
+                                </h1>
+                                <div>
+                                    <FontAwesomeIcon
+                                        className="cursor-pointer"
+                                        icon={faPlus}
+                                        size="lg"
+                                        onClick={() => setModalOpen(true)}
+                                    />
+                                </div>
                             </div>
-                            <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
-                                Menu
-                            </h1>
                             <hr className="m-3 border-taupe-500 dark:border-taupe-400" />
                             <div className="pb-2">
                                 <h1 className="text-sm text-center text-taupe-600 dark:text-taupe-200">
@@ -130,6 +142,10 @@ export default function Branch() {
             </div>
             <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="Add Menu Item">
                 <MenuItemForm />
+            </Modal>
+
+            <Modal isOpen={isQRModalOpen} onClose={() => setQRModalOpen(false)} title="Menu QR Code">
+                <QrGenerator url={"https://192.168.232.77:5001/menu/1"} companyName="" />
             </Modal>
         </div>
     );

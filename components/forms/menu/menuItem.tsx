@@ -1,4 +1,10 @@
+import Button from "@/components/ui/button";
+import Input from "@/components/ui/input";
+import menuItemSchema from "@/yup/menu/menuItem";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Image from "next/image";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 const categories = [
     "Appetizer",
@@ -10,101 +16,109 @@ const categories = [
 ];
 
 export default function MenuItemForm() {
-    const [name, setName] = useState("");
-    const [price, setPrice] = useState("");
-    const [ingredients, setIngredients] = useState("");
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const {
+        register,
+        formState: { errors },
+        handleSubmit,
+        watch,
+    } = useForm({
+        resolver: yupResolver(menuItemSchema),
+        mode: "onChange",
+    });
 
-    const handleCategoryChange = (category: string) => {
-        setSelectedCategories((current) =>
-            current.includes(category)
-                ? current.filter((item) => item !== category)
-                : [...current, category]
-        );
-    };
+    const menuItemPicture = watch("picture");
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        const menuItem = {
-            name,
-            price: parseFloat(price) || 0,
-            ingredients,
-            categories: selectedCategories,
-        };
-
-        console.log("New menu item:", menuItem);
-
-        setName("");
-        setPrice("");
-        setIngredients("");
-        setSelectedCategories([]);
+    const handleRegister = (data: any) => {
+        console.log("New menu item:", data);
     };
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto flex flex-col gap-4">
+        <form onSubmit={handleSubmit(handleRegister)} className="max-w-md mx-auto flex flex-col gap-4">
             <div>
-                <label htmlFor="name" className="block mb-2">
+                <label htmlFor="name" className="block mb-2 text-xs">
                     Name
                 </label>
-                <input
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-white-500"
-                    id="name"
-                    type="text"
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    required
+                <Input
+                    placeholder="Type here..."
+                    {...register("name")}
+                    error={errors?.name}
                 />
             </div>
 
             <div>
-                <label htmlFor="price" style={{ display: "block", marginBottom: 8 }}>
+                <label htmlFor="price" className="block mb-2 text-xs">
                     Price
                 </label>
-                <input
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-white-500"
-                    id="price"
-                    type="number"
-                    step="0.01"
-                    value={price}
-                    onChange={(event) => setPrice(event.target.value)}
-                    required
+                <Input
+                    placeholder="Type here..."
+                    {...register("price")}
+                    error={errors?.price}
                 />
             </div>
 
             <div>
-                <label htmlFor="ingredients" style={{ display: "block", marginBottom: 8 }}>
+                <label htmlFor="ingredients" className="block mb-2 text-xs">
                     Ingredients
                 </label>
                 <textarea
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-white-500"
-                    id="ingredients"
-                    value={ingredients}
-                    onChange={(event) => setIngredients(event.target.value)}
+                    className="w-full p-2 outline-none rounded-md accent-taupe-900 border border-gray-400 rounded-md transition duration-300 ease shadow-sm 
+                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow"
+                    {...register("ingredients")}
                     rows={4}
                 />
             </div>
 
-            <fieldset className="border p-3 rounded-lg">
-                <legend className="mb-2">Category</legend>
+            <fieldset className="border border-gray-400 p-3 rounded-lg">
+                <legend className="mb-2 text-xs">Category</legend>
                 <div className="grid grid-cols-3 gap-2">
-                    {categories.map((category) => (
-                        <label key={category} className="block mb-2">
-                            <input
-                                className="mr-2 leading-tight"
-                                type="checkbox"
-                                checked={selectedCategories.includes(category)}
-                                onChange={() => handleCategoryChange(category)}
-                            />
-                            {category}
-                        </label>
+                    {categories.map((category, i) => (
+                        <div className="flex items-start" key={i}>
+                            <div className="flex items-center h-5">
+                                <Input
+                                    id={category}
+                                    type="checkbox"
+                                    value={category}
+                                    {...register("category")}
+                                />
+                            </div>
+                            <label
+                                htmlFor="remember"
+                                className="ms-2 text-sm text-taupe-800 dark:text-taupe-300"
+                            >
+                                {category}
+                            </label>
+                        </div>
                     ))}
                 </div>
             </fieldset>
 
-            <button type="submit" className="bg-taupe-700 hover:bg-taupe-500 text-white font-bold py-2 px-4 rounded-lg">
-                Add Menu Item
-            </button>
+            <div className="grid gap-4 mb-4 md:grid-cols-2">
+                <div>
+                    <label htmlFor="website" className="block mb-2.5 text-xs">
+                        Company Picture (Logo)
+                    </label>
+                    <Input
+                        type="file"
+                        placeholder="Type here..."
+                        {...register("picture")}
+                        error={errors?.picture}
+                    />
+                </div>
+                <div>
+                    {Object.values(menuItemPicture ?? {})?.length > 0 && (
+                        <div className="flex items-center justify-center">
+                            <Image
+                                src={URL.createObjectURL((menuItemPicture as any)?.[0])}
+                                alt={"Menu Item Image"}
+                                width={50}
+                                height={50}
+                            />
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <Button type="submit" text="Add Menu Item" />
         </form>
     );
 }

@@ -7,6 +7,7 @@ import { MenuContext } from "@/providers/menu";
 import { faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
+import Input from "@/components/ui/input";
 
 export default function Setting() {
     const [isModalOpen, setModalOpen] = useState(false);
@@ -36,50 +37,48 @@ export default function Setting() {
                         </div>
                         <div className="flex flex-wrap justify-between gap-4 mt-4">
                             <div className="w-full md:w-1/2 lg:w-1/4">
-                                <label className="block text-sm font-medium text-taupe-600 dark:text-taupe-300 mb-1">
+                                <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-300 mb-1">
                                     Name
                                 </label>
-                                <input
-                                    type="text"
-                                    className={`w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-taupe-500 ${editGeneralInfoMode ? "border border-taupe-500" : "cursor-not-allowed shadow-lg"}`}
-                                    value="Company Name"
+                                <Input
                                     disabled={!editGeneralInfoMode}
+                                    className={`${!editGeneralInfoMode && "border-0 cursor-not-allowed shadow-lg"}`}
                                 />
                             </div>
 
                             <div className="w-full md:w-1/2 lg:w-1/4">
-                                <label className="block text-sm font-medium text-taupe-600 dark:text-taupe-300 mb-1">
+                                <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-300 mb-1">
                                     Phone Number
                                 </label>
-                                <input
+                                <Input
                                     type="phone"
-                                    className={`w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-taupe-500 ${editGeneralInfoMode ? "border border-taupe-500" : "cursor-not-allowed shadow-lg"}`}
-                                    value="0987654321"
                                     disabled={!editGeneralInfoMode}
+                                    className={`${!editGeneralInfoMode && "border-0 cursor-not-allowed shadow-lg"}`}
+                                    value="0987654321"
                                 />
                             </div>
 
                             <div className="w-full md:w-1/2 lg:w-1/4">
-                                <label className="block text-sm font-medium text-taupe-600 dark:text-taupe-300 mb-1">
+                                <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-300 mb-1">
                                     Email Address
                                 </label>
-                                <input
+                                <Input
                                     type="email"
-                                    className={`w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-taupe-500 ${editGeneralInfoMode ? "border border-taupe-500" : "cursor-not-allowed shadow-lg"}`}
-                                    value="company@example.com"
                                     disabled={!editGeneralInfoMode}
+                                    className={`${!editGeneralInfoMode && "border-0 cursor-not-allowed shadow-lg"}`}
+                                    value="company@example.com"
                                 />
                             </div>
 
                             <div className="w-full md:w-1/2 lg:w-1/4">
-                                <label className="block text-sm font-medium text-taupe-600 dark:text-taupe-300 mb-1">
+                                <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-300 mb-1">
                                     Website URL
                                 </label>
-                                <input
+                                <Input
                                     type="url"
-                                    className={`w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-taupe-500 ${editGeneralInfoMode ? "border border-taupe-500" : "cursor-not-allowed shadow-lg"}`}
-                                    value="https://www.company.com"
                                     disabled={!editGeneralInfoMode}
+                                    className={`${!editGeneralInfoMode && "border-0 cursor-not-allowed shadow-lg"}`}
+                                    value="https://www.company.com"
                                 />
                             </div>
                         </div>
@@ -119,47 +118,47 @@ export default function Setting() {
                                     </h1>
                                 </div>
                                 <div className="w-full md:w-1/2 lg:w-1/5">
-                                    <label className="block text-sm font-medium text-taupe-600 dark:text-taupe-300 mb-1">
+                                    <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-300 mb-1">
                                         Name
                                     </label>
-                                    <input
+                                    <Input
                                         type="text"
-                                        className={`w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-taupe-500 ${editBranchesMode ? "border border-taupe-500" : "cursor-not-allowed shadow-lg"}`}
-                                        value="Company Name"
                                         disabled={!editBranchesMode}
+                                        className={`${!editBranchesMode && "border-0 cursor-not-allowed shadow-lg"}`}
+                                        value="Company Name"
                                     />
                                 </div>
                                 <div className="w-full md:w-1/2 lg:w-1/5">
-                                    <label className="block text-sm font-medium text-taupe-600 dark:text-taupe-300 mb-1">
+                                    <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-300 mb-1">
                                         Phone Number
                                     </label>
-                                    <input
+                                    <Input
                                         type="phone"
-                                        className={`w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-taupe-500 ${editBranchesMode ? "border border-taupe-500" : "cursor-not-allowed shadow-lg"}`}
-                                        value="0987654321"
                                         disabled={!editBranchesMode}
+                                        className={`${!editBranchesMode && "border-0 cursor-not-allowed shadow-lg"}`}
+                                        value="0987654321"
                                     />
                                 </div>
                                 <div className="w-full md:w-1/2 lg:w-1/5">
-                                    <label className="block text-sm font-medium text-taupe-600 dark:text-taupe-300 mb-1">
+                                    <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-300 mb-1">
                                         Email Address
                                     </label>
-                                    <input
+                                    <Input
                                         type="email"
-                                        className={`w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-taupe-500 ${editBranchesMode ? "border border-taupe-500" : "cursor-not-allowed shadow-lg"}`}
-                                        value="company@example.com"
                                         disabled={!editBranchesMode}
+                                        className={`${!editBranchesMode && "border-0 cursor-not-allowed shadow-lg"}`}
+                                        value="company@example.com"
                                     />
                                 </div>
                                 <div className="w-full md:w-1/2 lg:w-1/5">
-                                    <label className="block text-sm font-medium text-taupe-600 dark:text-taupe-300 mb-1">
+                                    <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-300 mb-1">
                                         Address
                                     </label>
-                                    <input
+                                    <Input
                                         type="text"
-                                        className={`w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-taupe-500 ${editBranchesMode ? "border border-taupe-500" : "cursor-not-allowed shadow-lg"}`}
-                                        value="123 Company Street, City, Country"
                                         disabled={!editBranchesMode}
+                                        className={`${!editBranchesMode && "border-0 cursor-not-allowed shadow-lg"}`}
+                                        value="123 Company Street, City, Country"
                                     />
                                 </div>
                             </div>
@@ -170,47 +169,47 @@ export default function Setting() {
                                     </h1>
                                 </div>
                                 <div className="w-full md:w-1/2 lg:w-1/5">
-                                    <label className="block text-sm font-medium text-taupe-600 dark:text-taupe-300 mb-1">
+                                    <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-300 mb-1">
                                         Name
                                     </label>
-                                    <input
+                                    <Input
                                         type="text"
-                                        className={`w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-taupe-500 ${editBranchesMode ? "border border-taupe-500" : "cursor-not-allowed shadow-lg"}`}
-                                        value="Company Name"
                                         disabled={!editBranchesMode}
+                                        className={`${!editBranchesMode && "border-0 cursor-not-allowed shadow-lg"}`}
+                                        value="Company Name"
                                     />
                                 </div>
                                 <div className="w-full md:w-1/2 lg:w-1/5">
-                                    <label className="block text-sm font-medium text-taupe-600 dark:text-taupe-300 mb-1">
+                                    <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-300 mb-1">
                                         Phone Number
                                     </label>
-                                    <input
+                                    <Input
                                         type="phone"
-                                        className={`w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-taupe-500 ${editBranchesMode ? "border border-taupe-500" : "cursor-not-allowed shadow-lg"}`}
-                                        value="0987654321"
                                         disabled={!editBranchesMode}
+                                        className={`${!editBranchesMode && "border-0 cursor-not-allowed shadow-lg"}`}
+                                        value="0987654321"
                                     />
                                 </div>
                                 <div className="w-full md:w-1/2 lg:w-1/5">
-                                    <label className="block text-sm font-medium text-taupe-600 dark:text-taupe-300 mb-1">
+                                    <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-300 mb-1">
                                         Email Address
                                     </label>
-                                    <input
+                                    <Input
                                         type="email"
-                                        className={`w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-taupe-500 ${editBranchesMode ? "border border-taupe-500" : "cursor-not-allowed shadow-lg"}`}
-                                        value="company@example.com"
                                         disabled={!editBranchesMode}
+                                        className={`${!editBranchesMode && "border-0 cursor-not-allowed shadow-lg"}`}
+                                        value="company@example.com"
                                     />
                                 </div>
                                 <div className="w-full md:w-1/2 lg:w-1/5">
-                                    <label className="block text-sm font-medium text-taupe-600 dark:text-taupe-300 mb-1">
+                                    <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-300 mb-1">
                                         Address
                                     </label>
-                                    <input
+                                    <Input
                                         type="text"
-                                        className={`w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-taupe-500 ${editBranchesMode ? "border border-taupe-500" : "cursor-not-allowed shadow-lg"}`}
-                                        value="123 Company Street, City, Country"
                                         disabled={!editBranchesMode}
+                                        className={`${!editBranchesMode && "border-0 cursor-not-allowed shadow-lg"}`}
+                                        value="123 Company Street, City, Country"
                                     />
                                 </div>
                             </div>

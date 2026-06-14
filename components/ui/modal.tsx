@@ -53,7 +53,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
                         onClick={onClose}
                     />
                 </div>
-                <div className="px-6 py-5 overflow-auto" style={{ maxHeight: "calc(90vh - 72px)" }}>
+                <div className="px-6 py-5 overflow-auto " style={{ maxHeight: "calc(90vh - 72px)" }}>
                     {children}
                 </div>
             </div>

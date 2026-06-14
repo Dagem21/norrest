@@ -29,48 +29,48 @@ export default function CompanyRegisterForm({ handleNextStep }: { handleNextStep
     return (
         <form className="w-full p-6" onSubmit={handleSubmit(handleRegister)}>
             <div className="mb-4">
-                <label htmlFor="email" className="block mb-2.5 text-sm">
+                <label htmlFor="email" className="block mb-2.5 text-xs">
                     Company Name
                 </label>
                 <Input placeholder="Type here..." {...register("name")} error={errors?.name} />
             </div>
             <div className="grid gap-4 mb-4 md:grid-cols-2">
                 <div>
-                    <label htmlFor="phone" className="block mb-2.5 text-sm">
+                    <label htmlFor="phone" className="block mb-2.5 text-xs">
                         Phone number
                     </label>
                     <Input
                         placeholder="Type here..."
                         start="+251"
-                        {...register("PhoneNumber")}
-                        error={errors?.PhoneNumber}
+                        {...register("phoneNumber")}
+                        error={errors?.phoneNumber}
                     />
                 </div>
                 <div>
-                    <label htmlFor="email" className="block mb-2.5 text-sm">
+                    <label htmlFor="email" className="block mb-2.5 text-xs">
                         Email address
                     </label>
                     <Input
                         placeholder="Type here..."
                         start={<FontAwesomeIcon icon={faAt} />}
-                        {...register("Email")}
-                        error={errors?.Email}
+                        {...register("email")}
+                        error={errors?.email}
                     />
                 </div>
             </div>
             <div className="mb-4">
-                <label htmlFor="website" className="block mb-2.5 text-sm">
+                <label htmlFor="website" className="block mb-2.5 text-xs">
                     Website URL
                 </label>
                 <Input
                     placeholder="Type here..."
-                    {...register("Website")}
-                    error={errors?.Website}
+                    {...register("website")}
+                    error={errors?.website}
                 />
             </div>
             <div className="grid gap-4 mb-4 md:grid-cols-2">
                 <div>
-                    <label htmlFor="website" className="block mb-2.5 text-sm">
+                    <label htmlFor="website" className="block mb-2.5 text-xs">
                         Company Picture (Logo)
                     </label>
                     <Input

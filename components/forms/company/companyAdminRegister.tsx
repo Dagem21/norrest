@@ -23,8 +23,8 @@ export default function CompanyAdminRegisterForm({
         mode: "onChange",
     });
 
-    const password = watch("Password");
-    const confirmPassword = watch("ConfirmPassword");
+    const password = watch("password");
+    const confirmPassword = watch("confirmPassword");
 
     const [isPasswordVisible, setIsPasswordVisible] = useState({
         password: false,
@@ -39,63 +39,63 @@ export default function CompanyAdminRegisterForm({
         <form className="w-full p-6" onSubmit={handleSubmit(handleRegister)}>
             <div className="grid gap-4 mb-4 md:grid-cols-3">
                 <div>
-                    <label htmlFor="email" className="block mb-2 text-sm">
+                    <label htmlFor="firstName" className="block mb-2 text-xs">
                         First Name
                     </label>
                     <Input
                         placeholder="Type here..."
-                        {...register("FirstName")}
-                        error={errors?.FirstName}
+                        {...register("firstName")}
+                        error={errors?.firstName}
                     />
                 </div>
                 <div>
-                    <label htmlFor="email" className="block mb-2 text-sm">
+                    <label htmlFor="fatherName" className="block mb-2 text-xs">
                         Father Name
                     </label>
                     <Input
                         placeholder="Type here..."
-                        {...register("FatherName")}
-                        error={errors?.FatherName}
+                        {...register("fatherName")}
+                        error={errors?.fatherName}
                     />
                 </div>
                 <div>
-                    <label htmlFor="email" className="block mb-2 text-sm">
+                    <label htmlFor="lastName" className="block mb-2 text-xs">
                         Last Name
                     </label>
                     <Input
                         placeholder="Type here..."
-                        {...register("LastName")}
-                        error={errors?.LastName}
+                        {...register("lastName")}
+                        error={errors?.lastName}
                     />
                 </div>
             </div>
             <div className="grid gap-4 mb-4 md:grid-cols-2">
                 <div>
-                    <label htmlFor="email" className="block mb-2 text-sm">
+                    <label htmlFor="email" className="block mb-2 text-xs">
                         Email
                     </label>
                     <Input
                         placeholder="Type here..."
                         start={<FontAwesomeIcon icon={faAt} />}
-                        {...register("Email")}
-                        error={errors?.Email}
+                        {...register("email")}
+                        error={errors?.email}
                     />
                 </div>
                 <div>
-                    <label htmlFor="phone" className="block mb-2 text-sm">
+                    <label htmlFor="phone" className="block mb-2 text-xs">
                         Phone number
                     </label>
                     <Input
                         placeholder="Type here..."
                         start="+251"
-                        {...register("PhoneNumber")}
-                        error={errors?.PhoneNumber}
+                        {...register("phoneNumber")}
+                        error={errors?.phoneNumber}
                     />
                 </div>
             </div>
             <div className="grid gap-4 mb-4 md:grid-cols-2">
                 <div>
-                    <label htmlFor="password" className="block mb-2 text-sm">
+                    <label htmlFor="password" className="block mb-2 text-xs">
                         Password
                     </label>
                     <Input
@@ -114,12 +114,12 @@ export default function CompanyAdminRegisterForm({
                                 }
                             />
                         }
-                        {...register("Password")}
-                        error={errors?.Password}
+                        {...register("password")}
+                        error={errors?.password}
                     />
                 </div>
                 <div>
-                    <label htmlFor="confirm_password" className="block mb-2 text-sm">
+                    <label htmlFor="confirm_password" className="block mb-2 text-xs">
                         Confirm password
                     </label>
                     <Input
@@ -144,8 +144,8 @@ export default function CompanyAdminRegisterForm({
                                 }
                             />
                         }
-                        {...register("ConfirmPassword")}
-                        error={errors?.ConfirmPassword}
+                        {...register("confirmPassword")}
+                        error={errors?.confirmPassword}
                     />
                 </div>
             </div>
@@ -159,7 +159,7 @@ export default function CompanyAdminRegisterForm({
                         required
                     />
                 </div>
-                <label htmlFor="remember" className="ms-2 text-sm font-medium">
+                <label htmlFor="remember" className="ms-2 text-xs font-medium">
                     I agree with the{" "}
                     <a href="#" className="text-fg-brand hover:underline">
                         terms and conditions

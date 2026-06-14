@@ -54,36 +54,36 @@ export default function CompanyUserForm({ handleNextStep }: { handleNextStep: ()
         <form className="w-full p-6" onSubmit={handleSubmit(handleRegister)}>
             <div className="grid gap-4 mb-4 md:grid-cols-2">
                 <div>
-                    <label htmlFor="email" className="block mb-2 text-sm">
+                    <label htmlFor="email" className="block mb-2 text-xs">
                         Email
                     </label>
                     <Input
                         placeholder="Type here..."
                         start={<FontAwesomeIcon icon={faAt} />}
-                        {...register("Email")}
-                        error={errors?.Email}
+                        {...register("email")}
+                        error={errors?.email}
                     />
                 </div>
                 <div>
-                    <label htmlFor="phone" className="block mb-2 text-sm">
+                    <label htmlFor="phoneNumber" className="block mb-2 text-xs">
                         Phone number
                     </label>
                     <Input
                         placeholder="Type here..."
                         start="+251"
-                        {...register("PhoneNumber")}
-                        error={errors?.PhoneNumber}
+                        {...register("phoneNumber")}
+                        error={errors?.phoneNumber}
                     />
                 </div>
             </div>
             <div className="mb-4">
-                <label htmlFor="email" className="block mb-2 text-sm">
+                <label htmlFor="role" className="block mb-2 text-xs">
                     Role
                 </label>
-                <Input placeholder="Type here..." {...register("Role")} error={errors?.Role} />
+                <Input placeholder="Type here..." {...register("role")} error={errors?.role} />
             </div>
             <div className="mb-4">
-                <label htmlFor="email" className="block mb-2 text-sm">
+                <label htmlFor="permissions" className="block mb-2 text-xs">
                     Permissions
                 </label>
                 <div className="flex justify-start flex-wrap gap-4">
@@ -94,15 +94,8 @@ export default function CompanyUserForm({ handleNextStep }: { handleNextStep: ()
                                     id={permission._id}
                                     type="checkbox"
                                     value={permission._id}
-                                    {...register("Permissions")}
+                                    {...register("permissions")}
                                 />
-                                {/* <input
-                                    id={permission._id}
-                                    type="checkbox"
-                                    value={permission._id}
-                                    className="w-4 h-4 border border-gray-400 rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft"
-                                    {...register("Permissions")}
-                                /> */}
                             </div>
                             <label
                                 htmlFor="remember"

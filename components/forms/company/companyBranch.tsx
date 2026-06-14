@@ -27,7 +27,7 @@ export default function BranchForm() {
     return (
         <form onSubmit={handleSubmit} className="max-w-md mx-auto flex flex-col gap-4">
             <div>
-                <label htmlFor="name" className="block mb-2">
+                <label htmlFor="name" className="block mb-2 text-xs">
                     Name
                 </label>
                 <input
@@ -41,7 +41,7 @@ export default function BranchForm() {
             </div>
 
             <div>
-                <label htmlFor="phone" className="block mb-2">
+                <label htmlFor="phone" className="block mb-2 text-xs">
                     Phone Number
                 </label>
                 <input
@@ -55,7 +55,7 @@ export default function BranchForm() {
             </div>
 
             <div>
-                <label htmlFor="email" className="block mb-2">
+                <label htmlFor="email" className="block mb-2 text-xs">
                     Email
                 </label>
                 <input
@@ -69,7 +69,7 @@ export default function BranchForm() {
             </div>
 
             <div>
-                <label htmlFor="email" className="block mb-2">
+                <label htmlFor="email" className="block mb-2 text-xs">
                     Address
                 </label>
                 <input
