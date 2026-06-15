@@ -6,7 +6,7 @@ import Button from "./ui/button";
 import { useRouter } from "next/navigation";
 
 export default function CustomUiScanner() {
-    const router = useRouter()
+    const router = useRouter();
     const [scanResult, setScanResult] = useState<string | null>(null);
     const [isScanning, setIsScanning] = useState(false);
     const [scanError, setScanError] = useState<string | null>();
@@ -28,7 +28,7 @@ export default function CustomUiScanner() {
                 const parsedUrl = new URL(scanResult);
                 if (parsedUrl.protocol !== "https:") {
                     setScanError("Invalid QR Code.");
-                    return
+                    return;
                 }
 
                 const menuPathRegex = /^\/menu\/[a-zA-Z0-9_-]+\/?$/;
@@ -56,7 +56,7 @@ export default function CustomUiScanner() {
                     setScanResult(decodedText);
                     stopScanning();
                 },
-                (errorMessage) => { }
+                (errorMessage) => {},
             );
         } catch (err) {
             setIsScanning(false);
@@ -71,12 +71,7 @@ export default function CustomUiScanner() {
     };
 
     return (
-        <div className="w-sm mx-auto bg-taupe-600 text-white rounded-2xl p-4 shadow-2xl space-y-6">
-            <div className="text-center">
-                <h3 className="text-lg font-bold tracking-wide">Menu</h3>
-                <p className="text-xs mt-1">Scan the QR Code</p>
-            </div>
-
+        <div className="max-w-sm mx-auto bg-taupe-600 text-white rounded-2xl p-4 shadow-2xl space-y-6">
             <div className="relative aspect-square w-full rounded-xl overflow-hidden border border-taupe-700">
                 <div id="custom-reader" className="w-full h-full" />
 
@@ -97,11 +92,10 @@ export default function CustomUiScanner() {
                 {!isScanning ? (
                     <Button
                         onClick={startScanning}
-                        text={scanResult ? "Scan Another" : "Open Camera"} />
+                        text={scanResult ? "Scan Another" : "Open Camera"}
+                    />
                 ) : (
-                    <Button
-                        onClick={stopScanning}
-                        text="Cancel Scanning" />
+                    <Button onClick={stopScanning} text="Cancel Scanning" />
                 )}
             </div>
         </div>

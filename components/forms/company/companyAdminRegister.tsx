@@ -1,5 +1,5 @@
 "use client";
-import adminUserSchema from "@/yup/userRegistration/companyAdmin";
+import adminUserSchema from "@/yup/userRegistration/userRegisteration";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import { faAt, faCheckCircle, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";

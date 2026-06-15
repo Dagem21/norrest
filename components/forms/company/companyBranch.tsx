@@ -1,56 +1,46 @@
-import { useState } from "react";
+import Input from "@/components/ui/input";
+import branchSchema from "@/yup/company/branch";
+import { faAt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 
 export default function BranchForm() {
-    const [name, setName] = useState("");
-    const [phone, setPhone] = useState("");
-    const [email, setEmail] = useState("");
-    const [address, setAddress] = useState("");
+    const {
+        register,
+        formState: { errors },
+        handleSubmit,
+    } = useForm({
+        resolver: yupResolver(branchSchema),
+        mode: "onChange",
+    });
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        const branch = {
-            name,
-            email,
-            phone,
-            address,
-        };
-
-        console.log("New branch:", branch);
-
-        setName("");
-        setEmail("");
-        setPhone("");
-        setAddress("");
+    const handleRegister = (data: any) => {
+        console.log("New branch:", data);
     };
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto flex flex-col gap-4">
+        <form
+            onSubmit={handleSubmit(handleRegister)}
+            className="max-w-md mx-auto flex flex-col gap-4"
+        >
             <div>
                 <label htmlFor="name" className="block mb-2 text-xs">
                     Name
                 </label>
-                <input
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-white-500"
-                    id="name"
-                    type="text"
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    required
-                />
+                <Input placeholder="Type here..." {...register("name")} error={errors?.name} />
             </div>
 
             <div>
                 <label htmlFor="phone" className="block mb-2 text-xs">
                     Phone Number
                 </label>
-                <input
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-white-500"
-                    id="phone"
+                <Input
                     type="tel"
-                    value={phone}
-                    onChange={(event) => setPhone(event.target.value)}
-                    required
+                    placeholder="Type here..."
+                    start="+251"
+                    {...register("phoneNumber")}
+                    error={errors?.phoneNumber}
                 />
             </div>
 
@@ -58,13 +48,12 @@ export default function BranchForm() {
                 <label htmlFor="email" className="block mb-2 text-xs">
                     Email
                 </label>
-                <input
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-white-500"
-                    id="email"
+                <Input
                     type="email"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    required
+                    placeholder="Type here..."
+                    start={<FontAwesomeIcon icon={faAt} />}
+                    {...register("email")}
+                    error={errors?.email}
                 />
             </div>
 
@@ -72,13 +61,10 @@ export default function BranchForm() {
                 <label htmlFor="email" className="block mb-2 text-xs">
                     Address
                 </label>
-                <input
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-white-500"
-                    id="address"
-                    type="text"
-                    value={address}
-                    onChange={(event) => setAddress(event.target.value)}
-                    required
+                <Input
+                    placeholder="Type here..."
+                    {...register("address")}
+                    error={errors?.address}
                 />
             </div>
 

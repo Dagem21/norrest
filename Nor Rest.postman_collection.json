@@ -1,0 +1,44 @@
+{
+	"info": {
+		"_postman_id": "d6c79be7-bc88-4c81-8d2e-78d96d8e19e0",
+		"name": "Nor Rest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "iam",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\": {\r\n        \"firstName\": \"asdf\",\r\n        \"fatherName\": \"asdf\",\r\n        \"lastName\": \"asdf\",\r\n        \"email\": \"asdf\",\r\n        \"phoneNumber\": \"929015796\",\r\n        \"password\": \"asdf\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/iam/register",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"iam",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
