@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
 require("@/models/user");
-const userSchema = mongoose.model("Users");
+const userSchema = mongoose.model("users");
 
 export const findUser = async (query: object) => {
     let user,
         error = null;
     try {
-        user = await UserSchema.findOne(query);
+        user = await userSchema.findOne(query);
     } catch (e) {
         error = e;
     } finally {
