@@ -1,3 +1,7 @@
+import { permissionTypes, roleTypes } from "@/assets/enums/enum";
+
+const mongoose = require("mongoose");
+
 const permissionsSchema = new mongoose.Schema(
     {
         companyID: {
@@ -16,14 +20,22 @@ const permissionsSchema = new mongoose.Schema(
         },
         role: {
             type: String,
+            enum: roleTypes,
             required: true,
         },
-        permissions: {
-            type: String,
-            required: true,
+        permissions: [
+            {
+                type: String,
+                enum: permissionTypes,
+            },
+        ],
+        creatorID: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Users",
         },
     },
     { timestamps: true },
 );
 
-module.exports = mongoose?.models?.Permissions || mongoose.model("Permissions", permissionsSchema);
+module.exports = mongoose?.models?.permissions || mongoose.model("permissions", permissionsSchema);
+export {};

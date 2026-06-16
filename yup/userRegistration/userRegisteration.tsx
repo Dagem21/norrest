@@ -1,11 +1,11 @@
 import * as yup from "yup";
 
 const userSchema = yup.object().shape({
-    userID: yup.string(),
+    _id: yup.string(),
     firstName: yup.string().required("First Name is required."),
     fatherName: yup.string().required("Middle Name is required."),
     lastName: yup.string().required("Last Name is required."),
-    email: yup.string().required("Email is required."),
+    email: yup.string(),
     phoneNumber: yup
         .string()
         .matches(/^[0-9]+$/, "Enter a valid phone number.")

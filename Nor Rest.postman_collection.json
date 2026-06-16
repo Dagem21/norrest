@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"user\": {\r\n        \"firstName\": \"asdf\",\r\n        \"fatherName\": \"asdf\",\r\n        \"lastName\": \"asdf\",\r\n        \"email\": \"asdf\",\r\n        \"phoneNumber\": \"929015796\",\r\n        \"password\": \"asdf\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"user\": {\r\n        \"firstName\": \"asdfa\",\r\n        \"fatherName\": \"asdfa\",\r\n        \"lastName\": \"asdfa\",\r\n        \"email\": \"asdfaa\",\r\n        \"phoneNumber\": \"929015797\",\r\n        \"password\": \"123\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -33,6 +33,183 @@
 								"api",
 								"iam",
 								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"identifier\":\"+251929015797\",\r\n    \"password\":\"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/iam/login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"iam",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTJmZjg2MzNhN2ZhNWRhM2ZkZGUzZmEiLCJpYXQiOjE3ODE1OTczOTAsImV4cCI6MTc4MjIwMjE5MH0.DuK-7Kp-QmdQh0QFUKFXhdTm3kJe0nB7ihM5vqCFoMw",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:5001/api/iam/token/refresh",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"iam",
+								"token",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Company",
+			"item": [
+				{
+					"name": "Create Company",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTJmZjg2MzNhN2ZhNWRhM2ZkZGUzZmEiLCJlbWFpbCI6ImFzZGYiLCJwaG9uZU51bWJlciI6IisyNTE5MjkwMTU3OTYiLCJpYXQiOjE3ODE2MDgxNDgsImV4cCI6MTc4MTYxMTc0OH0.3sDSj_aZK7_bsRKDV5maZndUU7J9D4p-QmMaJObnn4s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"company\": {\r\n        \"name\": \"Test Hotel\",\r\n        \"email\": \"test\",\r\n        \"phoneNumber\": \"929015796\",\r\n        \"website\": \"\",\r\n        \"picture\": \"\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/at/company/register",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"at",
+								"company",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Companies",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTMxNDYwMjIwNjVkMTYyNDZhNTU0NWQiLCJlbWFpbCI6ImFzZGZhYSIsInBob25lTnVtYmVyIjoiKzI1MTkyOTAxNTc5NyIsImlhdCI6MTc4MTYxNDM1OCwiZXhwIjoxNzgxNjE3OTU4fQ.MoKAUECas4KkqS--dVh56_aB-sfvsFwZR3VV5LvvN_U",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/at/company",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"at",
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTJmZjg2MzNhN2ZhNWRhM2ZkZGUzZmEiLCJlbWFpbCI6ImFzZGYiLCJwaG9uZU51bWJlciI6IisyNTE5MjkwMTU3OTYiLCJpYXQiOjE3ODE2MTQxNDUsImV4cCI6MTc4MTYxNzc0NX0.-7ze8j5hBgZGD3N4tfkqFVXdvD7AV_ERl7osAWHIaoA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"employee\": {\r\n        \"phoneNumber\": \"929015797\",\r\n        \"companyID\": \"6a313c312065d16246a5545b\",\r\n        \"role\": \"Waiter\",\r\n        \"permissions\": [\"Update\"],\r\n        \"creatorID\": \"6a2ff8633a7fa5da3fdde3fa\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/at/company/employee/add",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"at",
+								"company",
+								"employee",
+								"add"
 							]
 						}
 					},

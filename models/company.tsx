@@ -1,5 +1,12 @@
+const mongoose = require("mongoose");
+
 const companySchema = new mongoose.Schema(
     {
+        userID: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Users",
+            required: true,
+        },
         name: {
             type: String,
             required: true,
@@ -22,4 +29,5 @@ const companySchema = new mongoose.Schema(
     { timestamps: true },
 );
 
-module.exports = mongoose?.models?.Companies || mongoose.model("Companies", companySchema);
+module.exports = mongoose?.models?.companies || mongoose.model("companies", companySchema);
+export {};

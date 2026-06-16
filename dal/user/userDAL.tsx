@@ -1,13 +1,27 @@
+import * as yup from "yup";
 import mongoose from "mongoose";
+import userSch from "@/yup/userRegistration/userRegisteration";
 
 require("@/models/user");
 const userSchema = mongoose.model("users");
+
+export const findUserByID = async (id?: string) => {
+    let user,
+        error = null;
+    try {
+        user = (await userSchema.findById(id).lean()) as yup.InferType<typeof userSch> | null;
+    } catch (e) {
+        error = e;
+    } finally {
+        return { user, error };
+    }
+};
 
 export const findUser = async (query: object) => {
     let user,
         error = null;
     try {
-        user = await userSchema.findOne(query);
+        user = (await userSchema.findOne(query).lean()) as yup.InferType<typeof userSch> | null;
     } catch (e) {
         error = e;
     } finally {

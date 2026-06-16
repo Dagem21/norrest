@@ -1,8 +1,10 @@
 import * as yup from "yup";
 
 const employeeSchema = yup.object().shape({
+    companyID: yup.string().required("Company ID is required."),
+    branchID: yup.string(),
     userID: yup.string(),
-    email: yup.string().required("Email is required."),
+    email: yup.string(),
     phoneNumber: yup
         .string()
         .matches(/^[0-9]+$/, "Enter a valid phone number.")

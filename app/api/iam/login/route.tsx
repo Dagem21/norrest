@@ -1,8 +1,7 @@
-import { createUser, findUser } from "@/dal/user/userDAL";
+import { findUser } from "@/dal/user/userDAL";
 import { verifyPassword } from "@/utils/encryption";
-import { formatUser } from "@/utils/formatUser";
+import { generateRefreshToken, generateToken } from "@/utils/token";
 import { validateEmail, validatePhone } from "@/utils/validation";
-import userSchema from "@/yup/userRegistration/userRegisteration";
 import { NextRequest } from "next/server";
 
 type PhoneQuery = { phoneNumber: string };
@@ -20,11 +19,9 @@ export async function POST(request: NextRequest) {
         let userQuery: DatabaseQuery;
         if (isValidPhone) {
             userQuery = { phoneNumber: identifier };
-        }
-        else if (isValidEmail) {
+        } else if (isValidEmail) {
             userQuery = { email: identifier };
-        }
-        else {
+        } else {
             return new Response(JSON.stringify({ error: "Invalid credentials provided." }), {
                 status: 401,
                 headers: { "Content-Type": "application/json" },
@@ -34,14 +31,30 @@ export async function POST(request: NextRequest) {
         let { user, error } = await findUser(userQuery);
 
         if (user && !error) {
-            const checkPassword = await verifyPassword(password, user?.password);
+            const { password: savedPass, ...loggedUser } = user;
+            const checkPassword = await verifyPassword(password, savedPass);
             if (checkPassword) {
-                return new Response(JSON.stringify({ message: "Logged in." }), {
-                    status: 200,
-                    headers: { "Content-Type": "application/json" },
+                const token = generateToken({
+                    userId: loggedUser?._id,
+                    email: loggedUser?.email,
+                    phoneNumber: loggedUser?.phoneNumber,
                 });
-            }
-            else {
+
+                const refreshToken = generateRefreshToken(loggedUser?._id);
+
+                return new Response(
+                    JSON.stringify({
+                        user: loggedUser,
+                        token,
+                        refreshToken,
+                        message: "Logged in.",
+                    }),
+                    {
+                        status: 200,
+                        headers: { "Content-Type": "application/json" },
+                    },
+                );
+            } else {
                 return new Response(JSON.stringify({ error: "Invalid credentials provided." }), {
                     status: 401,
                     headers: { "Content-Type": "application/json" },

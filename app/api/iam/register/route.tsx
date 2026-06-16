@@ -1,5 +1,5 @@
 import { createUser } from "@/dal/user/userDAL";
-import { formatUser } from "@/utils/formatUser";
+import { formatUser } from "@/utils/format";
 import userSchema from "@/yup/userRegistration/userRegisteration";
 import { NextRequest } from "next/server";
 

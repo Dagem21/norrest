@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const branchSchema = new mongoose.Schema(
     {
         companyID: {
@@ -25,4 +27,5 @@ const branchSchema = new mongoose.Schema(
     { timestamps: true },
 );
 
-module.exports = mongoose?.models?.Branches || mongoose.model("Branches", branchSchema);
+module.exports = mongoose?.models?.branches || mongoose.model("branches", branchSchema);
+export {};
