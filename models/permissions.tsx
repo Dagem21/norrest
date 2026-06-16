@@ -6,7 +6,7 @@ const permissionsSchema = new mongoose.Schema(
     {
         companyID: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Branches",
+            ref: "Companies",
             required: true,
         },
         branchID: {
@@ -38,4 +38,4 @@ const permissionsSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose?.models?.permissions || mongoose.model("permissions", permissionsSchema);
-export {};
+export { };

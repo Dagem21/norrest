@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
         const validatedUser = await companySchema.validate(company, { abortEarly: false });
 
-        const formattedCompany = await formatCompany(validatedUser);
+        const formattedCompany = formatCompany(validatedUser);
         const registerCompany = { ...formattedCompany, userID: decodedToken?.userId };
 
         let { result, error } = await createCompany(registerCompany);

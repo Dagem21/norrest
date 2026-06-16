@@ -13,7 +13,6 @@ const branchSchema = new mongoose.Schema(
         },
         email: {
             type: String,
-            required: true,
         },
         phoneNumber: {
             type: String,
@@ -28,4 +27,4 @@ const branchSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose?.models?.branches || mongoose.model("branches", branchSchema);
-export {};
+export { };

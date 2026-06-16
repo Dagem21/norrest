@@ -13,7 +13,6 @@ const companySchema = new mongoose.Schema(
         },
         email: {
             type: String,
-            required: true,
         },
         phoneNumber: {
             type: String,
@@ -30,4 +29,4 @@ const companySchema = new mongoose.Schema(
 );
 
 module.exports = mongoose?.models?.companies || mongoose.model("companies", companySchema);
-export {};
+export { };

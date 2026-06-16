@@ -45,7 +45,7 @@ export const createCompany = async (company: object) => {
     }
 };
 
-export const updateCompany = async (id: mongoose.Schema.Types.ObjectId, update: object) => {
+export const updateCompany = async (id: mongoose.Types.ObjectId, update: object) => {
     let result,
         error = null;
     try {

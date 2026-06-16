@@ -47,7 +47,7 @@ export const createPermission = async (permission: object) => {
     }
 };
 
-export const updatePermission = async (id: mongoose.Schema.Types.ObjectId, update: object) => {
+export const updatePermission = async (id: mongoose.Types.ObjectId, update: object) => {
     let result,
         error = null;
     try {

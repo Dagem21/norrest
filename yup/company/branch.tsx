@@ -3,7 +3,7 @@ import * as yup from "yup";
 const branchSchema = yup.object().shape({
     companyID: yup.string(),
     name: yup.string().required("Name is required."),
-    email: yup.string().required("Email is required."),
+    email: yup.string(),
     phoneNumber: yup
         .string()
         .matches(/^[0-9]+$/, "Enter a valid phone number.")
