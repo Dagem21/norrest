@@ -14,12 +14,20 @@ export async function createFile(imageFile: File): Promise<[object, object]> {
             withoutEnlargement: true,
         })
         .jpeg({ quality: 60 })
+        .png({
+            palette: true,
+            compressionLevel: 9,
+            quality: 60
+        })
         .toBuffer();
 
     const fileExtension = path.extname(imageFile.name) || ".jpg";
 
-    const fileName0 = crypto.randomBytes(16).toString("hex");
-    const fileName1 = crypto.randomBytes(16).toString("hex");
+    const uniqueId = crypto.randomBytes(4).toString('hex');
+    const currTIme = Date.now().toString(36);
+
+    const fileName0 = crypto.createHash('sha256').update(currTIme + uniqueId + 'a').digest('hex');
+    const fileName1 = crypto.createHash('sha256').update(currTIme + uniqueId + 'b').digest('hex');
 
     const uniqueFilename0 = `${fileName0}${fileExtension}`;
     const uniqueFilename1 = `${fileName1}${fileExtension}`;

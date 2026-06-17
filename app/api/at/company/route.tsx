@@ -4,7 +4,7 @@ import { verifyUserAuth } from "@/utils/authHelper";
 import mongoose from "mongoose";
 import { NextRequest } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
         const decodedToken = await verifyUserAuth();
 

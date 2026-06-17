@@ -29,6 +29,18 @@ export const findMenu = async (query: object) => {
     }
 };
 
+export const findMenus = async (query: object) => {
+    let menus,
+        error = null;
+    try {
+        menus = (await menuSchema.find(query).lean());
+    } catch (e: any) {
+        error = e.message;
+    } finally {
+        return { menus, error };
+    }
+};
+
 export const createMenu = async (menu: object) => {
     let result,
         error = null;

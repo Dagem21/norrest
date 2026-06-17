@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "cbad7c90-341b-4982-9561-8f2441502d30",
+		"_postman_id": "ebf40142-0efa-4b01-a2ec-fd16b5d1e988",
 		"name": "Nor Rest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -197,7 +197,10 @@
 							"name": "Employees",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": ""
+								}
 							},
 							"response": []
 						}
@@ -347,6 +350,43 @@
 								"at",
 								"menu",
 								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Menus",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTMxNmNlYTBiNGMzZTNlNzUxOTkyM2QiLCJlbWFpbCI6ImFzZGZhYSIsInBob25lTnVtYmVyIjoiKzI1MTkyOTAxNTc5NiIsImlhdCI6MTc4MTcxMjYxMCwiZXhwIjoxNzgxNzE2MjEwfQ.TSDYmphB_U4cL-0mJ-fxD_QmUeuwMhzVjLJiZ4Gq9wU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/at/menu?branchID=6a317256188aea9572558448",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"at",
+								"menu"
+							],
+							"query": [
+								{
+									"key": "branchID",
+									"value": "6a317256188aea9572558448"
+								}
 							]
 						}
 					},
