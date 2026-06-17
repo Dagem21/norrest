@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "54e7bda4-6b7f-4df7-8666-bdbc915f6597",
+		"_postman_id": "cbad7c90-341b-4982-9561-8f2441502d30",
 		"name": "Nor Rest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -149,6 +149,61 @@
 					]
 				},
 				{
+					"name": "Employee",
+					"item": [
+						{
+							"name": "Add User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTMxNmQwNDBiNGMzZTNlNzUxOTkyM2YiLCJlbWFpbCI6ImFzZGZhYiIsInBob25lTnVtYmVyIjoiKzI1MTkyOTAxNTc5NyIsImlhdCI6MTc4MTYyNDExMCwiZXhwIjoxNzgxNjI3NzEwfQ.fJww-rQ7uKDxnym5uFHziWb4xpCCQUqfjJkvxDuNa9M",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"employee\": {\r\n        \"phoneNumber\": \"929015796\",\r\n        \"companyID\": \"6a316d4b0b4c3e3e75199240\",\r\n        \"role\": \"Waiter\",\r\n        \"permissions\": [\"Update\"],\r\n        \"creatorID\": \"6a2ff8633a7fa5da3fdde3fa\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/at/company/employee/add",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"at",
+										"company",
+										"employee",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Employees",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Create Company",
 					"request": {
 						"auth": {
@@ -219,16 +274,21 @@
 						}
 					},
 					"response": []
-				},
+				}
+			]
+		},
+		{
+			"name": "Menu",
+			"item": [
 				{
-					"name": "Add User",
+					"name": "Add Menu Item",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTMxNmQwNDBiNGMzZTNlNzUxOTkyM2YiLCJlbWFpbCI6ImFzZGZhYiIsInBob25lTnVtYmVyIjoiKzI1MTkyOTAxNTc5NyIsImlhdCI6MTc4MTYyNDExMCwiZXhwIjoxNzgxNjI3NzEwfQ.fJww-rQ7uKDxnym5uFHziWb4xpCCQUqfjJkvxDuNa9M",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTJmZjg2MzNhN2ZhNWRhM2ZkZGUzZmEiLCJlbWFpbCI6ImFzZGYiLCJwaG9uZU51bWJlciI6IisyNTE5MjkwMTU3OTYiLCJpYXQiOjE3ODE3MDA3ODEsImV4cCI6MTc4MTcwNDM4MX0.wrn0qroqGZFWeKBs3EwJ3UllJhMkTQYG5eHKxfxJ42E",
 									"type": "string"
 								}
 							]
@@ -236,8 +296,39 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"employee\": {\r\n        \"phoneNumber\": \"929015796\",\r\n        \"companyID\": \"6a316d4b0b4c3e3e75199240\",\r\n        \"role\": \"Waiter\",\r\n        \"permissions\": [\"Update\"],\r\n        \"creatorID\": \"6a2ff8633a7fa5da3fdde3fa\"\r\n    }\r\n}",
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "branchID",
+									"value": "6a3241162065d16246a55461",
+									"type": "default"
+								},
+								{
+									"key": "name",
+									"value": "Burger",
+									"type": "default"
+								},
+								{
+									"key": "price",
+									"value": "500",
+									"type": "default"
+								},
+								{
+									"key": "ingredients",
+									"value": "Beef, Tomato, Lettuce",
+									"type": "default"
+								},
+								{
+									"key": "category",
+									"value": "[\"Lunch\", \"Fast Food\"]",
+									"type": "default"
+								},
+								{
+									"key": "picture",
+									"type": "file",
+									"src": "/C:/Users/dagemmoges/Downloads/etcargo open.png"
+								}
+							],
 							"options": {
 								"raw": {
 									"language": "json"
@@ -245,7 +336,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:5001/api/at/company/employee/add",
+							"raw": "https://localhost:5001/api/at/menu/add",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -254,8 +345,7 @@
 							"path": [
 								"api",
 								"at",
-								"company",
-								"employee",
+								"menu",
 								"add"
 							]
 						}

@@ -16,8 +16,8 @@ export const findPermissionByID = async (id?: string) => {
         error = null;
     try {
         permission = (await permissionSchema.findById(id).lean()) as permissionSch | null;
-    } catch (e) {
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { permission, error };
     }
@@ -28,10 +28,50 @@ export const findPermission = async (query: object) => {
         error = null;
     try {
         permission = (await permissionSchema.findOne(query).lean()) as permissionSch | null;
-    } catch (e) {
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { permission, error };
+    }
+};
+
+export const findPermissions = async (query: object) => {
+    let permissions,
+        error = null;
+    try {
+        permissions = await permissionSchema.aggregate([
+            {
+                $match: query,
+            },
+            {
+                $lookup: {
+                    from: "companies",
+                    localField: "companyID",
+                    foreignField: "_id",
+                    as: "company",
+                },
+            },
+            {
+                $unwind: "$company",
+            },
+            { $unset: "company.userID" },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "userID",
+                    foreignField: "_id",
+                    as: "user",
+                },
+            },
+            {
+                $unwind: "$user",
+            },
+            { $unset: "user.password" },
+        ]);
+    } catch (e: any) {
+        error = e.message;
+    } finally {
+        return { permissions, error };
     }
 };
 
@@ -40,8 +80,8 @@ export const createPermission = async (permission: object) => {
         error = null;
     try {
         result = await permissionSchema.create(permission);
-    } catch (e) {
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { result, error };
     }
@@ -53,8 +93,8 @@ export const updatePermission = async (id: mongoose.Types.ObjectId, update: obje
     try {
         const permissionUp = await permissionSchema.findByIdAndUpdate(id, { $set: update });
         result = permissionUp.modifiedCount === 1;
-    } catch (e) {
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { result, error };
     }
@@ -64,7 +104,6 @@ export const findUserCompanies = async (query: object) => {
     let permission,
         error = null;
     try {
-        console.log(query);
         permission = await permissionSchema.aggregate([
             {
                 $match: query,
@@ -81,8 +120,8 @@ export const findUserCompanies = async (query: object) => {
                 $unwind: "$company",
             },
         ]);
-    } catch (e) {
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { permission, error };
     }

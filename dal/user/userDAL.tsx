@@ -10,8 +10,8 @@ export const findUserByID = async (id?: string) => {
         error = null;
     try {
         user = (await userSchema.findById(id).lean()) as yup.InferType<typeof userSch> | null;
-    } catch (e) {
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { user, error };
     }
@@ -22,8 +22,8 @@ export const findUser = async (query: object) => {
         error = null;
     try {
         user = (await userSchema.findOne(query).lean()) as yup.InferType<typeof userSch> | null;
-    } catch (e) {
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { user, error };
     }
@@ -34,9 +34,8 @@ export const createUser = async (user: object) => {
         error = null;
     try {
         result = await userSchema.create(user);
-    } catch (e) {
-        console.log(e);
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { result, error };
     }
@@ -48,8 +47,8 @@ export const updateUser = async (id: mongoose.Types.ObjectId, update: object) =>
     try {
         const userUp = await userSchema.findByIdAndUpdate(id, { $set: update });
         result = userUp.modifiedCount === 1;
-    } catch (e) {
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { result, error };
     }

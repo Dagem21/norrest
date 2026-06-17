@@ -12,8 +12,8 @@ export const findCompanyByID = async (id?: string) => {
         company = (await companySchema.findById(id).lean()) as yup.InferType<
             typeof companySch
         > | null;
-    } catch (e) {
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { company, error };
     }
@@ -26,8 +26,8 @@ export const findCompany = async (query: object) => {
         company = (await companySchema.findOne(query).lean()) as yup.InferType<
             typeof companySch
         > | null;
-    } catch (e) {
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { company, error };
     }
@@ -38,8 +38,8 @@ export const createCompany = async (company: object) => {
         error = null;
     try {
         result = await companySchema.create(company);
-    } catch (e) {
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { result, error };
     }
@@ -51,8 +51,8 @@ export const updateCompany = async (id: mongoose.Types.ObjectId, update: object)
     try {
         const companyUp = await companySchema.findByIdAndUpdate(id, { $set: update });
         result = companyUp.modifiedCount === 1;
-    } catch (e) {
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { result, error };
     }

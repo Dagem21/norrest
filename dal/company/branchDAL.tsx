@@ -9,11 +9,9 @@ export const findBranchByID = async (id?: string) => {
     let branch,
         error = null;
     try {
-        branch = (await branchSchema.findById(id).lean()) as yup.InferType<
-            typeof branchSch
-        > | null;
-    } catch (e) {
-        error = e;
+        branch = (await branchSchema.findById(id).lean()) as yup.InferType<typeof branchSch> | null;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { branch, error };
     }
@@ -26,8 +24,8 @@ export const findBranch = async (query: object) => {
         branch = (await branchSchema.findOne(query).lean()) as yup.InferType<
             typeof branchSch
         > | null;
-    } catch (e) {
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { branch, error };
     }
@@ -38,8 +36,8 @@ export const createBranch = async (branch: object) => {
         error = null;
     try {
         result = await branchSchema.create(branch);
-    } catch (e) {
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { result, error };
     }
@@ -51,8 +49,8 @@ export const updateBranch = async (id: mongoose.Types.ObjectId, update: object) 
     try {
         const branchUp = await branchSchema.findByIdAndUpdate(id, { $set: update });
         result = branchUp.modifiedCount === 1;
-    } catch (e) {
-        error = e;
+    } catch (e: any) {
+        error = e.message;
     } finally {
         return { result, error };
     }

@@ -1,4 +1,5 @@
-import { createPermission } from "@/dal/permissions/permissionsDAL";
+import { permissionTypes } from "@/assets/enums/enum";
+import { createPermission, findPermission } from "@/dal/permissions/permissionsDAL";
 import { findUser } from "@/dal/user/userDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
 import { formatPhone } from "@/utils/format";
@@ -15,6 +16,36 @@ export async function POST(request: NextRequest) {
         const validatedUser = await employeeSchema.validate(employee, { abortEarly: false });
         const formattedPhone = formatPhone(employee?.phoneNumber);
 
+        const { permission, error: errorPerm } = await findPermission({
+            companyID: validatedUser?.companyID,
+            userID: decodedToken?.userId,
+        });
+
+        if (!permission || errorPerm) {
+            return new Response(
+                JSON.stringify({
+                    error: errorPerm || "You do not have permission to perform this action.",
+                }),
+                {
+                    status: 401,
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
+        }
+
+        if (
+            (permission?.branchID && permission?.branchID !== validatedUser?.branchID) ||
+            !permission?.permissions.includes(permissionTypes.Admin)
+        ) {
+            return new Response(
+                JSON.stringify({ error: "You do not have permission to perform this action." }),
+                {
+                    status: 401,
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
+        }
+
         const { user, error } = await findUser({ phoneNumber: formattedPhone });
 
         if (user && !error) {
@@ -26,7 +57,6 @@ export async function POST(request: NextRequest) {
                 permissions: validatedUser?.permissions,
                 creatorID: decodedToken?.userId,
             };
-            console.log(permission);
 
             const { result: permResult, error: permError } = await createPermission(permission);
             if (permResult && !permError) {

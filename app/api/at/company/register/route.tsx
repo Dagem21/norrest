@@ -13,9 +13,9 @@ export async function POST(request: NextRequest) {
     try {
         const decodedToken = await verifyUserAuth();
 
-        const validatedUser = await companySchema.validate(company, { abortEarly: false });
+        const validatedCompany = await companySchema.validate(company, { abortEarly: false });
 
-        const formattedCompany = formatCompany(validatedUser);
+        const formattedCompany = formatCompany(validatedCompany);
         const registerCompany = { ...formattedCompany, userID: decodedToken?.userId };
 
         let { result, error } = await createCompany(registerCompany);
@@ -54,7 +54,6 @@ export async function POST(request: NextRequest) {
             });
         }
     } catch (error: any) {
-        console.log(error);
         if (error.message === "Unauthorized") {
             return new Response(JSON.stringify({ error: "Invalid or expired token." }), {
                 status: 401,
