@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ebf40142-0efa-4b01-a2ec-fd16b5d1e988",
+		"_postman_id": "422a3022-f8fe-4f22-88ee-4815288a2b94",
 		"name": "Nor Rest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -23,12 +23,10 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:5001/api/iam/register",
-							"protocol": "https",
+							"raw": "{{address}}/api/iam/register",
 							"host": [
-								"localhost"
+								"{{address}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
 								"iam",
@@ -53,12 +51,10 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:5001/api/iam/login",
-							"protocol": "https",
+							"raw": "{{address}}/api/iam/login",
 							"host": [
-								"localhost"
+								"{{address}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
 								"iam",
@@ -80,12 +76,10 @@
 							}
 						],
 						"url": {
-							"raw": "https://localhost:5001/api/iam/token/refresh",
-							"protocol": "https",
+							"raw": "{{address}}/api/iam/token/refresh",
 							"host": [
-								"localhost"
+								"{{address}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
 								"iam",
@@ -112,7 +106,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTMxNmNlYTBiNGMzZTNlNzUxOTkyM2QiLCJlbWFpbCI6ImFzZGZhYSIsInBob25lTnVtYmVyIjoiKzI1MTkyOTAxNTc5NiIsImlhdCI6MTc4MTYyNjUzNCwiZXhwIjoxNzgxNjMwMTM0fQ.EEmjLYmOhY6mGa6VEPbFzOP7bKqjiMSPGrZBwR3feGI",
+											"value": "{{token}}",
 											"type": "string"
 										}
 									]
@@ -129,18 +123,52 @@
 									}
 								},
 								"url": {
-									"raw": "https://localhost:5001/api/at/company/branch/add",
-									"protocol": "https",
+									"raw": "{{address}}/api/at/company/branch/add",
 									"host": [
-										"localhost"
+										"{{address}}"
 									],
-									"port": "5001",
 									"path": [
 										"api",
 										"at",
 										"company",
 										"branch",
 										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Branches",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{address}}/api/at/company/branch?companyID=6a313c312065d16246a5545b",
+									"host": [
+										"{{address}}"
+									],
+									"path": [
+										"api",
+										"at",
+										"company",
+										"branch"
+									],
+									"query": [
+										{
+											"key": "companyID",
+											"value": "6a313c312065d16246a5545b"
+										}
 									]
 								}
 							},
@@ -159,7 +187,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTMxNmQwNDBiNGMzZTNlNzUxOTkyM2YiLCJlbWFpbCI6ImFzZGZhYiIsInBob25lTnVtYmVyIjoiKzI1MTkyOTAxNTc5NyIsImlhdCI6MTc4MTYyNDExMCwiZXhwIjoxNzgxNjI3NzEwfQ.fJww-rQ7uKDxnym5uFHziWb4xpCCQUqfjJkvxDuNa9M",
+											"value": "{{token}}",
 											"type": "string"
 										}
 									]
@@ -176,12 +204,10 @@
 									}
 								},
 								"url": {
-									"raw": "https://localhost:5001/api/at/company/employee/add",
-									"protocol": "https",
+									"raw": "{{address}}/api/at/company/employee/add",
 									"host": [
-										"localhost"
+										"{{address}}"
 									],
-									"port": "5001",
 									"path": [
 										"api",
 										"at",
@@ -214,7 +240,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTMxNmQwNDBiNGMzZTNlNzUxOTkyM2YiLCJlbWFpbCI6ImFzZGZhYiIsInBob25lTnVtYmVyIjoiKzI1MTkyOTAxNTc5NyIsImlhdCI6MTc4MTYyNDExMCwiZXhwIjoxNzgxNjI3NzEwfQ.fJww-rQ7uKDxnym5uFHziWb4xpCCQUqfjJkvxDuNa9M",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -231,12 +257,10 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:5001/api/at/company/register",
-							"protocol": "https",
+							"raw": "{{address}}/api/at/company/register",
 							"host": [
-								"localhost"
+								"{{address}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
 								"at",
@@ -255,7 +279,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTMxNmNlYTBiNGMzZTNlNzUxOTkyM2QiLCJlbWFpbCI6ImFzZGZhYSIsInBob25lTnVtYmVyIjoiKzI1MTkyOTAxNTc5NiIsImlhdCI6MTc4MTYyNjUzNCwiZXhwIjoxNzgxNjMwMTM0fQ.EEmjLYmOhY6mGa6VEPbFzOP7bKqjiMSPGrZBwR3feGI",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -263,12 +287,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:5001/api/at/company",
-							"protocol": "https",
+							"raw": "{{address}}/api/at/company",
 							"host": [
-								"localhost"
+								"{{address}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
 								"at",
@@ -291,7 +313,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTJmZjg2MzNhN2ZhNWRhM2ZkZGUzZmEiLCJlbWFpbCI6ImFzZGYiLCJwaG9uZU51bWJlciI6IisyNTE5MjkwMTU3OTYiLCJpYXQiOjE3ODE3MDA3ODEsImV4cCI6MTc4MTcwNDM4MX0.wrn0qroqGZFWeKBs3EwJ3UllJhMkTQYG5eHKxfxJ42E",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -339,12 +361,10 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:5001/api/at/menu/add",
-							"protocol": "https",
+							"raw": "{{address}}/api/at/menu/add",
 							"host": [
-								"localhost"
+								"{{address}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
 								"at",
@@ -363,7 +383,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTMxNmNlYTBiNGMzZTNlNzUxOTkyM2QiLCJlbWFpbCI6ImFzZGZhYSIsInBob25lTnVtYmVyIjoiKzI1MTkyOTAxNTc5NiIsImlhdCI6MTc4MTcxMjYxMCwiZXhwIjoxNzgxNzE2MjEwfQ.TSDYmphB_U4cL-0mJ-fxD_QmUeuwMhzVjLJiZ4Gq9wU",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -371,12 +391,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:5001/api/at/menu?branchID=6a317256188aea9572558448",
-							"protocol": "https",
+							"raw": "{{address}}/api/at/menu?branchID=6a317256188aea9572558448",
 							"host": [
-								"localhost"
+								"{{address}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
 								"at",
@@ -391,8 +409,136 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Menu Public",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{address}}/api/menu?branchID=6a3241162065d16246a55461",
+							"host": [
+								"{{address}}"
+							],
+							"path": [
+								"api",
+								"menu"
+							],
+							"query": [
+								{
+									"key": "branchID",
+									"value": "6a3241162065d16246a55461"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
+		},
+		{
+			"name": "Rating",
+			"item": [
+				{
+					"name": "Add Rating",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rating\": {\r\n        \"menuID\": \"6a33a2d0c51ff7c2fa6f1e5f\",\r\n        \"rating\": 4,\r\n        \"comment\": \"Good food\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{address}}/api/at/rating/rate",
+							"host": [
+								"{{address}}"
+							],
+							"path": [
+								"api",
+								"at",
+								"rating",
+								"rate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Rating",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{address}}/api/at/rating?menuID=6a33a2d0c51ff7c2fa6f1e5f",
+							"host": [
+								"{{address}}"
+							],
+							"path": [
+								"api",
+								"at",
+								"rating"
+							],
+							"query": [
+								{
+									"key": "menuID",
+									"value": "6a33a2d0c51ff7c2fa6f1e5f"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTJmZjg2MzNhN2ZhNWRhM2ZkZGUzZmEiLCJlbWFpbCI6ImFzZGYiLCJwaG9uZU51bWJlciI6IisyNTE5MjkwMTU3OTYiLCJpYXQiOjE3ODE3ODYwMTcsImV4cCI6MTc4MTc4OTYxN30.XtbThVNPMu5-4dDJQ539EXdUOecNcCel6lOtLZz5k0c",
+			"type": "default"
+		},
+		{
+			"key": "address",
+			"value": "https://localhost:5001",
+			"type": "default"
 		}
 	]
 }

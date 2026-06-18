@@ -31,6 +31,18 @@ export const findBranch = async (query: object) => {
     }
 };
 
+export const findBranchs = async (query: object) => {
+    let branchs,
+        error = null;
+    try {
+        branchs = await branchSchema.find(query).lean();
+    } catch (e: any) {
+        error = e.message;
+    } finally {
+        return { branchs, error };
+    }
+};
+
 export const createBranch = async (branch: object) => {
     let result,
         error = null;
@@ -48,7 +60,7 @@ export const updateBranch = async (id: mongoose.Types.ObjectId, update: object) 
         error = null;
     try {
         const branchUp = await branchSchema.findByIdAndUpdate(id, { $set: update });
-        result = branchUp.modifiedCount === 1;
+        result = branchUp !== null;
     } catch (e: any) {
         error = e.message;
     } finally {

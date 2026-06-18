@@ -1,6 +1,7 @@
 import * as yup from "yup";
 
 const menuItemSchema = yup.object().shape({
+    _id: yup.string(),
     branchID: yup.string(),
     name: yup.string().required("Name is required."),
     price: yup.number().required("Price is required."),
@@ -24,6 +25,8 @@ const menuItemSchema = yup.object().shape({
     discount: yup.number(),
     discountStart: yup.date(),
     discountEnd: yup.date(),
+    rating: yup.number(),
+    totalRatings: yup.number(),
 });
 
 export default menuItemSchema;

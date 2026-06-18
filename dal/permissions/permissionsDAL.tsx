@@ -92,7 +92,7 @@ export const updatePermission = async (id: mongoose.Types.ObjectId, update: obje
         error = null;
     try {
         const permissionUp = await permissionSchema.findByIdAndUpdate(id, { $set: update });
-        result = permissionUp.modifiedCount === 1;
+        result = permissionUp !== null;
     } catch (e: any) {
         error = e.message;
     } finally {

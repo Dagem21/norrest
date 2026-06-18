@@ -46,7 +46,7 @@ export const updateUser = async (id: mongoose.Types.ObjectId, update: object) =>
         error = null;
     try {
         const userUp = await userSchema.findByIdAndUpdate(id, { $set: update });
-        result = userUp.modifiedCount === 1;
+        result = userUp !== null;
     } catch (e: any) {
         error = e.message;
     } finally {

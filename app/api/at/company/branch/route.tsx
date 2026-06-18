@@ -1,37 +1,29 @@
-import { findBranchByID } from "@/dal/company/branchDAL";
-import { findMenus } from "@/dal/menu/menuDAL";
-import { findPermission } from "@/dal/permissions/permissionsDAL";
+import { permissionTypes, roleTypes } from "@/assets/enums/enum";
+import { findBranchs } from "@/dal/company/branchDAL";
+import {
+    createPermission,
+    findPermission,
+    findUserCompanies,
+} from "@/dal/permissions/permissionsDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
+import mongoose from "mongoose";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
     const searchParams = request?.nextUrl?.searchParams;
-    const branchID = searchParams.get("branchID");
-
+    const companyID = searchParams.get("companyID");
     try {
         const decodedToken = await verifyUserAuth();
 
-        if (!branchID) {
-            return new Response(JSON.stringify({ error: "Missing branch ID." }), {
+        if (!companyID) {
+            return new Response(JSON.stringify({ error: "Missing company ID." }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
             });
         }
-        const { branch, error: branchError } = await findBranchByID(branchID);
-        if (!branch || branchError) {
-            return new Response(
-                JSON.stringify({
-                    error: branchError || "Branch not found.",
-                }),
-                {
-                    status: 400,
-                    headers: { "Content-Type": "application/json" },
-                },
-            );
-        }
 
         const { permission, error: errorPerm } = await findPermission({
-            companyID: branch?.companyID,
+            companyID: companyID,
             userID: decodedToken?.userId,
         });
 
@@ -47,9 +39,11 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        if (permission?.branchID && permission?.branchID !== branchID) {
+        if (permission?.branchID || !permission?.permissions.includes(permissionTypes.Admin)) {
             return new Response(
-                JSON.stringify({ error: "You do not have permission to access this menu." }),
+                JSON.stringify({
+                    error: "You do not have permission to access branches of this company.",
+                }),
                 {
                     status: 401,
                     headers: { "Content-Type": "application/json" },
@@ -57,15 +51,16 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const { menus, error } = await findMenus({ branchID });
-        if (!menus || error) {
+        const { branchs, error } = await findBranchs({ companyID });
+
+        if (!branchs || error) {
             return new Response(JSON.stringify({ error }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
             });
         }
 
-        return new Response(JSON.stringify({ menus }), {
+        return new Response(JSON.stringify({ branchs }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });

@@ -9,8 +9,6 @@ export async function GET(request: NextRequest) {
     const branchID = searchParams.get("branchID");
 
     try {
-        const decodedToken = await verifyUserAuth();
-
         if (!branchID) {
             return new Response(JSON.stringify({ error: "Missing branch ID." }), {
                 status: 400,
@@ -25,33 +23,6 @@ export async function GET(request: NextRequest) {
                 }),
                 {
                     status: 400,
-                    headers: { "Content-Type": "application/json" },
-                },
-            );
-        }
-
-        const { permission, error: errorPerm } = await findPermission({
-            companyID: branch?.companyID,
-            userID: decodedToken?.userId,
-        });
-
-        if (!permission || errorPerm) {
-            return new Response(
-                JSON.stringify({
-                    error: errorPerm || "You do not have permission to access this menu.",
-                }),
-                {
-                    status: 401,
-                    headers: { "Content-Type": "application/json" },
-                },
-            );
-        }
-
-        if (permission?.branchID && permission?.branchID !== branchID) {
-            return new Response(
-                JSON.stringify({ error: "You do not have permission to access this menu." }),
-                {
-                    status: 401,
                     headers: { "Content-Type": "application/json" },
                 },
             );

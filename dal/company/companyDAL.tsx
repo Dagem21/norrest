@@ -50,7 +50,7 @@ export const updateCompany = async (id: mongoose.Types.ObjectId, update: object)
         error = null;
     try {
         const companyUp = await companySchema.findByIdAndUpdate(id, { $set: update });
-        result = companyUp.modifiedCount === 1;
+        result = companyUp !== null;
     } catch (e: any) {
         error = e.message;
     } finally {

@@ -33,7 +33,7 @@ export const findMenus = async (query: object) => {
     let menus,
         error = null;
     try {
-        menus = (await menuSchema.find(query).lean());
+        menus = await menuSchema.find(query).lean();
     } catch (e: any) {
         error = e.message;
     } finally {
@@ -58,7 +58,7 @@ export const updateMenu = async (id: mongoose.Types.ObjectId, update: object) =>
         error = null;
     try {
         const menuUp = await menuSchema.findByIdAndUpdate(id, { $set: update });
-        result = menuUp.modifiedCount === 1;
+        result = menuUp !== null;
     } catch (e: any) {
         error = e.message;
     } finally {
