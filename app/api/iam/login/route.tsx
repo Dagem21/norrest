@@ -2,6 +2,7 @@ import { findUser } from "@/dal/user/userDAL";
 import { verifyPassword } from "@/utils/encryption";
 import { generateRefreshToken, generateToken } from "@/utils/token";
 import { validateEmail, validatePhone } from "@/utils/validation";
+import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
 type PhoneQuery = { phoneNumber: string };
@@ -40,13 +41,20 @@ export async function POST(request: NextRequest) {
                     phoneNumber: loggedUser?.phoneNumber,
                 });
 
-                const refreshToken = generateRefreshToken(loggedUser?._id);
+                const cookieStore = await cookies();
+                cookieStore.set({
+                    name: 'session_token',
+                    value: token?.token,
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'lax',
+                    maxAge: 60 * 60 * 24 * 1,
+                    path: '/',
+                });
 
                 return new Response(
                     JSON.stringify({
                         user: loggedUser,
-                        token,
-                        refreshToken,
                         message: "Logged in.",
                     }),
                     {

@@ -9,11 +9,11 @@ interface TokenPayload {
     phoneNumber?: string;
 }
 
-export function generateToken(payload: TokenPayload): object {
+export function generateToken(payload: TokenPayload): any {
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
     return {
         token: token,
-        expiresIn: "1h",
+        expiresIn: "1d",
         tokenType: "Bearer",
     };
 }
