@@ -51,16 +51,16 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const { branchs, error } = await findBranchs({ companyID });
+        const { branches, error } = await findBranchs({ companyID });
 
-        if (!branchs || error) {
+        if (!branches || error) {
             return new Response(JSON.stringify({ error }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
             });
         }
 
-        return new Response(JSON.stringify({ branchs }), {
+        return new Response(JSON.stringify({ branches }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });

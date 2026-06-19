@@ -2,13 +2,46 @@
 
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
+import useApiFetch from "@/hooks/useAPIFetch";
+import { MenuContext } from "@/providers/menu";
 import { faAt, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
 
 export default function Register() {
+    const menuContext = useContext(MenuContext);
+    const router = useRouter();
+    const [credentials, setCredentials] = useState({
+        identifier: "",
+        password: "",
+    });
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+    const { data, fetchData, isLoading, errors } = useApiFetch(
+        {
+            url: "/api/iam/login",
+            method: "POST",
+        },
+        false,
+    );
+
+    useEffect(() => {
+        if (!isLoading) {
+            if (data) {
+                menuContext?.setUser(data);
+                router.replace("/company");
+            } else if (errors?.details) {
+                alert(errors?.details?.response?.data?.error);
+            }
+        }
+    }, [data, isLoading, errors]);
+
+    const handleSubmit = (e: any) => {
+        e?.preventDefault();
+        fetchData({ data: credentials });
+    };
 
     return (
         <div className="flex flex-col flex-1 items-center min-h-screen">
@@ -19,7 +52,7 @@ export default function Register() {
                         Login to explore more services
                     </h1>
                     <hr className="m-3 border-taupe-500 dark:border-taupe-400" />
-                    <form className="max-w-sm flex flex-col gap-4 m-4">
+                    <form className="max-w-sm flex flex-col gap-4 m-4" onSubmit={handleSubmit}>
                         <div>
                             <label htmlFor="email" className="block mb-2 text-xs">
                                 Email / Phone Number
@@ -27,6 +60,13 @@ export default function Register() {
                             <Input
                                 placeholder="Type here..."
                                 start={<FontAwesomeIcon icon={faAt} />}
+                                value={credentials?.identifier}
+                                onChange={(e) =>
+                                    setCredentials((prev) => ({
+                                        ...prev,
+                                        identifier: e.target.value,
+                                    }))
+                                }
                             />
                         </div>
                         <div>
@@ -43,6 +83,13 @@ export default function Register() {
                                         className="cursor-pointer"
                                         onClick={() => setIsPasswordVisible((prev) => !prev)}
                                     />
+                                }
+                                value={credentials?.password}
+                                onChange={(e) =>
+                                    setCredentials((prev) => ({
+                                        ...prev,
+                                        password: e.target.value,
+                                    }))
                                 }
                             />
                         </div>

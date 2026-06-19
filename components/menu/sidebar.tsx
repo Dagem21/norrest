@@ -32,7 +32,9 @@ const Sidebar = () => {
                         </span>
                         <span className="sidebar__title">
                             Welcome,{" "}
-                            <span className="text-blue-500 font-bold text-lg">Nameless</span>
+                            <span className="text-blue-500 font-bold text-lg">
+                                {menuContext?.user?.firstName}
+                            </span>
                         </span>
                     </div>
                     <FontAwesomeIcon

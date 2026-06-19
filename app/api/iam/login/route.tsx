@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
         let userQuery: DatabaseQuery;
         if (isValidPhone) {
-            userQuery = { phoneNumber: identifier };
+            userQuery = { phoneNumber: "+251" + identifier.slice(-9) };
         } else if (isValidEmail) {
             userQuery = { email: identifier };
         } else {
@@ -43,13 +43,13 @@ export async function POST(request: NextRequest) {
 
                 const cookieStore = await cookies();
                 cookieStore.set({
-                    name: 'session_token',
+                    name: "session_token",
                     value: token?.token,
                     httpOnly: true,
                     secure: true,
-                    sameSite: 'lax',
+                    sameSite: "lax",
                     maxAge: 60 * 60 * 24 * 1,
-                    path: '/',
+                    path: "/",
                 });
 
                 return new Response(

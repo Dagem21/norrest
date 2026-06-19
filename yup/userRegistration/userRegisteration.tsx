@@ -20,8 +20,8 @@ const userSchema = yup.object().shape({
     confirmPassword: yup
         .string()
         .test("is-same", "Confimation password does not match.", function (value) {
-            const { Password } = this.parent;
-            return Password === value;
+            const { password } = this.parent;
+            return password === value;
         }),
     lastLogin: yup.date(),
 });

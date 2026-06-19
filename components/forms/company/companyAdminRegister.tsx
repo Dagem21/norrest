@@ -5,14 +5,14 @@ import Input from "@/components/ui/input";
 import { faAt, faCheckCircle, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import Link from "next/link";
+import useApiFetch from "@/hooks/useAPIFetch";
+import { useRouter } from "next/navigation";
 
-export default function CompanyAdminRegisterForm({
-    handleNextStep,
-}: {
-    handleNextStep: () => void;
-}) {
+export default function CompanyAdminRegisterForm() {
+    const router = useRouter();
     const {
         register,
         formState: { errors },
@@ -23,6 +23,29 @@ export default function CompanyAdminRegisterForm({
         mode: "onChange",
     });
 
+    const {
+        data,
+        fetchData,
+        isLoading,
+        errors: errorsRegiter,
+    } = useApiFetch(
+        {
+            url: "/api/iam/register",
+            method: "POST",
+        },
+        false,
+    );
+
+    useEffect(() => {
+        if (!isLoading) {
+            if (data) {
+                router.replace("/signin");
+            } else if (errorsRegiter?.details) {
+                alert(errorsRegiter?.details?.response?.data?.error);
+            }
+        }
+    }, [data, isLoading, errorsRegiter]);
+
     const password = watch("password");
     const confirmPassword = watch("confirmPassword");
 
@@ -32,8 +55,7 @@ export default function CompanyAdminRegisterForm({
     });
 
     const handleRegister = (data: any) => {
-        console.log(data);
-        handleNextStep();
+        fetchData({ data: { user: data } });
     };
     return (
         <form className="w-full p-6" onSubmit={handleSubmit(handleRegister)}>
@@ -171,7 +193,10 @@ export default function CompanyAdminRegisterForm({
                 <Button text="Continue" type="submit" />
             </div>
             <h1 className="text-center mt-2 text-xs">
-                Already registered? <span className="text-sm">Sign In</span>
+                Already registered?{" "}
+                <Link className="text-sm" href="/signin">
+                    Sign In
+                </Link>
             </h1>
         </form>
     );

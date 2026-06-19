@@ -32,14 +32,14 @@ export const findBranch = async (query: object) => {
 };
 
 export const findBranchs = async (query: object) => {
-    let branchs,
+    let branches,
         error = null;
     try {
-        branchs = await branchSchema.find(query).lean();
+        branches = await branchSchema.find(query).lean();
     } catch (e: any) {
         error = e.message;
     } finally {
-        return { branchs, error };
+        return { branches, error };
     }
 };
 

@@ -1,11 +1,11 @@
-import axios from 'axios';
-import { API_URL } from '../Config/config';
+import { API_URL } from "@/config";
+import axios from "axios";
 
 const baseURL = API_URL;
 
 if (!baseURL) {
-    alert('SERVER NOT FOUND, CONTACT SYSTEM ADMINS');
-    throw new Error('SERVER NOT FOUND, CONTACT SYSTEM ADMINS');
+    alert("SERVER NOT FOUND, CONTACT SYSTEM ADMINS");
+    throw new Error("SERVER NOT FOUND, CONTACT SYSTEM ADMINS");
 }
 
 export default axios.create({

@@ -1,52 +1,59 @@
-import { useEffect, useState, useCallback, useContext } from 'react';
-import axios from './axios';
-import { UserContext } from '../providers/userProvider';
+"use client";
+import { useEffect, useState, useCallback } from "react";
+import axios from "./axios";
+
+interface requestConfigParamType {
+    url?: string;
+    method?: string;
+    data?: any;
+    params?: any;
+    headers?: any;
+    auth?: any;
+}
 
 const useApiFetch = (
-    requestConfigParam = {
-        url: '',
-        method: '',
+    requestConfigParam: requestConfigParamType = {
+        url: "",
+        method: "",
         data: {},
         params: {},
         headers: {},
         auth: {},
     },
-    intialFetch = true
+    intialFetch = true,
 ) => {
-    const { user } = useContext(UserContext);
     const [isLoading, setIsLoading] = useState(false);
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState<any>({});
     const [data, setData] = useState(null);
     const [requestConfig] = useState(requestConfigParam);
 
-    const fetchData = useCallback(async (request) => {
+    const fetchData = useCallback(async (request?: any) => {
         setIsLoading(true);
         setData(null);
         setErrors({});
         try {
             const response = await axios.request({
-                headers: { Authorization: token },
                 ...requestConfig,
                 ...request,
             });
             setData(response.data || []);
-        } catch (error) {
+        } catch (error: any) {
             if (error?.response?.status === 400) {
-                setErrors({ isError: true, message: 'Bad request', details: error });
+                setErrors({ isError: true, message: "Bad request", details: error });
             } else if (error?.response?.status === 401) {
-                setErrors({ isError: true, message: 'Unauthorized', details: error });
+                setErrors({ isError: true, message: "Unauthorized", details: error });
             } else if (error?.response?.status === 404) {
-                setErrors({ isError: true, message: 'NOT FOUND', details: error });
+                setErrors({ isError: true, message: "NOT FOUND", details: error });
             } else if (error?.response?.status === 422) {
                 setErrors({
                     isError: true,
-                    message: 'Invalid Data, check your inputs',
+                    message: "Invalid Data, check your inputs",
                     details: error,
                 });
             } else if (error?.response?.status === 415) {
                 setErrors({
                     isError: true,
-                    message: 'Invalid MIME type, check your inputs',
+                    message: "Invalid MIME type, check your inputs",
                     details: error,
                 });
             } else if (
@@ -54,13 +61,13 @@ const useApiFetch = (
                 400 <= error?.response?.status &&
                 error?.response?.status <= 499
             ) {
-                setErrors({ isError: true, message: 'Bad Request', details: error });
+                setErrors({ isError: true, message: "Bad Request", details: error });
             } else if (
                 error?.response?.status &&
                 500 <= error?.response?.status &&
                 error?.response?.status <= 599
             ) {
-                setErrors({ isError: true, message: 'Server Error', details: error });
+                setErrors({ isError: true, message: "Server Error", details: error });
             } else if (error?.response?.data?.message) {
                 setErrors({
                     isError: true,
@@ -70,7 +77,7 @@ const useApiFetch = (
             } else if (error?.message) {
                 setErrors({ isError: true, message: error?.message, details: error });
             } else {
-                setErrors({ isError: true, message: 'Unknown Error' });
+                setErrors({ isError: true, message: "Unknown Error" });
             }
 
             // return false;

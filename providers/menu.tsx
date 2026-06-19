@@ -7,6 +7,8 @@ interface MenuContextType {
     setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
     title: string;
     setTitle: React.Dispatch<React.SetStateAction<string>>;
+    user: any;
+    setUser: React.Dispatch<React.SetStateAction<any>>;
 }
 
 // 2. Create the context with a default value
@@ -20,9 +22,10 @@ interface MenuProviderProps {
 export const MenuProvider = ({ children }: MenuProviderProps) => {
     const [showMenu, setShowMenu] = useState<boolean>(false);
     const [title, setTitle] = useState<string>("");
+    const [user, setUser] = useState<any>();
 
     return (
-        <MenuContext.Provider value={{ showMenu, setShowMenu, title, setTitle }}>
+        <MenuContext.Provider value={{ showMenu, setShowMenu, title, setTitle, user, setUser }}>
             {children}
         </MenuContext.Provider>
     );
