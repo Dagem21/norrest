@@ -4,7 +4,7 @@ const companySchema = new mongoose.Schema(
     {
         userID: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Users",
+            ref: "users",
             required: true,
         },
         name: {

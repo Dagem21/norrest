@@ -24,7 +24,7 @@ const useApiFetch = (
 ) => {
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState<any>({});
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<any>(null);
     const [requestConfig] = useState(requestConfigParam);
 
     const fetchData = useCallback(async (request?: any) => {

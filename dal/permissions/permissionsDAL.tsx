@@ -113,12 +113,33 @@ export const findUserCompanies = async (query: object) => {
                     from: "companies",
                     localField: "companyID",
                     foreignField: "_id",
-                    as: "company",
-                },
+                    as: "company"
+                }
             },
+            { $unwind: { path: "$company", preserveNullAndEmptyArrays: true } },
             {
-                $unwind: "$company",
-            },
+                $lookup: {
+                    from: "branches",
+                    let: {
+                        currentBranch: "$branchID",
+                        currentCompany: "$companyID"
+                    },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $cond: {
+                                        if: { $ne: ["$$currentBranch", null] },
+                                        then: { $eq: ["$_id", "$$currentBranch"] },
+                                        else: { $eq: ["$companyID", "$$currentCompany"] }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    as: "branches"
+                }
+            }
         ]);
     } catch (e: any) {
         error = e.message;

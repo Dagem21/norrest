@@ -4,7 +4,7 @@ const menuSchema = new mongoose.Schema(
     {
         branchID: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Branches",
+            ref: "branches",
             required: true,
         },
         name: {
@@ -45,7 +45,7 @@ const menuSchema = new mongoose.Schema(
         },
         inputter: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Users",
+            ref: "users",
             required: true,
         },
     },
@@ -53,4 +53,4 @@ const menuSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose?.models?.menus || mongoose.model("menus", menuSchema);
-export {};
+export { };

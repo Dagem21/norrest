@@ -11,12 +11,10 @@ interface MenuContextType {
     setUser: React.Dispatch<React.SetStateAction<any>>;
 }
 
-// 2. Create the context with a default value
 export const MenuContext = createContext<MenuContextType | undefined>(undefined);
 
-// 3. Create the Provider component
 interface MenuProviderProps {
-    children: ReactNode; // Allows wrapping other components
+    children: ReactNode;
 }
 
 export const MenuProvider = ({ children }: MenuProviderProps) => {

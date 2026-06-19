@@ -30,7 +30,7 @@ export default function Register() {
     useEffect(() => {
         if (!isLoading) {
             if (data) {
-                menuContext?.setUser(data);
+                menuContext?.setUser(data?.user);
                 router.replace("/company");
             } else if (errors?.details) {
                 alert(errors?.details?.response?.data?.error);
@@ -67,6 +67,7 @@ export default function Register() {
                                         identifier: e.target.value,
                                     }))
                                 }
+                                autoFocus
                             />
                         </div>
                         <div>

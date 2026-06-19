@@ -6,16 +6,16 @@ const permissionsSchema = new mongoose.Schema(
     {
         companyID: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Companies",
+            ref: "companies",
             required: true,
         },
         branchID: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Branches",
+            ref: "branches",
         },
         userID: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Users",
+            ref: "users",
             required: true,
         },
         role: {

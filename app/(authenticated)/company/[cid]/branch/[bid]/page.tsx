@@ -3,20 +3,36 @@
 import MenuItemForm from "@/components/forms/menu/menuItem";
 import QrGenerator from "@/components/QRGenerator";
 import Modal from "@/components/ui/modal";
+import useApiFetch from "@/hooks/useAPIFetch";
 import { MenuContext } from "@/providers/menu";
 import { faGear, faPlus, faQrcode, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
 export default function Branch() {
+    const params = useParams<{ bid: string }>();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isQRModalOpen, setQRModalOpen] = useState(false);
     const menuContext = useContext(MenuContext);
 
+    const { data, isLoading, errors } = useApiFetch(
+        {
+            url: `/api/at/company/branch?branchID=${params?.bid}`,
+            method: "GET",
+        },
+        true,
+    );
+
     useEffect(() => {
-        menuContext?.setTitle("Company Name");
-    });
+        if (!isLoading && data) {
+            menuContext?.setTitle(`${data?.branch?.companyID?.name}, ${data?.branch?.name}`);
+        }
+        else if (!isLoading && errors?.details) {
+            alert(errors?.details?.response?.data?.error)
+        }
+    }, [data, isLoading, errors])
 
     return (
         <div className="flex flex-col flex-1 items-center">

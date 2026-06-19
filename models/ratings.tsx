@@ -4,12 +4,12 @@ const ratingSchema = new mongoose.Schema(
     {
         userID: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Users",
+            ref: "users",
             required: true,
         },
         menuID: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Menus",
+            ref: "menus",
             required: true,
         },
         rating: {
@@ -25,4 +25,4 @@ const ratingSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose?.models?.ratings || mongoose.model("ratings", ratingSchema);
-export {};
+export { };

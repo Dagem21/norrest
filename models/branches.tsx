@@ -4,7 +4,7 @@ const branchSchema = new mongoose.Schema(
     {
         companyID: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Companies",
+            ref: "companies",
             required: true,
         },
         name: {

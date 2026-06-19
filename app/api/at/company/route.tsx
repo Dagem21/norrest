@@ -9,7 +9,7 @@ export async function GET() {
         const decodedToken = await verifyUserAuth();
 
         let { permission, error } = await findUserCompanies({
-            userID: new mongoose.Types.ObjectId(decodedToken?.userId || ""),
+            userID: new mongoose.Types.ObjectId(decodedToken?.userId),
         });
         return new Response(JSON.stringify({ permission }), {
             status: 200,

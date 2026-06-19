@@ -9,7 +9,11 @@ export const findBranchByID = async (id?: string) => {
     let branch,
         error = null;
     try {
-        branch = (await branchSchema.findById(id).lean()) as yup.InferType<typeof branchSch> | null;
+        branch = (await branchSchema.findById(id)
+            .populate({
+                path: "companyID",
+                select: "name picture"
+            }).lean()) as yup.InferType<typeof branchSch> | null;
     } catch (e: any) {
         error = e.message;
     } finally {
