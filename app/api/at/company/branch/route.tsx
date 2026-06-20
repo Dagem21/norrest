@@ -1,8 +1,6 @@
 import { permissionTypes } from "@/assets/enums/enum";
 import { findBranchByID, findBranchs } from "@/dal/company/branchDAL";
-import {
-    findPermission,
-} from "@/dal/permissions/permissionsDAL";
+import { findPermission } from "@/dal/permissions/permissionsDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
 import mongoose from "mongoose";
 import { NextRequest } from "next/server";
@@ -15,7 +13,7 @@ interface permssionQueryType {
 
 export async function GET(request: NextRequest) {
     const searchParams = request?.nextUrl?.searchParams;
-    const companyID = searchParams.get("companyID");
+    let companyID = searchParams.get("companyID");
     const branchID = searchParams.get("branchID");
     try {
         const decodedToken = await verifyUserAuth();
@@ -27,23 +25,50 @@ export async function GET(request: NextRequest) {
             });
         }
 
-        const permissionQuery: permssionQueryType = {
-            userID: new mongoose.Types.ObjectId(decodedToken?.userId)
+        if (branchID) {
+            const { branch, error: branchError } = await findBranchByID(branchID);
+            if (!branch || branchError) {
+                return new Response(
+                    JSON.stringify({
+                        error: branchError || "Branch not found.",
+                    }),
+                    {
+                        status: 400,
+                        headers: { "Content-Type": "application/json" },
+                    },
+                );
+            }
+            companyID = branch?.companyID?._id ?? null;
         }
 
-        if (branchID) {
-            permissionQuery.branchID = new mongoose.Types.ObjectId(branchID)
+        const permissionQuery: permssionQueryType = {
+            userID: new mongoose.Types.ObjectId(decodedToken?.userId),
+        };
+
+        if (companyID) {
+            console.log;
+            permissionQuery.companyID = new mongoose.Types.ObjectId(companyID);
+        } else {
+            return new Response(
+                JSON.stringify({
+                    error: "Company not found.",
+                }),
+                {
+                    status: 400,
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
         }
-        else if (companyID) {
-            permissionQuery.companyID = new mongoose.Types.ObjectId(companyID)
-        }
+        console.log(permissionQuery);
 
         const { permission, error: errorPerm } = await findPermission(permissionQuery);
 
         if (!permission || errorPerm) {
             return new Response(
                 JSON.stringify({
-                    error: errorPerm || "You do not have permission to access this menu.",
+                    error:
+                        errorPerm ||
+                        "You do not have permission to access branches of this company.",
                 }),
                 {
                     status: 401,
@@ -52,7 +77,10 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        if ((permission?.branchID && !branchID) || !permission?.permissions.includes(permissionTypes.Admin)) {
+        if (
+            (permission?.branchID && !branchID) ||
+            !permission?.permissions.includes(permissionTypes.Admin)
+        ) {
             return new Response(
                 JSON.stringify({
                     error: "You do not have permission to access branches of this company.",
@@ -99,7 +127,7 @@ export async function GET(request: NextRequest) {
                 headers: { "Content-Type": "application/json" },
             });
         }
-        return new Response(JSON.stringify({ error }), {
+        return new Response(JSON.stringify({ error: error.message }), {
             status: 400,
             headers: { "Content-Type": "application/json" },
         });

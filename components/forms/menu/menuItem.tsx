@@ -1,59 +1,84 @@
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
+import useApiFetch from "@/hooks/useAPIFetch";
 import menuItemSchema from "@/yup/menu/menuItem";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Image from "next/image";
-import { useState } from "react";
+import { useParams } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-const categories = [
-    "Appetizer",
-    "Entree",
-    "Dessert",
-    "Drink",
-    "Vegan",
-    "Gluten Free",
-];
+const categories = ["Appetizer", "Entree", "Dessert", "Drink", "Vegan", "Gluten Free"];
 
-export default function MenuItemForm() {
+export default function MenuItemForm({ onFinish }: { onFinish: () => void }) {
+    const params = useParams<{ bid: string }>();
     const {
         register,
         formState: { errors },
         handleSubmit,
         watch,
+        reset,
     } = useForm({
         resolver: yupResolver(menuItemSchema),
         mode: "onChange",
+        defaultValues: {
+            branchID: params?.bid,
+        },
     });
+
+    const {
+        data,
+        fetchData,
+        isLoading,
+        errors: errorsAdd,
+    } = useApiFetch(
+        {
+            url: "/api/at/menu/add",
+            method: "POST",
+        },
+        false,
+    );
 
     const menuItemPicture = watch("picture");
 
     const handleRegister = (data: any) => {
-        console.log("New menu item:", data);
+        const formData = new FormData();
+        formData.append("branchID", data?.branchID);
+        formData.append("name", data?.name);
+        formData.append("price", data?.price);
+        formData.append("ingredients", data?.ingredients);
+        formData.append("category", JSON.stringify(data?.category));
+        formData.append("picture", data?.picture[0]);
+
+        fetchData({ data: formData });
     };
 
+    useEffect(() => {
+        if (!isLoading && data) {
+            onFinish();
+            reset();
+        } else if (!isLoading && errorsAdd?.details) {
+            alert(errorsAdd?.details?.response?.data?.error);
+        }
+    }, [data, isLoading, errorsAdd]);
+
     return (
-        <form onSubmit={handleSubmit(handleRegister)} className="max-w-md mx-auto flex flex-col gap-4">
+        <form
+            onSubmit={handleSubmit(handleRegister)}
+            className="max-w-md mx-auto flex flex-col gap-4"
+        >
             <div>
                 <label htmlFor="name" className="block mb-2 text-xs">
                     Name
                 </label>
-                <Input
-                    placeholder="Type here..."
-                    {...register("name")}
-                    error={errors?.name}
-                />
+                <Input placeholder="Type here..." {...register("name")} error={errors?.name} />
             </div>
 
             <div>
                 <label htmlFor="price" className="block mb-2 text-xs">
                     Price
                 </label>
-                <Input
-                    placeholder="Type here..."
-                    {...register("price")}
-                    error={errors?.price}
-                />
+                <Input placeholder="Type here..." {...register("price")} error={errors?.price} />
             </div>
 
             <div>
@@ -106,19 +131,23 @@ export default function MenuItemForm() {
                 </div>
                 <div>
                     {Object.values(menuItemPicture ?? {})?.length > 0 && (
-                        <div className="flex items-center justify-center">
+                        <div className="flex items-center justify-center shadow h-full">
                             <Image
                                 src={URL.createObjectURL((menuItemPicture as any)?.[0])}
                                 alt={"Menu Item Image"}
-                                width={50}
-                                height={50}
+                                width={70}
+                                height={70}
                             />
                         </div>
                     )}
                 </div>
             </div>
 
-            <Button type="submit" text="Add Menu Item" />
+            <Button
+                type="submit"
+                text={`${isLoading ? "Adding Item" : "Add Menu Item"}`}
+                disabled={isLoading}
+            />
         </form>
     );
 }

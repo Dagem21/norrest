@@ -18,15 +18,16 @@ export async function POST(request: NextRequest) {
             price: formData?.get("price"),
             ingredients: formData?.get("ingredients"),
             category: formData?.get("category") as string,
-            picture: formData?.get("picture") as File,
+            picture: formData?.get("picture"),
         };
+
+        console.log(menuItem);
 
         menuItem.category = JSON.parse(menuItem.category);
 
         const decodedToken = await verifyUserAuth();
 
         const validatedMenuItem = await menuSchema.validate(menuItem, { abortEarly: false });
-        console.log(validatedMenuItem);
 
         const { branch, error: branchError } = await findBranchByID(validatedMenuItem?.branchID);
         if (!branch || branchError) {

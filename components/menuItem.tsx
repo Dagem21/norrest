@@ -1,4 +1,6 @@
 import Image, { StaticImageData } from "next/image";
+import { useState } from "react";
+import Loading from "./loadingComponent";
 
 type MenuItemProps = {
     name: string;
@@ -17,11 +19,22 @@ export default function MenuItem({
     categories,
     discount,
 }: MenuItemProps) {
+    const [isLoading, setIsLoading] = useState(true);
     return (
         <div className="flex items-center justify-between p-2 shadow-lg cursor-pointer">
             <div className="flex items-center">
                 <div>
-                    <Image className="w-15 h-15 rounded-lg object-cover" src={image} alt={name} />
+                    <Image
+                        className="w-15 h-15 rounded-lg object-cover"
+                        src={image}
+                        alt={name}
+                        width={100}
+                        height={100}
+                        onLoad={() => {
+                            setIsLoading(false);
+                        }}
+                    />
+                    <Loading loading={isLoading} />
                 </div>
                 <div className="mx-2 tracking-wide">
                     <h1 className="text-sm font-bold">{name}</h1>

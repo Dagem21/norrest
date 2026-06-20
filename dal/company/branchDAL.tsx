@@ -3,17 +3,20 @@ import mongoose from "mongoose";
 import branchSch from "@/yup/company/branch";
 
 require("@/models/branches");
+require("@/models/company");
 const branchSchema = mongoose.model("branches");
 
 export const findBranchByID = async (id?: string) => {
     let branch,
         error = null;
     try {
-        branch = (await branchSchema.findById(id)
+        branch = (await branchSchema
+            .findById(id)
             .populate({
                 path: "companyID",
-                select: "name picture"
-            }).lean()) as yup.InferType<typeof branchSch> | null;
+                select: "name picture",
+            })
+            .lean()) as any;
     } catch (e: any) {
         error = e.message;
     } finally {
