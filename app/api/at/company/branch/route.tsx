@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
                         "You do not have permission to access branches of this company.",
                 }),
                 {
-                    status: 401,
+                    status: 403,
                     headers: { "Content-Type": "application/json" },
                 },
             );
@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
                     error: "You do not have permission to access branches of this company.",
                 }),
                 {
-                    status: 401,
+                    status: 403,
                     headers: { "Content-Type": "application/json" },
                 },
             );

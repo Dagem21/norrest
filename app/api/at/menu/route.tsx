@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
                     error: errorPerm || "You do not have permission to access this menu.",
                 }),
                 {
-                    status: 401,
+                    status: 403,
                     headers: { "Content-Type": "application/json" },
                 },
             );
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
             return new Response(
                 JSON.stringify({ error: "You do not have permission to access this menu." }),
                 {
-                    status: 401,
+                    status: 403,
                     headers: { "Content-Type": "application/json" },
                 },
             );

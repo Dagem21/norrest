@@ -27,6 +27,8 @@ const menuItemSchema = yup.object().shape({
     discount: yup.number().optional(),
     discountStart: yup.date().nullable().optional(),
     discountEnd: yup.date().nullable().optional(),
+    rating: yup.number(),
+    totalRatings: yup.number(),
 });
 
 export default menuItemSchema;

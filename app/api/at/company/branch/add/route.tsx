@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
             return new Response(
                 JSON.stringify({ error: error || "You do not have permission to perform this action." }),
                 {
-                    status: 401,
+                    status: 403,
                     headers: { "Content-Type": "application/json" },
                 },
             );
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
             return new Response(
                 JSON.stringify({ error: "You do not have permission to perform this action." }),
                 {
-                    status: 401,
+                    status: 403,
                     headers: { "Content-Type": "application/json" },
                 },
             );
