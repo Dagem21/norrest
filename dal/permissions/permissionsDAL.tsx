@@ -100,21 +100,23 @@ export const updatePermission = async (id: mongoose.Types.ObjectId, update: obje
     }
 };
 
-export const findUserCompanies = async (query: object) => {
+export const findUserCompanies = async (query: object, page: number = 1, limit: number = 10) => {
     let permission,
         error = null;
     try {
-        permission = await permissionSchema.aggregate([
+        const permissions = await permissionSchema.aggregate([
             {
                 $match: query,
             },
+            { $skip: (page - 1) * limit },
+            { $limit: limit },
             {
                 $lookup: {
                     from: "companies",
                     localField: "companyID",
                     foreignField: "_id",
-                    as: "company"
-                }
+                    as: "company",
+                },
             },
             { $unwind: { path: "$company", preserveNullAndEmptyArrays: true } },
             {
@@ -122,7 +124,7 @@ export const findUserCompanies = async (query: object) => {
                     from: "branches",
                     let: {
                         currentBranch: "$branchID",
-                        currentCompany: "$companyID"
+                        currentCompany: "$companyID",
                     },
                     pipeline: [
                         {
@@ -131,16 +133,19 @@ export const findUserCompanies = async (query: object) => {
                                     $cond: {
                                         if: { $ne: ["$$currentBranch", null] },
                                         then: { $eq: ["$_id", "$$currentBranch"] },
-                                        else: { $eq: ["$companyID", "$$currentCompany"] }
-                                    }
-                                }
-                            }
-                        }
+                                        else: { $eq: ["$companyID", "$$currentCompany"] },
+                                    },
+                                },
+                            },
+                        },
                     ],
-                    as: "branches"
-                }
-            }
+                    as: "branches",
+                },
+            },
         ]);
+        const total = await permissionSchema.countDocuments(query);
+        const totalPages = Math.ceil((total ?? 0) / limit);
+        permission = { permissions, page, limit, total, totalPages };
     } catch (e: any) {
         error = e.message;
     } finally {

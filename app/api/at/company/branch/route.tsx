@@ -122,7 +122,7 @@ export async function GET(request: NextRequest) {
         });
     } catch (error: any) {
         if (error.message === "Unauthorized") {
-            return new Response(JSON.stringify({ error: "Invalid or expired token." }), {
+            return new Response(JSON.stringify({ error: "Session expired. Please login again!" }), {
                 status: 401,
                 headers: { "Content-Type": "application/json" },
             });

@@ -8,7 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 
-export default function CompanyRegisterForm({ handleNextStep }: { handleNextStep: () => void }) {
+export default function CompanyRegisterForm({ onFinish }: { onFinish: () => void }) {
     const {
         register,
         watch,
@@ -22,8 +22,7 @@ export default function CompanyRegisterForm({ handleNextStep }: { handleNextStep
     const companyPicture = watch("picture");
 
     const handleRegister = (data: any) => {
-        console.log(data);
-        handleNextStep();
+        onFinish();
     };
 
     return (
@@ -95,7 +94,6 @@ export default function CompanyRegisterForm({ handleNextStep }: { handleNextStep
             </div>
             <div className="flex items-center justify-center">
                 <Button text="Continue" type="submit" />
-                <Button text="Skip" type="button" style="secondary" />
             </div>
         </form>
     );

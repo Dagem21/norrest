@@ -11,7 +11,7 @@ import Link from "next/link";
 import useApiFetch from "@/hooks/useAPIFetch";
 import { useRouter } from "next/navigation";
 
-export default function CompanyAdminRegisterForm() {
+export default function UserRegisterForm() {
     const router = useRouter();
     const {
         register,

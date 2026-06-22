@@ -1,5 +1,5 @@
 "use client";
-import CompanyAdminRegisterForm from "@/components/forms/company/companyAdminRegister";
+import UserRegisterForm from "@/components/forms/user/userRegister";
 
 export default function Register() {
     return (
@@ -8,7 +8,7 @@ export default function Register() {
                 <div className="w-full sm:w-full md:w-2/3 lg:w-3/5 xl:w-2/5 bg-taupe-200 dark:bg-taupe-600 shadow rounded-lg p-2">
                     <h1 className="text-center font-bold m-2">Register</h1>
                     <hr className="mb-2 mx-6" />
-                    <CompanyAdminRegisterForm />
+                    <UserRegisterForm />
                 </div>
             </div>
         </div>

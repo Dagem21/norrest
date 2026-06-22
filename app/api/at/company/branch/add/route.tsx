@@ -18,12 +18,14 @@ export async function POST(request: NextRequest) {
 
         const { permission, error } = await findPermission({
             companyID: formattedbranch?.companyID,
-            userID: decodedToken?.userId
+            userID: decodedToken?.userId,
         });
 
         if (!permission || error) {
             return new Response(
-                JSON.stringify({ error: error || "You do not have permission to perform this action." }),
+                JSON.stringify({
+                    error: error || "You do not have permission to perform this action.",
+                }),
                 {
                     status: 403,
                     headers: { "Content-Type": "application/json" },
@@ -49,17 +51,14 @@ export async function POST(request: NextRequest) {
                 headers: { "Content-Type": "application/json" },
             });
         } else {
-            return new Response(
-                JSON.stringify({ error: errorCreate }),
-                {
-                    status: 400,
-                    headers: { "Content-Type": "application/json" },
-                },
-            );
+            return new Response(JSON.stringify({ error: errorCreate }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
         }
     } catch (error: any) {
         if (error.message === "Unauthorized") {
-            return new Response(JSON.stringify({ error: "Invalid or expired token." }), {
+            return new Response(JSON.stringify({ error: "Session expired. Please login again!" }), {
                 status: 401,
                 headers: { "Content-Type": "application/json" },
             });

@@ -21,7 +21,6 @@ export default function PageNavigator({
     onPageChange: (page: number) => void;
     onLimitChange: (limit: number) => void;
 }) {
-    console.log(page, limit, totalPages, totalDocs);
     return (
         <div className="flex justify-between items-center px-3 mt-3 text-sm text-taupe-600 dark:text-taupe-200">
             <p>

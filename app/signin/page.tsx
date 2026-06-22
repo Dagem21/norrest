@@ -32,8 +32,6 @@ export default function Register() {
             if (data) {
                 menuContext?.setUser(data?.user);
                 router.replace("/company");
-            } else if (errors?.details) {
-                alert(errors?.details?.response?.data?.error);
             }
         }
     }, [data, isLoading, errors]);
@@ -94,6 +92,14 @@ export default function Register() {
                                 }
                             />
                         </div>
+
+                        {errors?.details && (
+                            <div>
+                                <h1 className="text-red-400 text-sm">
+                                    {errors?.details?.response?.data?.error}
+                                </h1>
+                            </div>
+                        )}
 
                         <div className="flex flex-col items-strech w-full">
                             <Button text="Login" type="submit" />

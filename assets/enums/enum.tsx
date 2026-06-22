@@ -12,3 +12,9 @@ export enum roleTypes {
     Waiter = "Waiter",
     Chef = "Chef",
 }
+
+export enum toastTypes {
+    success = "success",
+    error = "error",
+    warning = "warning",
+}

@@ -17,22 +17,17 @@ import Image from "next/image";
 import ViewMenuItem from "@/components/forms/menu/viewMenuItem";
 import Button from "@/components/ui/button";
 import PageNavigator from "@/components/pageNavigator";
+import { ToastContext } from "@/providers/toastProvider";
 
 export default function Branch() {
+    const toaster = useContext(ToastContext);
     const params = useParams<{ bid: string }>();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isViewModalOpen, setViewModalOpen] = useState(false);
     const [isQRModalOpen, setQRModalOpen] = useState(false);
     const menuContext = useContext(MenuContext);
 
-    const [selectedItem, setSelectedItem] = useState<any>({
-        price: 500.0,
-        name: "Pizza",
-        category: ["Breakfast"],
-        ingredients: "breakfast food",
-        image: food,
-        discount: 0.1,
-    });
+    const [selectedItem, setSelectedItem] = useState<any>();
 
     const { data, isLoading, errors } = useApiFetch(
         {
@@ -59,7 +54,11 @@ export default function Branch() {
         if (!isLoading && data) {
             menuContext?.setTitle(`${data?.branch?.companyID?.name}, ${data?.branch?.name}`);
         } else if (!isLoading && errors?.details) {
-            alert(errors?.details?.response?.data?.error);
+            const toast = {
+                message: errors?.details?.response?.data?.error,
+                type: "error",
+            };
+            toaster?.addToast(toast);
         }
     }, [data, isLoading, errors]);
 
