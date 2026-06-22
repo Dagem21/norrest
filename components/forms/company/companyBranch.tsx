@@ -1,11 +1,18 @@
+import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
+import useApiFetch from "@/hooks/useAPIFetch";
+import { ToastContext } from "@/providers/toastProvider";
 import branchSchema from "@/yup/company/branch";
 import { faAt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useParams } from "next/navigation";
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-export default function BranchForm() {
+export default function BranchForm({ onFinish }: { onFinish: () => void }) {
+    const params = useParams<{ cid: string }>();
+    const toaster = useContext(ToastContext);
     const {
         register,
         formState: { errors },
@@ -13,10 +20,38 @@ export default function BranchForm() {
     } = useForm({
         resolver: yupResolver(branchSchema),
         mode: "onChange",
+        defaultValues: {
+            companyID: params?.cid,
+        },
     });
 
+    const { data, fetchData, isLoading, errors: errorsRegister } = useApiFetch(
+        {
+            url: `/api/at/company/branch/add`,
+            method: "POST",
+        },
+        false,
+    );
+
+    useEffect(() => {
+        if (!isLoading && data) {
+            const toast = {
+                message: "Branch added.",
+                type: "success",
+            };
+            toaster?.addToast(toast);
+            onFinish();
+        } else if (!isLoading && errorsRegister?.details) {
+            const toast = {
+                message: errorsRegister?.details?.response?.data?.error,
+                type: "error",
+            };
+            toaster?.addToast(toast);
+        }
+    }, [data, isLoading, errorsRegister]);
+
     const handleRegister = (data: any) => {
-        console.log("New branch:", data);
+        fetchData({ data: { branch: { ...data, companyID: data?.companyID } } })
     };
 
     return (
@@ -68,12 +103,11 @@ export default function BranchForm() {
                 />
             </div>
 
-            <button
+            <Button
                 type="submit"
-                className="bg-taupe-400 hover:bg-taupe-500 text-white font-bold py-2 px-4 rounded-lg"
-            >
-                Add Branch
-            </button>
+                text={`${isLoading ? "Adding Branch" : "Add Branch"}`}
+                disabled={isLoading}
+            />
         </form>
     );
 }

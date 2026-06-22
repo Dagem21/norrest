@@ -21,8 +21,6 @@ export async function POST(request: NextRequest) {
             picture: formData?.get("picture"),
         };
 
-        console.log(menuItem);
-
         menuItem.category = JSON.parse(menuItem.category);
 
         const decodedToken = await verifyUserAuth();

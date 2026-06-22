@@ -22,7 +22,8 @@ const companySchema = new mongoose.Schema(
             type: String,
         },
         picture: {
-            type: String,
+            type: [String],
+            required: true,
         },
     },
     { timestamps: true },

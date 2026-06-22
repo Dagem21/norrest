@@ -9,7 +9,7 @@ import Modal from "@/components/ui/modal";
 import useApiFetch from "@/hooks/useAPIFetch";
 import { MenuContext } from "@/providers/menu";
 import { ToastContext } from "@/providers/toastProvider";
-import { faExternalLink, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faExternalLink, faGear, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -34,6 +34,11 @@ export default function Company() {
     );
 
     useEffect(() => {
+        const toast = {
+            message: "Company registerd.",
+            type: "success",
+        };
+        toaster?.addToast(toast);
         if (!isLoading && data) {
             setCompanies(data?.permission);
         } else if (!isLoading && errors?.details) {
@@ -44,6 +49,13 @@ export default function Company() {
             toaster?.addToast(toast);
         }
     }, [data, isLoading, errors]);
+
+    const handlePageChange = (page: number) => {
+        fetchData({ params: { page } });
+    };
+    const handleLimitChange = (limit: number) => {
+        fetchData({ params: { limit } });
+    };
 
     return (
         <div className="flex flex-col flex-1 items-center">
@@ -105,9 +117,9 @@ export default function Company() {
                             <tbody>
                                 {!isLoading &&
                                     companies?.permissions?.length > 0 &&
-                                    companies?.permissions?.map((permission: any) => (
+                                    companies?.permissions?.map((permission: any, index: number) => (
                                         <tr className="bg-neutral-primary" key={permission?._id}>
-                                            <td className="ps-2 pe-6 py-4">1</td>
+                                            <td className="ps-2 pe-6 py-4">{index + 1}</td>
                                             <th
                                                 scope="row"
                                                 className="ps-2 pe-6 py-4 font-medium text-heading whitespace-nowrap"
@@ -146,9 +158,10 @@ export default function Company() {
                                                 />
                                                 <button
                                                     className="bg-blue-950 py-1 px-2 hover:bg-blue-700 text-white font-bold rounded"
-                                                    title="Edit"
+                                                    title="Setting"
+                                                    onClick={() => router.push(`/company/${permission?.companyID}/settings`)}
                                                 >
-                                                    <FontAwesomeIcon icon={faPen} />
+                                                    <FontAwesomeIcon icon={faGear} />
                                                 </button>
                                                 <button
                                                     className="bg-red-950 py-1 px-2 hover:bg-red-700 text-white font-bold rounded"
@@ -162,26 +175,27 @@ export default function Company() {
                             </tbody>
                         </table>
                     </div>
+                    {!isLoading && companies.length === 0 && (
+                        <h1 className="text-sm text-center my-2">No registered company yet.</h1>
+                    )}
+                    <div className="w-fit m-auto my-2">
+                        <Loading loading={isLoading} />
+                    </div>
                     <PageNavigator
                         page={companies?.page}
                         limit={companies?.limit}
                         totalPages={companies?.totalPages}
                         totalDocs={companies?.total}
-                        onPageChange={(e: number) => {
-                            console.log(e);
-                        }}
-                        onLimitChange={(e: number) => {
-                            console.log(e);
-                        }}
+                        onPageChange={handlePageChange}
+                        onLimitChange={handleLimitChange}
                     />
                 </div>
-                {!isLoading && companies.length === 0 && (
-                    <h1 className="text-sm text-center">No registered company yet.</h1>
-                )}
-                <Loading loading={isLoading} />
             </div>
             <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="Add Company">
-                <CompanyRegisterForm onFinish={fetchData} />
+                <CompanyRegisterForm onFinish={() => {
+                    fetchData();
+                    setModalOpen(false);
+                }} />
             </Modal>
         </div>
     );

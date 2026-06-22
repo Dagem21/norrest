@@ -19,13 +19,18 @@ const companySchema = yup.object().shape({
         .mixed()
         .required("Document is required.")
         .test("fileSize", "Please choose a file with size less than 10MB.", (value) => {
-            if (!value) return true;
-            const fileArray =
-                value instanceof FileList ? Array.from(value) : ([] as any[]).concat(value);
+            if (!value) return false;
 
-            return fileArray.every((file: any) => {
-                return file && typeof file.size === "number" && file.size <= 10 * 1024 * 1024;
-            });
+            let file: any = value;
+
+            if (typeof window !== "undefined" && value instanceof FileList) {
+                file = value[0];
+            } else if (Array.isArray(value)) {
+                file = value[0];
+            }
+
+            if (!file || typeof file.size !== "number") return false;
+            return file.size <= 10 * 1024 * 1024; // 10MB
         }),
 });
 

@@ -9,14 +9,31 @@ import { faBan, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
 import Button from "@/components/ui/button";
+import useApiFetch from "@/hooks/useAPIFetch";
+import { useParams } from "next/navigation";
+import Loading from "@/components/loadingComponent";
 
 export default function Employee() {
+    const params = useParams<{ cid: string, bid: string }>();
     const [isModalOpen, setModalOpen] = useState(false);
     const menuContext = useContext(MenuContext);
 
     useEffect(() => {
         menuContext?.setTitle("Employees");
     });
+
+    const {
+        data,
+        fetchData,
+        isLoading,
+        errors,
+    } = useApiFetch(
+        {
+            url: `/api/at/company/employee?companyID=${params.cid}&branchID=${params.bid}`,
+            method: "GET",
+        },
+        true,
+    );
 
     return (
         <div className="flex flex-col flex-1 items-center">
@@ -82,84 +99,58 @@ export default function Employee() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr className="bg-neutral-primary">
-                                    <td className="ps-2 pe-6 py-4">1</td>
-                                    <th
-                                        scope="row"
-                                        className="ps-2 pe-6 py-4 font-medium text-heading whitespace-nowrap"
-                                    >
-                                        John Doe
-                                    </th>
-                                    <td className="ps-2 pe-6 py-4 text-nowrap">
-                                        john.doe@example.com
-                                    </td>
-                                    <td className="ps-2 pe-6 py-4 text-nowrap">
-                                        Software Engineer
-                                    </td>
-                                    <td className="ps-2 pe-6 py-4 text-nowrap">Main Branch</td>
-                                    <td className="ps-2 pe-6 py-4 text-nowrap">
-                                        {formatDate("2023-10-01 10:00:00")}
-                                    </td>
-                                    <td className="ps-2 pe-6 py-3 flex gap-1 ">
-                                        <button
-                                            className="bg-blue-950 p-1 hover:bg-blue-700 text-white font-bold rounded"
-                                            title="Edit"
-                                        >
-                                            <FontAwesomeIcon icon={faPen} />
-                                        </button>
-                                        <button
-                                            className="bg-yellow-900 p-1 hover:bg-yellow-700 text-white font-bold rounded"
-                                            title="Disable"
-                                        >
-                                            <FontAwesomeIcon icon={faBan} />
-                                        </button>
-                                        <button
-                                            className="bg-red-950 p-1 hover:bg-red-700 text-white font-bold rounded"
-                                            title="Remove"
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr className="bg-neutral-primary">
-                                    <td className="ps-2 pe-6 py-4">2</td>
-                                    <th
-                                        scope="row"
-                                        className="ps-2 pe-6 py-4 font-medium text-heading whitespace-nowrap"
-                                    >
-                                        Jane Smith
-                                    </th>
-                                    <td className="ps-2 pe-6 py-4 text-nowrap">
-                                        jane.smith@example.com
-                                    </td>
-                                    <td className="ps-2 pe-6 py-4 text-nowrap">Product Manager</td>
-                                    <td className="ps-2 pe-6 py-4 text-nowrap">Main Branch</td>
-                                    <td className="ps-2 pe-6 py-4 text-nowrap">
-                                        {formatDate("2023-10-01 11:00:00")}
-                                    </td>
-                                    <td className="ps-2 pe-6 py-3 flex gap-1 ">
-                                        <button
-                                            className="bg-blue-950 p-1 hover:bg-blue-700 text-white font-bold rounded"
-                                            title="Edit"
-                                        >
-                                            <FontAwesomeIcon icon={faPen} />
-                                        </button>
-                                        <button
-                                            className="bg-yellow-900 p-1 hover:bg-yellow-700 text-white font-bold rounded"
-                                            title="Disable"
-                                        >
-                                            <FontAwesomeIcon icon={faBan} />
-                                        </button>
-                                        <button
-                                            className="bg-red-950 p-1 hover:bg-red-700 text-white font-bold rounded"
-                                            title="Remove"
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </button>
-                                    </td>
-                                </tr>
+                                {!isLoading &&
+                                    data?.permissions?.length > 0 &&
+                                    data?.permissions?.map((permission: any, index: number) =>
+                                        <tr className="bg-neutral-primary" key={permission?._id}>
+                                            <td className="ps-2 pe-6 py-4">1</td>
+                                            <th
+                                                scope="row"
+                                                className="ps-2 pe-6 py-4 font-medium text-heading whitespace-nowrap"
+                                            >
+                                                {permission?.user?.firstName}
+                                            </th>
+                                            <td className="ps-2 pe-6 py-4 text-nowrap">
+                                                {permission?.user?.email}
+                                            </td>
+                                            <td className="ps-2 pe-6 py-4 text-nowrap">
+                                                {permission?.role}
+                                            </td>
+                                            <td className="ps-2 pe-6 py-4 text-nowrap">
+                                                {permission?.branch ? 'Main' : permission?.branch?.name}</td>
+                                            <td className="ps-2 pe-6 py-4 text-nowrap">
+                                                {formatDate("2023-10-01 10:00:00")}
+                                            </td>
+                                            <td className="ps-2 pe-6 py-3 flex gap-1 ">
+                                                <button
+                                                    className="bg-blue-950 p-1 hover:bg-blue-700 text-white font-bold rounded"
+                                                    title="Edit"
+                                                >
+                                                    <FontAwesomeIcon icon={faPen} />
+                                                </button>
+                                                <button
+                                                    className="bg-yellow-900 p-1 hover:bg-yellow-700 text-white font-bold rounded"
+                                                    title="Disable"
+                                                >
+                                                    <FontAwesomeIcon icon={faBan} />
+                                                </button>
+                                                <button
+                                                    className="bg-red-950 p-1 hover:bg-red-700 text-white font-bold rounded"
+                                                    title="Remove"
+                                                >
+                                                    <FontAwesomeIcon icon={faTrash} />
+                                                </button>
+                                            </td>
+                                        </tr>)}
+
                             </tbody>
                         </table>
+                        {!isLoading && data?.permissions?.length === 0 && (
+                            <h1 className="text-sm text-center my-2">No employees yet.</h1>
+                        )}
+                        <div className="w-fit m-auto my-2">
+                            <Loading loading={isLoading} />
+                        </div>
                     </div>
                     <PageNavigator
                         page={1}

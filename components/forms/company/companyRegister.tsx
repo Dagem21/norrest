@@ -1,14 +1,18 @@
 "use client";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
+import useApiFetch from "@/hooks/useAPIFetch";
+import { ToastContext } from "@/providers/toastProvider";
 import companySchema from "@/yup/company/company";
 import { faAt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Image from "next/image";
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 export default function CompanyRegisterForm({ onFinish }: { onFinish: () => void }) {
+    const toaster = useContext(ToastContext);
     const {
         register,
         watch,
@@ -19,10 +23,42 @@ export default function CompanyRegisterForm({ onFinish }: { onFinish: () => void
         mode: "onChange",
     });
 
+    const { data, fetchData, isLoading, errors: errorsRegister } = useApiFetch(
+        {
+            url: "/api/at/company/register",
+            method: "POST",
+        },
+        false,
+    );
+
+    useEffect(() => {
+        if (!isLoading && data) {
+            const toast = {
+                message: "Company registerd.",
+                type: "success",
+            };
+            toaster?.addToast(toast);
+            onFinish();
+        } else if (!isLoading && errorsRegister?.details) {
+            const toast = {
+                message: errorsRegister?.details?.response?.data?.error,
+                type: "error",
+            };
+            toaster?.addToast(toast);
+        }
+    }, [data, isLoading, errorsRegister]);
+
     const companyPicture = watch("picture");
 
     const handleRegister = (data: any) => {
-        onFinish();
+        const formData = new FormData();
+        formData.append("name", data?.name);
+        formData.append("email", data?.email);
+        formData.append("phoneNumber", data?.phoneNumber);
+        formData.append("website", data?.website);
+        formData.append("picture", data?.picture[0]);
+
+        fetchData({ data: formData });
     };
 
     return (
@@ -93,7 +129,11 @@ export default function CompanyRegisterForm({ onFinish }: { onFinish: () => void
                 </div>
             </div>
             <div className="flex items-center justify-center">
-                <Button text="Continue" type="submit" />
+                <Button
+                    type="submit"
+                    text={`${isLoading ? "Registering Company" : "Register Company"}`}
+                    disabled={isLoading}
+                />
             </div>
         </form>
     );

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, ReactNode } from "react";
-import { createPortal } from "react-dom"; // Native React feature
+import { createPortal } from "react-dom";
 
 interface DropdownOptionProps {
     id?: string;
@@ -23,11 +23,17 @@ export default function Dropdown({
     const [selectedOption, setSelectedOption] = useState<ReactNode>(defaultLabel);
 
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const menuRef = useRef<HTMLDivElement>(null);
     const [coords, setCoords] = useState({ top: 0, left: 0 });
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            const target = event.target as Node;
+
+            const clickedOutsideTrigger = dropdownRef.current && !dropdownRef.current.contains(target);
+            const clickedOutsideMenu = menuRef.current && !menuRef.current.contains(target);
+
+            if (clickedOutsideTrigger && clickedOutsideMenu) {
                 setIsOpen(false);
             }
         };
@@ -62,8 +68,6 @@ export default function Dropdown({
     };
 
     const handleOptionClick = (option: string) => {
-        console.log(option);
-        setSelectedOption(option);
         setIsOpen(false);
         if (onSelect) onSelect(option);
     };
@@ -79,12 +83,13 @@ export default function Dropdown({
                 aria-haspopup="true"
                 title={title}
             >
-                {defaultLabel}
+                {selectedOption}
             </button>
 
             {isOpen &&
                 createPortal(
                     <div
+                        ref={menuRef}
                         className="absolute z-50 mt-1 w-56 origin-top-right rounded-md bg-taupe-600 dark:bg-taupe-800 ring-1 ring-black ring-opacity-5 focus:outline-none"
                         style={{
                             top: `${coords.top}px`,
@@ -95,6 +100,7 @@ export default function Dropdown({
                             {options.map((option, index) => (
                                 <button
                                     key={index}
+                                    type="button"
                                     onClick={() => handleOptionClick(option.id ?? option.text)}
                                     className="block w-full text-left px-4 py-2 text-sm text-taupe-800 dark:text-taupe-100 hover:bg-taupe-500 hover:text-taupe-900 transition-colors"
                                     role="menuitem"

@@ -1,4 +1,10 @@
+import Input from "@/components/ui/input";
+import employeeSchema from "@/yup/userRegistration/companyEmployee";
+import { faAt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 const permissions = ["Appetizer", "Entree", "Dessert", "Drink", "Vegan", "Gluten Free"];
 
@@ -8,6 +14,15 @@ export default function EmployeeForm() {
     const [email, setEmail] = useState("");
     const [role, setRole] = useState("");
     const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
+    const {
+        register,
+        watch,
+        formState: { errors },
+        handleSubmit,
+    } = useForm({
+        resolver: yupResolver(employeeSchema),
+        mode: "onChange",
+    });
 
     const handleCategoryChange = (permission: string) => {
         setSelectedPermissions((current) =>
@@ -17,18 +32,8 @@ export default function EmployeeForm() {
         );
     };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        const employee = {
-            name,
-            email,
-            phone,
-            role,
-            permissions: selectedPermissions,
-        };
-
-        console.log("New employee:", employee);
+    const handleRegister = (data: any) => {
+        console.log("New employee:", data);
 
         setName("");
         setEmail("");
@@ -38,7 +43,7 @@ export default function EmployeeForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto flex flex-col gap-4">
+        <form onSubmit={handleSubmit(handleRegister)} className="max-w-md mx-auto flex flex-col gap-4">
             <div>
                 <label htmlFor="name" className="block mb-2">
                     Name
@@ -52,32 +57,42 @@ export default function EmployeeForm() {
                     required
                 />
             </div>
-
             <div>
-                <label htmlFor="phone" className="block mb-2">
-                    Phone Number
+                <label htmlFor="phone" className="block mb-2 text-xs">
+                    Name
                 </label>
-                <input
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-white-500"
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    required
+                <Input
+                    type="tel"
+                    placeholder="Type here..."
+                    start="+251"
+                    {...register("phoneNumber")}
+                    error={errors?.phoneNumber}
                 />
             </div>
 
             <div>
-                <label htmlFor="email" className="block mb-2">
+                <label htmlFor="phone" className="block mb-2 text-xs">
+                    Phone Number
+                </label>
+                <Input
+                    type="tel"
+                    placeholder="Type here..."
+                    start="+251"
+                    {...register("phoneNumber")}
+                    error={errors?.phoneNumber}
+                />
+            </div>
+
+            <div>
+                <label htmlFor="email" className="block mb-2 text-xs">
                     Email
                 </label>
-                <input
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-white-500"
-                    id="email"
+                <Input
                     type="email"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    required
+                    placeholder="Type here..."
+                    start={<FontAwesomeIcon icon={faAt} />}
+                    {...register("email")}
+                    error={errors?.email}
                 />
             </div>
 
