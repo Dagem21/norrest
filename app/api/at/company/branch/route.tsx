@@ -66,9 +66,7 @@ export async function GET(request: NextRequest) {
         if (!permission || errorPerm) {
             return new Response(
                 JSON.stringify({
-                    error:
-                        errorPerm ||
-                        "You do not have permission to access branches of this company.",
+                    error: errorPerm || "Access denied.",
                 }),
                 {
                     status: 403,
@@ -77,13 +75,10 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        if (
-            (permission?.branchID && !branchID) ||
-            !permission?.permissions.includes(permissionTypes.Admin)
-        ) {
+        if (permission?.branchID && !branchID) {
             return new Response(
                 JSON.stringify({
-                    error: "You do not have permission to access branches of this company.",
+                    error: "Access denied.",
                 }),
                 {
                     status: 403,

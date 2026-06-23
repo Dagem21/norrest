@@ -34,11 +34,6 @@ export default function Company() {
     );
 
     useEffect(() => {
-        const toast = {
-            message: "Company registerd.",
-            type: "success",
-        };
-        toaster?.addToast(toast);
         if (!isLoading && data) {
             setCompanies(data?.permission);
         } else if (!isLoading && errors?.details) {
@@ -117,61 +112,72 @@ export default function Company() {
                             <tbody>
                                 {!isLoading &&
                                     companies?.permissions?.length > 0 &&
-                                    companies?.permissions?.map((permission: any, index: number) => (
-                                        <tr className="bg-neutral-primary" key={permission?._id}>
-                                            <td className="ps-2 pe-6 py-4">{index + 1}</td>
-                                            <th
-                                                scope="row"
-                                                className="ps-2 pe-6 py-4 font-medium text-heading whitespace-nowrap"
+                                    companies?.permissions?.map(
+                                        (permission: any, index: number) => (
+                                            <tr
+                                                className="bg-neutral-primary"
+                                                key={permission?._id}
                                             >
-                                                {permission?.company?.name}
-                                            </th>
-                                            <td className="ps-2 pe-6 py-4 text-nowrap">
-                                                {permission?.company?.email}
-                                            </td>
-                                            <td className="ps-2 pe-6 py-4 text-nowrap">
-                                                {permission?.company?.phoneNumber}
-                                            </td>
-                                            <td className="ps-2 pe-6 py-4 text-nowrap">
-                                                {permission?.branches?.length}
-                                            </td>
-                                            <td className="ps-2 py-3 flex gap-3">
-                                                <Dropdown
-                                                    title="Branches"
-                                                    defaultLabel={
-                                                        <FontAwesomeIcon icon={faExternalLink} />
-                                                    }
-                                                    onSelect={(id) => {
-                                                        console.log(id);
-                                                        router.push(
-                                                            `/company/${permission?.companyID}/branch/${id}`,
-                                                        );
-                                                    }}
-                                                    options={permission?.branches?.map(
-                                                        (branch: any) => {
-                                                            return {
-                                                                id: branch?._id,
-                                                                text: branch?.name,
-                                                            };
-                                                        },
-                                                    )}
-                                                />
-                                                <button
-                                                    className="bg-blue-950 py-1 px-2 hover:bg-blue-700 text-white font-bold rounded"
-                                                    title="Setting"
-                                                    onClick={() => router.push(`/company/${permission?.companyID}/settings`)}
+                                                <td className="ps-2 pe-6 py-4">{index + 1}</td>
+                                                <th
+                                                    scope="row"
+                                                    className="ps-2 pe-6 py-4 font-medium text-heading whitespace-nowrap"
                                                 >
-                                                    <FontAwesomeIcon icon={faGear} />
-                                                </button>
-                                                <button
-                                                    className="bg-red-950 py-1 px-2 hover:bg-red-700 text-white font-bold rounded"
-                                                    title="Remove"
-                                                >
-                                                    <FontAwesomeIcon icon={faTrash} />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                                    {permission?.company?.name}
+                                                </th>
+                                                <td className="ps-2 pe-6 py-4 text-nowrap">
+                                                    {permission?.company?.email}
+                                                </td>
+                                                <td className="ps-2 pe-6 py-4 text-nowrap">
+                                                    {permission?.company?.phoneNumber}
+                                                </td>
+                                                <td className="ps-2 pe-6 py-4 text-nowrap">
+                                                    {permission?.branches?.length}
+                                                </td>
+                                                <td className="ps-2 py-3 flex gap-3">
+                                                    <Dropdown
+                                                        title="Branches"
+                                                        defaultLabel={
+                                                            <FontAwesomeIcon
+                                                                icon={faExternalLink}
+                                                            />
+                                                        }
+                                                        onSelect={(id) => {
+                                                            console.log(id);
+                                                            router.push(
+                                                                `/company/${permission?.companyID}/branch/${id}`,
+                                                            );
+                                                        }}
+                                                        options={permission?.branches?.map(
+                                                            (branch: any) => {
+                                                                return {
+                                                                    id: branch?._id,
+                                                                    text: branch?.name,
+                                                                };
+                                                            },
+                                                        )}
+                                                    />
+                                                    <button
+                                                        className="bg-blue-950 py-1 px-2 hover:bg-blue-700 text-white font-bold rounded"
+                                                        title="Setting"
+                                                        onClick={() =>
+                                                            router.push(
+                                                                `/company/${permission?.companyID}/settings`,
+                                                            )
+                                                        }
+                                                    >
+                                                        <FontAwesomeIcon icon={faGear} />
+                                                    </button>
+                                                    <button
+                                                        className="bg-red-950 py-1 px-2 hover:bg-red-700 text-white font-bold rounded"
+                                                        title="Remove"
+                                                    >
+                                                        <FontAwesomeIcon icon={faTrash} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ),
+                                    )}
                             </tbody>
                         </table>
                     </div>
@@ -192,10 +198,12 @@ export default function Company() {
                 </div>
             </div>
             <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="Add Company">
-                <CompanyRegisterForm onFinish={() => {
-                    fetchData();
-                    setModalOpen(false);
-                }} />
+                <CompanyRegisterForm
+                    onFinish={() => {
+                        fetchData();
+                        setModalOpen(false);
+                    }}
+                />
             </Modal>
         </div>
     );

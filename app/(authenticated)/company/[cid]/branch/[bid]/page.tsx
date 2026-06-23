@@ -11,17 +11,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import food from "../../../../../../assets/images/fi3.png";
 import Loading from "@/components/loadingComponent";
 import Image from "next/image";
 import ViewMenuItem from "@/components/forms/menu/viewMenuItem";
 import Button from "@/components/ui/button";
 import PageNavigator from "@/components/pageNavigator";
 import { ToastContext } from "@/providers/toastProvider";
+import { permissionTypes } from "@/assets/enums/enum";
+import { API_URL } from "@/config";
 
 export default function Branch() {
     const toaster = useContext(ToastContext);
-    const params = useParams<{ cid: string, bid: string }>();
+    const params = useParams<{ cid: string; bid: string }>();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isViewModalOpen, setViewModalOpen] = useState(false);
     const [isQRModalOpen, setQRModalOpen] = useState(false);
@@ -45,6 +46,18 @@ export default function Branch() {
     } = useApiFetch(
         {
             url: `/api/at/menu?branchID=${params?.bid}`,
+            method: "GET",
+        },
+        true,
+    );
+
+    const {
+        data: dataPermission,
+        isLoading: isLoadingPermission,
+        errors: errorsPermission,
+    } = useApiFetch(
+        {
+            url: `/api/at/company/branch/permission?branchID=${params?.bid}`,
             method: "GET",
         },
         true,
@@ -101,26 +114,35 @@ export default function Branch() {
                                 </h1>
                             </div>
                         </div>
-                        <div className="flex gap-2 mt-2">
-                            <Link
-                                className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
-                                href={`/company/${params.cid}/branch/${params.bid}/settings`}
-                            >
-                                <FontAwesomeIcon className="m-2" icon={faGear} size="lg" />
-                                <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
-                                    Settings
-                                </h1>
-                            </Link>
-                            <Link
-                                className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
-                                href={`/company/${params.cid}/branch/${params.bid}/employees`}
-                            >
-                                <FontAwesomeIcon className="m-2" icon={faUsers} size="lg" />
-                                <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
-                                    Employees
-                                </h1>
-                            </Link>
-                        </div>
+                        {!isLoadingPermission &&
+                            dataPermission &&
+                            (dataPermission?.permission?.branchID === params?.bid ||
+                                (!dataPermission?.permission?.branchID &&
+                                    dataPermission?.permission?.companyID === params?.cid)) &&
+                            dataPermission?.permission?.permissions?.includes(
+                                permissionTypes?.Admin,
+                            ) && (
+                                <div className="flex gap-2 mt-2">
+                                    <Link
+                                        className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
+                                        href={`/company/${params.cid}/branch/${params.bid}/settings`}
+                                    >
+                                        <FontAwesomeIcon className="m-2" icon={faGear} size="lg" />
+                                        <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
+                                            Settings
+                                        </h1>
+                                    </Link>
+                                    <Link
+                                        className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
+                                        href={`/company/${params.cid}/branch/${params.bid}/employees`}
+                                    >
+                                        <FontAwesomeIcon className="m-2" icon={faUsers} size="lg" />
+                                        <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
+                                            Employees
+                                        </h1>
+                                    </Link>
+                                </div>
+                            )}
                     </div>
                     <div className="relative flex flex-col gap-2 w-screen h-fit sm:w-4/7">
                         <div className="p-2 bg-taupe-200 dark:bg-taupe-600 rounded-lg">
@@ -243,7 +265,10 @@ export default function Branch() {
                 onClose={() => setQRModalOpen(false)}
                 title="Menu QR Code"
             >
-                <QrGenerator url={"https://192.168.232.77:5001/menu/1"} companyName="" />
+                <QrGenerator
+                    url={`${API_URL}/menu/${params?.bid}`}
+                    companyName={`${data?.branch?.companyID?.name}, ${data?.branch?.name}`}
+                />
             </Modal>
 
             <ViewMenuItem isOpen={isViewModalOpen} onClose={() => setViewModalOpen(false)}>

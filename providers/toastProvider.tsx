@@ -62,7 +62,7 @@ const ToastProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <ToastContext.Provider value={{ addToast }}>
-            <div className="bg-transparent fixed top-0 end-0 w-sm">
+            <div className="bg-transparent fixed top-0 end-0 w-sm z-100">
                 {toasts && <MakeToast toast={toasts} />}
             </div>
             {children}

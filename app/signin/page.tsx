@@ -66,6 +66,7 @@ export default function Register() {
                                     }))
                                 }
                                 autoFocus
+                                required
                             />
                         </div>
                         <div>
@@ -90,6 +91,7 @@ export default function Register() {
                                         password: e.target.value,
                                     }))
                                 }
+                                required
                             />
                         </div>
 

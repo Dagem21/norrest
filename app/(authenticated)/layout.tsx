@@ -1,16 +1,19 @@
 "use client";
+import { handleLogout } from "@/actions/auth";
 import Sidebar from "@/components/menu/sidebar";
 import { MenuContext } from "@/providers/menu";
 import { faBars, faSignOut } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext } from "react";
+import { useContext, useTransition } from "react";
 
 export default function AuthenticatedLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const [isPending, startTransition] = useTransition();
     const menuContext = useContext(MenuContext);
+
     return (
         <div className="relative h-screen bg-cover bg-taupe-100 dark:bg-taupe-900 overflow-y-auto">
             <Sidebar />
@@ -26,7 +29,11 @@ export default function AuthenticatedLayout({
                     <h1 className="text-md font-bold text-center text-taupe-600 dark:text-taupe-200">
                         {menuContext?.title}
                     </h1>
-                    <FontAwesomeIcon className="cursor-pointer" icon={faSignOut} />
+                    <FontAwesomeIcon
+                        className="cursor-pointer"
+                        icon={faSignOut}
+                        onClick={() => startTransition(() => handleLogout())}
+                    />
                 </div>
             </div>
             <div className="p-2 pt-0">{children}</div>

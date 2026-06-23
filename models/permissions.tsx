@@ -36,6 +36,7 @@ const permissionsSchema = new mongoose.Schema(
     },
     { timestamps: true },
 );
+permissionsSchema.index({ branchID: 1, userID: 1 }, { unique: true });
 
 module.exports = mongoose?.models?.permissions || mongoose.model("permissions", permissionsSchema);
-export { };
+export {};

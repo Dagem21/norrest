@@ -14,7 +14,7 @@ import { useParams } from "next/navigation";
 import Loading from "@/components/loadingComponent";
 
 export default function Employee() {
-    const params = useParams<{ cid: string, bid: string }>();
+    const params = useParams<{ cid: string; bid: string }>();
     const [isModalOpen, setModalOpen] = useState(false);
     const menuContext = useContext(MenuContext);
 
@@ -22,12 +22,7 @@ export default function Employee() {
         menuContext?.setTitle("Employees");
     });
 
-    const {
-        data,
-        fetchData,
-        isLoading,
-        errors,
-    } = useApiFetch(
+    const { data, fetchData, isLoading, errors } = useApiFetch(
         {
             url: `/api/at/company/employee?companyID=${params.cid}&branchID=${params.bid}`,
             method: "GET",
@@ -101,7 +96,7 @@ export default function Employee() {
                             <tbody>
                                 {!isLoading &&
                                     data?.permissions?.length > 0 &&
-                                    data?.permissions?.map((permission: any, index: number) =>
+                                    data?.permissions?.map((permission: any, index: number) => (
                                         <tr className="bg-neutral-primary" key={permission?._id}>
                                             <td className="ps-2 pe-6 py-4">1</td>
                                             <th
@@ -117,7 +112,10 @@ export default function Employee() {
                                                 {permission?.role}
                                             </td>
                                             <td className="ps-2 pe-6 py-4 text-nowrap">
-                                                {permission?.branch ? 'Main' : permission?.branch?.name}</td>
+                                                {permission?.branch
+                                                    ? permission?.branch?.name
+                                                    : "Main"}
+                                            </td>
                                             <td className="ps-2 pe-6 py-4 text-nowrap">
                                                 {formatDate("2023-10-01 10:00:00")}
                                             </td>
@@ -141,8 +139,8 @@ export default function Employee() {
                                                     <FontAwesomeIcon icon={faTrash} />
                                                 </button>
                                             </td>
-                                        </tr>)}
-
+                                        </tr>
+                                    ))}
                             </tbody>
                         </table>
                         {!isLoading && data?.permissions?.length === 0 && (
@@ -167,7 +165,12 @@ export default function Employee() {
                 </div>
             </div>
             <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="Add Employee">
-                <EmployeeForm />
+                <EmployeeForm
+                    onFinish={() => {
+                        fetchData();
+                        setModalOpen(false);
+                    }}
+                />
             </Modal>
         </div>
     );

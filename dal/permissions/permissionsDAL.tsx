@@ -52,9 +52,26 @@ export const findPermissions = async (query: object) => {
                 },
             },
             {
-                $unwind: "$company",
+                $unwind: {
+                    path: "$company",
+                    preserveNullAndEmptyArrays: true,
+                },
             },
             { $unset: "company.userID" },
+            {
+                $lookup: {
+                    from: "branches",
+                    localField: "branchID",
+                    foreignField: "_id",
+                    as: "branch",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$branch",
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
             {
                 $lookup: {
                     from: "users",
@@ -64,7 +81,10 @@ export const findPermissions = async (query: object) => {
                 },
             },
             {
-                $unwind: "$user",
+                $unwind: {
+                    path: "$user",
+                    preserveNullAndEmptyArrays: true,
+                },
             },
             { $unset: "user.password" },
         ]);

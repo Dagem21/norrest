@@ -1,29 +1,55 @@
 import { findBranchByID } from "@/dal/company/branchDAL";
-import { findMenus } from "@/dal/menu/menuDAL";
 import { findPermission } from "@/dal/permissions/permissionsDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
+import mongoose from "mongoose";
 import { NextRequest } from "next/server";
+
+interface permssionQueryType {
+    userID: mongoose.Types.ObjectId;
+    companyID?: mongoose.Types.ObjectId;
+    branchID?: mongoose.Types.ObjectId;
+}
 
 export async function GET(request: NextRequest) {
     const searchParams = request?.nextUrl?.searchParams;
+    let companyID = searchParams.get("companyID");
     const branchID = searchParams.get("branchID");
-    const page = searchParams.get("page") ?? "1";
-    const limit = searchParams.get("limit") ?? "10";
-
     try {
         const decodedToken = await verifyUserAuth();
 
-        if (!branchID) {
-            return new Response(JSON.stringify({ error: "Missing branch ID." }), {
+        if (!companyID && !branchID) {
+            return new Response(JSON.stringify({ error: "Missing company ID and branch ID." }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
             });
         }
-        const { branch, error: branchError } = await findBranchByID(branchID);
-        if (!branch || branchError) {
+
+        const permissionQuery: permssionQueryType = {
+            userID: new mongoose.Types.ObjectId(decodedToken?.userId),
+        };
+
+        if (branchID) {
+            const { branch, error: branchError } = await findBranchByID(branchID);
+            if (!branch || branchError) {
+                return new Response(
+                    JSON.stringify({
+                        error: branchError || "Branch not found.",
+                    }),
+                    {
+                        status: 400,
+                        headers: { "Content-Type": "application/json" },
+                    },
+                );
+            }
+            companyID = branch?.companyID?._id ?? null;
+        }
+
+        if (companyID) {
+            permissionQuery.companyID = new mongoose.Types.ObjectId(companyID);
+        } else {
             return new Response(
                 JSON.stringify({
-                    error: branchError || "Branch not found.",
+                    error: "Company not found.",
                 }),
                 {
                     status: 400,
@@ -32,15 +58,12 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const { permission, error: errorPerm } = await findPermission({
-            companyID: branch?.companyID,
-            userID: decodedToken?.userId,
-        });
+        const { permission, error: errorPerm } = await findPermission(permissionQuery);
 
         if (!permission || errorPerm) {
             return new Response(
                 JSON.stringify({
-                    error: errorPerm || "You do not have permission to access this menu.",
+                    error: errorPerm || "Access denied.",
                 }),
                 {
                     status: 403,
@@ -49,25 +72,7 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        if (permission?.branchID && permission?.branchID?.toString() !== branchID) {
-            return new Response(
-                JSON.stringify({ error: "You do not have permission to access this menu." }),
-                {
-                    status: 403,
-                    headers: { "Content-Type": "application/json" },
-                },
-            );
-        }
-
-        const { menus, error } = await findMenus({ branchID }, parseInt(page), parseInt(limit));
-        if (!menus || error) {
-            return new Response(JSON.stringify({ error }), {
-                status: 400,
-                headers: { "Content-Type": "application/json" },
-            });
-        }
-
-        return new Response(JSON.stringify({ menus }), {
+        return new Response(JSON.stringify({ permission }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });
@@ -78,7 +83,7 @@ export async function GET(request: NextRequest) {
                 headers: { "Content-Type": "application/json" },
             });
         }
-        return new Response(JSON.stringify({ error }), {
+        return new Response(JSON.stringify({ error: error.message }), {
             status: 400,
             headers: { "Content-Type": "application/json" },
         });

@@ -3,18 +3,30 @@ import { createPermission, findPermission } from "@/dal/permissions/permissionsD
 import { findUser } from "@/dal/user/userDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
 import { formatPhone } from "@/utils/format";
+import { validateEmail, validatePhone } from "@/utils/validation";
 import employeeSchema from "@/yup/userRegistration/companyEmployee";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
     const body = await request.json();
-    let { employee } = body;
+    const { employee } = body;
 
     try {
         const decodedToken = await verifyUserAuth();
 
         const validatedUser = await employeeSchema.validate(employee, { abortEarly: false });
-        const formattedPhone = formatPhone(employee?.phoneNumber);
+
+        if (employee?.phoneNumber) employee.phoneNumber = "+251" + employee.phoneNumber;
+        const isValidPhone = validatePhone(employee?.phoneNumber);
+        const isValidEmail = validateEmail(employee?.email);
+
+        const userQuery: { email?: string; phoneNumber?: string } = {};
+        if (isValidPhone) {
+            const formattedPhone = formatPhone(employee?.phoneNumber);
+            userQuery.phoneNumber = formattedPhone;
+        } else if (isValidEmail) {
+            userQuery.email = employee?.email;
+        }
 
         const { permission, error: errorPerm } = await findPermission({
             companyID: validatedUser?.companyID,
@@ -46,7 +58,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const { user, error } = await findUser({ phoneNumber: formattedPhone });
+        const { user, error } = await findUser(userQuery);
 
         if (user && !error) {
             const permission = {
@@ -72,7 +84,7 @@ export async function POST(request: NextRequest) {
             }
         } else {
             return new Response(
-                JSON.stringify({ error: error || "No user found with this number." }),
+                JSON.stringify({ error: error || "Phone number or Email doesn't exist." }),
                 {
                     status: 400,
                     headers: { "Content-Type": "application/json" },
