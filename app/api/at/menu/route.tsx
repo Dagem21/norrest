@@ -7,8 +7,6 @@ import { NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
     const searchParams = request?.nextUrl?.searchParams;
     const branchID = searchParams.get("branchID");
-    const page = searchParams.get("page") ?? "1";
-    const limit = searchParams.get("limit") ?? "10";
 
     try {
         const decodedToken = await verifyUserAuth();
@@ -59,15 +57,15 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const { menus, error } = await findMenus({ branchID }, parseInt(page), parseInt(limit));
-        if (!menus || error) {
+        const { items, error } = await findMenus({ branchID });
+        if (!items || error) {
             return new Response(JSON.stringify({ error }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
             });
         }
 
-        return new Response(JSON.stringify({ menus }), {
+        return new Response(JSON.stringify({ items }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });

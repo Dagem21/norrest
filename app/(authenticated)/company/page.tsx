@@ -181,7 +181,7 @@ export default function Company() {
                             </tbody>
                         </table>
                     </div>
-                    {!isLoading && companies.length === 0 && (
+                    {!isLoading && companies?.permissions?.length === 0 && (
                         <h1 className="text-sm text-center my-2">No registered company yet.</h1>
                     )}
                     <div className="w-fit m-auto my-2">

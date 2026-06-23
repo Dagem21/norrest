@@ -18,3 +18,12 @@ export enum toastTypes {
     error = "error",
     warning = "warning",
 }
+
+export enum categoryTypes {
+    "Appetizers/Starters" = "Appetizers/Starters",
+    "Soups & Salads" = "Soups & Salads",
+    "Main Courses (Entrées)" = "Main Courses (Entrées)",
+    "Side Dishes, Desserts" = "Side Dishes, Desserts",
+    "Beverages" = "Beverages",
+    "Fast Foods" = "Fast Foods",
+}

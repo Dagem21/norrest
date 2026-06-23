@@ -1,3 +1,4 @@
+import { categoryTypes } from "@/assets/enums/enum";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import useApiFetch from "@/hooks/useAPIFetch";
@@ -7,8 +8,6 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-
-const categories = ["Appetizer", "Entree", "Dessert", "Drink", "Vegan", "Gluten Free"];
 
 export default function MenuItemForm({ onFinish }: { onFinish: () => void }) {
     const params = useParams<{ bid: string }>();
@@ -94,13 +93,13 @@ export default function MenuItemForm({ onFinish }: { onFinish: () => void }) {
             </div>
 
             <fieldset className="border border-gray-400 p-3 rounded-lg">
-                <legend className="mb-2 text-xs">Category</legend>
-                <div className="grid grid-cols-3 gap-2">
-                    {categories.map((category, i) => (
+                <legend className="text-xs">Category</legend>
+                <div className="flex flex-col gap-2">
+                    {Object.values(categoryTypes).map((category, i) => (
                         <div className="flex items-start" key={i}>
                             <div className="flex items-center h-5">
                                 <Input
-                                    id={category}
+                                    id={category.toString()}
                                     type="checkbox"
                                     value={category}
                                     {...register("category")}
@@ -108,7 +107,7 @@ export default function MenuItemForm({ onFinish }: { onFinish: () => void }) {
                             </div>
                             <label
                                 htmlFor="remember"
-                                className="ms-2 text-sm text-taupe-800 dark:text-taupe-300"
+                                className="ms-2 text-sm text-taupe-800 dark:text-taupe-300 text-nowrap"
                             >
                                 {category}
                             </label>
@@ -120,11 +119,10 @@ export default function MenuItemForm({ onFinish }: { onFinish: () => void }) {
             <div className="grid gap-4 mb-4 md:grid-cols-2">
                 <div>
                     <label htmlFor="website" className="block mb-2.5 text-xs">
-                        Company Picture (Logo)
+                        Picture
                     </label>
                     <Input
                         type="file"
-                        placeholder="Type here..."
                         {...register("picture")}
                         error={errors?.picture}
                     />

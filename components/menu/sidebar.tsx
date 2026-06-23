@@ -24,13 +24,13 @@ const Sidebar = () => {
                 transform transition-transform duration-300 ease-in-out shadow-lg shadow-taupe-800
                 ${menuContext?.showMenu ? "translate-x-0" : "-translate-x-full"}`}
         >
-            <aside className="h-full text-gray-200 p-6">
+            <aside className="h-full text-taupe-300 p-6">
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
                         <span className="w-8 h-8 rounded-full object-cover border border-gray-600 flex items-center justify-center text-gray-400">
                             N
                         </span>
-                        <span className="sidebar__title">
+                        <span className="">
                             Welcome,{" "}
                             <span className="text-blue-500 font-bold text-lg">
                                 {menuContext?.user?.firstName}
@@ -45,13 +45,13 @@ const Sidebar = () => {
                         }}
                     />
                 </div>
-                <hr className="mb-6 text-gray-600" />
-                <nav className="sidebar__nav">
-                    <ul className="sidebar__list">
+                <hr className="mb-6 text-taupe-400" />
+                <nav>
+                    <ul className="flex flex-col gap-2">
                         {menuItems.map((item) => (
                             <li key={item.href} className="my-2">
                                 <a href={item.href} className="font-bold">
-                                    {item.icon && <span className="me-2">{item.icon}</span>}
+                                    {item.icon && <span className="me-4 p-2 shadow shadow-taupe-400">{item.icon}</span>}
                                     <span>{item.label}</span>
                                 </a>
                             </li>

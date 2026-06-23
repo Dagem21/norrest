@@ -22,11 +22,15 @@ import { API_URL } from "@/config";
 
 export default function Branch() {
     const toaster = useContext(ToastContext);
+    const menuContext = useContext(MenuContext);
     const params = useParams<{ cid: string; bid: string }>();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isViewModalOpen, setViewModalOpen] = useState(false);
     const [isQRModalOpen, setQRModalOpen] = useState(false);
-    const menuContext = useContext(MenuContext);
+    const [menu, setMenu] = useState<Array<any>>([]);
+    const [pageLimit, setPageLimit] = useState({
+        page: 1, limit: 10
+    })
 
     const [selectedItem, setSelectedItem] = useState<any>();
 
@@ -75,16 +79,29 @@ export default function Branch() {
         }
     }, [data, isLoading, errors]);
 
+    useEffect(() => {
+        if (!isLoadingMenu && dataMenu) {
+            setMenu(dataMenu?.items)
+        }
+        else if (!isLoadingMenu && errorsmenu?.details) {
+            const toast = {
+                message: errors?.details?.response?.data?.error,
+                type: "error",
+            };
+            toaster?.addToast(toast);
+        }
+    }, [isLoadingMenu, dataMenu, errorsmenu])
+
     const handleViewMenuItem = (item: any) => {
         setSelectedItem(item);
         setViewModalOpen(true);
     };
 
     const handlePageChange = (page: number) => {
-        fetchMenu({ params: { page } });
+        setPageLimit(prev => ({ ...prev, page }))
     };
     const handleLimitChange = (limit: number) => {
-        fetchMenu({ params: { limit } });
+        setPageLimit(prev => ({ ...prev, limit }))
     };
 
     return (
@@ -159,20 +176,28 @@ export default function Branch() {
                                     Menu
                                 </h1>
                                 <div>
-                                    <FontAwesomeIcon
-                                        className="cursor-pointer"
-                                        icon={faPlus}
-                                        size="lg"
-                                        onClick={() => setModalOpen(true)}
-                                    />
+                                    {!isLoadingPermission &&
+                                        dataPermission &&
+                                        (dataPermission?.permission?.branchID === params?.bid ||
+                                            (!dataPermission?.permission?.branchID &&
+                                                dataPermission?.permission?.companyID === params?.cid)) &&
+                                        dataPermission?.permission?.permissions?.includes(
+                                            permissionTypes?.Admin,
+                                        ) &&
+                                        <FontAwesomeIcon
+                                            className="cursor-pointer"
+                                            icon={faPlus}
+                                            size="lg"
+                                            onClick={() => setModalOpen(true)}
+                                        />}
                                 </div>
                             </div>
                             <hr className="m-3 border-taupe-500 dark:border-taupe-400" />
                             <div className="pb-2">
                                 <div className="flex flex-col gap-2">
-                                    {!isLoadingMenu && dataMenu?.menus?.items?.length > 0 && (
+                                    {!isLoadingMenu && menu?.length > 0 && (
                                         <div>
-                                            {dataMenu?.menus?.items?.map((item: any) => (
+                                            {menu.slice(((pageLimit.page - 1) * pageLimit.limit), (pageLimit.page * pageLimit.limit)).map((item: any) => (
                                                 <div
                                                     onClick={() => handleViewMenuItem(item)}
                                                     key={item?._id}
@@ -187,17 +212,17 @@ export default function Branch() {
                                                 </div>
                                             ))}
                                             <PageNavigator
-                                                page={dataMenu?.menus?.page}
-                                                limit={dataMenu?.menus?.limit}
-                                                totalDocs={dataMenu?.menus?.total}
-                                                totalPages={dataMenu?.menus?.totalPages}
+                                                page={pageLimit.page}
+                                                limit={pageLimit.limit}
+                                                totalDocs={menu.length}
+                                                totalPages={Math.ceil((menu.length ?? 0) / pageLimit.limit)}
                                                 onPageChange={handlePageChange}
                                                 onLimitChange={handleLimitChange}
                                             />
                                         </div>
                                     )}
                                 </div>
-                                {!isLoadingMenu && dataMenu?.menus?.items?.length === 0 && (
+                                {!isLoadingMenu && dataMenu?.items?.length === 0 && (
                                     <h1 className="text-sm text-center text-taupe-600 dark:text-taupe-200">
                                         No items in menu.
                                     </h1>

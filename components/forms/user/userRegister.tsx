@@ -5,13 +5,15 @@ import Input from "@/components/ui/input";
 import { faAt, faCheckCircle, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import useApiFetch from "@/hooks/useAPIFetch";
 import { useRouter } from "next/navigation";
+import { ToastContext } from "@/providers/toastProvider";
 
 export default function UserRegisterForm() {
+    const toaster = useContext(ToastContext);
     const router = useRouter();
     const {
         register,
@@ -39,6 +41,11 @@ export default function UserRegisterForm() {
     useEffect(() => {
         if (!isLoading) {
             if (data) {
+                const toast = {
+                    message: "Registration successful.",
+                    type: "success",
+                };
+                toaster?.addToast(toast);
                 router.replace("/signin");
             } else if (errorsRegiter?.details) {
                 alert(errorsRegiter?.details?.response?.data?.error);
