@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "422a3022-f8fe-4f22-88ee-4815288a2b94",
+		"_postman_id": "40a18d54-fa5d-4096-8ba8-34c6c445ccb6",
 		"name": "Nor Rest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -483,7 +483,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"order\": {\r\n        \"branchID\": \"6a3b6cff6a93fa7d64a6605e\",\r\n        \"status\": \"Draft\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"order\": {\r\n        \"branchID\": \"6a3aa5313be709d46c44f43f\",\r\n        \"status\": \"Draft\",\r\n        \"items\": [\r\n            {\r\n                \"userID\": \"6a3aa1eb3be709d46c44f43b\",\r\n                \"itemID\": \"6a3aa5cc3be709d46c44f441\",\r\n                \"quantity\": 1\r\n            }\r\n        ]\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -499,6 +499,62 @@
 								"api",
 								"order",
 								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderID\": \"6a3bfcc5b53070519f9a7d87\",\r\n    \"itemID\": \"6a3aadb71f7709892d41323d\",\r\n    \"quantity\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{address}}/api/order/update",
+							"host": [
+								"{{address}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Order Item",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderID\": \"6a3bfcc5b53070519f9a7d87\",\r\n    \"orderItemID\": \"6a3c0291b53070519f9a7d8c\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{address}}/api/order/delete",
+							"host": [
+								"{{address}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"delete"
 							]
 						}
 					},
