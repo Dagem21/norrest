@@ -73,6 +73,38 @@
 					"name": "Branch",
 					"item": [
 						{
+							"name": "Permission",
+							"item": [
+								{
+									"name": "New Request",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{address}}/api/at/company/branch/permission?branchID=6a3a6e1e79c50e8daa641293",
+											"host": [
+												"{{address}}"
+											],
+											"path": [
+												"api",
+												"at",
+												"company",
+												"branch",
+												"permission"
+											],
+											"query": [
+												{
+													"key": "branchID",
+													"value": "6a3a6e1e79c50e8daa641293"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
 							"name": "Add Branch",
 							"request": {
 								"auth": {
@@ -434,6 +466,39 @@
 									"key": "menuID",
 									"value": "6a33a2d0c51ff7c2fa6f1e5f"
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"order\": {\r\n        \"branchID\": \"6a3b6cff6a93fa7d64a6605e\",\r\n        \"status\": \"Draft\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{address}}/api/order/create",
+							"host": [
+								"{{address}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"create"
 							]
 						}
 					},
