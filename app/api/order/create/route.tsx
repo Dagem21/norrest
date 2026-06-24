@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
                 validOrder?.status !== orderStatusTypes.Pending
             ) {
                 return new Response(
-                    JSON.stringify({ error: "Please login again to save your order!" }),
+                    JSON.stringify({ error: "Please login to save your order!" }),
                     {
                         status: 403,
                         headers: { "Content-Type": "application/json" },

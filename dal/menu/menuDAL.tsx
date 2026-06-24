@@ -55,11 +55,11 @@ export const createMenu = async (menu: object) => {
     }
 };
 
-export const updateMenu = async (id: mongoose.Types.ObjectId, update: object) => {
+export const updateMenu = async (id: string, update: object) => {
     let result,
         error = null;
     try {
-        const menuUp = await menuSchema.findByIdAndUpdate(id, { $set: update });
+        const menuUp = await menuSchema.findByIdAndUpdate(id, update);
         result = menuUp !== null;
     } catch (e: any) {
         error = e.message;

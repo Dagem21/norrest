@@ -107,11 +107,11 @@ export const createPermission = async (permission: object) => {
     }
 };
 
-export const updatePermission = async (id: mongoose.Types.ObjectId, update: object) => {
+export const updatePermission = async (id: string, update: object) => {
     let result,
         error = null;
     try {
-        const permissionUp = await permissionSchema.findByIdAndUpdate(id, { $set: update });
+        const permissionUp = await permissionSchema.findByIdAndUpdate(id, update);
         result = permissionUp !== null;
     } catch (e: any) {
         error = e.message;

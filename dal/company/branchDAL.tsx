@@ -62,11 +62,11 @@ export const createBranch = async (branch: object) => {
     }
 };
 
-export const updateBranch = async (id: mongoose.Types.ObjectId, update: object) => {
+export const updateBranch = async (id: string, update: object) => {
     let result,
         error = null;
     try {
-        const branchUp = await branchSchema.findByIdAndUpdate(id, { $set: update });
+        const branchUp = await branchSchema.findByIdAndUpdate(id, update);
         result = branchUp !== null;
     } catch (e: any) {
         error = e.message;

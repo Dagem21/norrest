@@ -41,11 +41,11 @@ export const createUser = async (user: object) => {
     }
 };
 
-export const updateUser = async (id: mongoose.Types.ObjectId, update: object) => {
+export const updateUser = async (id: string, update: object) => {
     let result,
         error = null;
     try {
-        const userUp = await userSchema.findByIdAndUpdate(id, { $set: update });
+        const userUp = await userSchema.findByIdAndUpdate(id, update);
         result = userUp !== null;
     } catch (e: any) {
         error = e.message;

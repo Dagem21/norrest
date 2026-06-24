@@ -45,11 +45,11 @@ export const createCompany = async (company: object) => {
     }
 };
 
-export const updateCompany = async (id: mongoose.Types.ObjectId, update: object) => {
+export const updateCompany = async (id: string, update: object) => {
     let result,
         error = null;
     try {
-        const companyUp = await companySchema.findByIdAndUpdate(id, { $set: update });
+        const companyUp = await companySchema.findByIdAndUpdate(id, update);
         result = companyUp !== null;
     } catch (e: any) {
         error = e.message;

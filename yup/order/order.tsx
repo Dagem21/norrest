@@ -7,7 +7,7 @@ const orderSchema = yup.object().shape({
     items: yup.array().of(
         yup.object().shape({
             userID: yup.string(),
-            itemID: yup.string(),
+            itemID: yup.string().required("Item ID is required."),
             quantity: yup.number().min(1, "Minimum orders is 1."),
         }),
     ),

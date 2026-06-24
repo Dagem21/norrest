@@ -53,11 +53,11 @@ export const createOrder = async (order: object) => {
     }
 };
 
-export const updateOrder = async (id: mongoose.Types.ObjectId, update: object) => {
+export const updateOrder = async (id: string, update: object) => {
     let result,
         error = null;
     try {
-        const orderUp = await orderSchema.findByIdAndUpdate(id, { $set: update });
+        const orderUp = await orderSchema.findByIdAndUpdate(id, update);
         result = orderUp !== null;
     } catch (e: any) {
         error = e.message;
