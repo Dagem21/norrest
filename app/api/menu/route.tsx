@@ -28,15 +28,15 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const { menus, error } = await findMenus({ branchID });
-        if (!menus || error) {
+        const { items, error } = await findMenus({ branchID });
+        if (!items || error) {
             return new Response(JSON.stringify({ error }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
             });
         }
 
-        return new Response(JSON.stringify({ menus }), {
+        return new Response(JSON.stringify({ branch, items }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });

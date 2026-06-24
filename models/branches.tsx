@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+import { Schema, model, models, Types } from "mongoose";
 
-const branchSchema = new mongoose.Schema(
+const branchSchema = new Schema(
     {
         companyID: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Types.ObjectId,
             ref: "companies",
             required: true,
         },
@@ -26,5 +26,5 @@ const branchSchema = new mongoose.Schema(
     { timestamps: true },
 );
 
-module.exports = mongoose?.models?.branches || mongoose.model("branches", branchSchema);
-export { };
+const Branch = models.branches || model("branches", branchSchema);
+export default Branch;

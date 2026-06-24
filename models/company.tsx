@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+import { Schema, model, models, Types } from "mongoose";
 
-const companySchema = new mongoose.Schema(
+const companySchema = new Schema(
     {
         userID: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Types.ObjectId,
             ref: "users",
             required: true,
         },
@@ -29,5 +29,5 @@ const companySchema = new mongoose.Schema(
     { timestamps: true },
 );
 
-module.exports = mongoose?.models?.companies || mongoose.model("companies", companySchema);
-export { };
+const Company = models.companies || model("companies", companySchema);
+export default Company;

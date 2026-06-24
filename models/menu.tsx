@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+import { Schema, model, models, Types } from "mongoose";
 
-const menuSchema = new mongoose.Schema(
+const menuSchema = new Schema(
     {
         branchID: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Types.ObjectId,
             ref: "branches",
             required: true,
         },
@@ -44,7 +44,7 @@ const menuSchema = new mongoose.Schema(
             type: Date,
         },
         inputter: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Types.ObjectId,
             ref: "users",
             required: true,
         },
@@ -52,5 +52,5 @@ const menuSchema = new mongoose.Schema(
     { timestamps: true },
 );
 
-module.exports = mongoose?.models?.menus || mongoose.model("menus", menuSchema);
-export { };
+const Menu = models.menus || model("menus", menuSchema);
+export default Menu;

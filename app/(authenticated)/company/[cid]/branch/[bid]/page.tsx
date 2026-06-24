@@ -29,8 +29,9 @@ export default function Branch() {
     const [isQRModalOpen, setQRModalOpen] = useState(false);
     const [menu, setMenu] = useState<Array<any>>([]);
     const [pageLimit, setPageLimit] = useState({
-        page: 1, limit: 10
-    })
+        page: 1,
+        limit: 10,
+    });
 
     const [selectedItem, setSelectedItem] = useState<any>();
 
@@ -81,16 +82,15 @@ export default function Branch() {
 
     useEffect(() => {
         if (!isLoadingMenu && dataMenu) {
-            setMenu(dataMenu?.items)
-        }
-        else if (!isLoadingMenu && errorsmenu?.details) {
+            setMenu(dataMenu?.items);
+        } else if (!isLoadingMenu && errorsmenu?.details) {
             const toast = {
                 message: errors?.details?.response?.data?.error,
                 type: "error",
             };
             toaster?.addToast(toast);
         }
-    }, [isLoadingMenu, dataMenu, errorsmenu])
+    }, [isLoadingMenu, dataMenu, errorsmenu]);
 
     const handleViewMenuItem = (item: any) => {
         setSelectedItem(item);
@@ -98,10 +98,10 @@ export default function Branch() {
     };
 
     const handlePageChange = (page: number) => {
-        setPageLimit(prev => ({ ...prev, page }))
+        setPageLimit((prev) => ({ ...prev, page }));
     };
     const handleLimitChange = (limit: number) => {
-        setPageLimit(prev => ({ ...prev, limit }))
+        setPageLimit((prev) => ({ ...prev, limit }));
     };
 
     return (
@@ -180,16 +180,18 @@ export default function Branch() {
                                         dataPermission &&
                                         (dataPermission?.permission?.branchID === params?.bid ||
                                             (!dataPermission?.permission?.branchID &&
-                                                dataPermission?.permission?.companyID === params?.cid)) &&
+                                                dataPermission?.permission?.companyID ===
+                                                    params?.cid)) &&
                                         dataPermission?.permission?.permissions?.includes(
                                             permissionTypes?.Admin,
-                                        ) &&
-                                        <FontAwesomeIcon
-                                            className="cursor-pointer"
-                                            icon={faPlus}
-                                            size="lg"
-                                            onClick={() => setModalOpen(true)}
-                                        />}
+                                        ) && (
+                                            <FontAwesomeIcon
+                                                className="cursor-pointer"
+                                                icon={faPlus}
+                                                size="lg"
+                                                onClick={() => setModalOpen(true)}
+                                            />
+                                        )}
                                 </div>
                             </div>
                             <hr className="m-3 border-taupe-500 dark:border-taupe-400" />
@@ -197,25 +199,32 @@ export default function Branch() {
                                 <div className="flex flex-col gap-2">
                                     {!isLoadingMenu && menu?.length > 0 && (
                                         <div>
-                                            {menu.slice(((pageLimit.page - 1) * pageLimit.limit), (pageLimit.page * pageLimit.limit)).map((item: any) => (
-                                                <div
-                                                    onClick={() => handleViewMenuItem(item)}
-                                                    key={item?._id}
-                                                >
-                                                    <MenuItem
-                                                        price={item?.price}
-                                                        name={item?.name}
-                                                        categories={item?.category?.join(",")}
-                                                        description={item?.ingredients}
-                                                        image={item?.picture?.[0]}
-                                                    />
-                                                </div>
-                                            ))}
+                                            {menu
+                                                .slice(
+                                                    (pageLimit.page - 1) * pageLimit.limit,
+                                                    pageLimit.page * pageLimit.limit,
+                                                )
+                                                .map((item: any) => (
+                                                    <div
+                                                        onClick={() => handleViewMenuItem(item)}
+                                                        key={item?._id}
+                                                    >
+                                                        <MenuItem
+                                                            price={item?.price}
+                                                            name={item?.name}
+                                                            categories={item?.category?.join(", ")}
+                                                            description={item?.ingredients}
+                                                            image={item?.picture?.[0]}
+                                                        />
+                                                    </div>
+                                                ))}
                                             <PageNavigator
                                                 page={pageLimit.page}
                                                 limit={pageLimit.limit}
                                                 totalDocs={menu.length}
-                                                totalPages={Math.ceil((menu.length ?? 0) / pageLimit.limit)}
+                                                totalPages={Math.ceil(
+                                                    (menu.length ?? 0) / pageLimit.limit,
+                                                )}
                                                 onPageChange={handlePageChange}
                                                 onLimitChange={handleLimitChange}
                                             />
@@ -328,7 +337,7 @@ export default function Branch() {
                                 )}
                             </div>
                         </div>
-                        <div className="flex flex-col">
+                        <div className="flex flex-col text-taupe-300 my-2">
                             <p className="text-xs">{selectedItem?.ingredients}</p>
                             <p className="text-xs">{selectedItem?.category?.join(",")}</p>
                         </div>

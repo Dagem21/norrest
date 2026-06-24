@@ -27,3 +27,12 @@ export enum categoryTypes {
     "Beverages" = "Beverages",
     "Fast Foods" = "Fast Foods",
 }
+
+export enum orderStatusTypes {
+    Draft = "Draft",
+    Pending = "Pending",
+    Processing = "Processing",
+    Processed = "Processed",
+    Served = "Served",
+    Completed = "Completed",
+}

@@ -1,20 +1,19 @@
 import { permissionTypes, roleTypes } from "@/assets/enums/enum";
+import { Schema, model, models, Types } from "mongoose";
 
-const mongoose = require("mongoose");
-
-const permissionsSchema = new mongoose.Schema(
+const permissionsSchema = new Schema(
     {
         companyID: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Types.ObjectId,
             ref: "companies",
             required: true,
         },
         branchID: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Types.ObjectId,
             ref: "branches",
         },
         userID: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Types.ObjectId,
             ref: "users",
             required: true,
         },
@@ -30,7 +29,7 @@ const permissionsSchema = new mongoose.Schema(
             },
         ],
         creatorID: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Types.ObjectId,
             ref: "Users",
         },
     },
@@ -38,5 +37,5 @@ const permissionsSchema = new mongoose.Schema(
 );
 permissionsSchema.index({ branchID: 1, userID: 1 }, { unique: true });
 
-module.exports = mongoose?.models?.permissions || mongoose.model("permissions", permissionsSchema);
-export {};
+const Permission = models.permissions || model("permissions", permissionsSchema);
+export default Permission;
