@@ -5,7 +5,7 @@ const userSchema = yup.object().shape({
     firstName: yup.string().required("First Name is required."),
     fatherName: yup.string().required("Middle Name is required."),
     lastName: yup.string().required("Last Name is required."),
-    email: yup.string(),
+    email: yup.string().email("Enter a valid email address."),
     phoneNumber: yup
         .string()
         .matches(/^[0-9]+$/, "Enter a valid phone number.")
@@ -23,6 +23,7 @@ const userSchema = yup.object().shape({
             const { password } = this.parent;
             return password === value;
         }),
+    userType: yup.string(),
     lastLogin: yup.date(),
 });
 

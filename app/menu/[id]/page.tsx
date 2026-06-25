@@ -206,28 +206,7 @@ export default function Branch() {
                 </div>
             </ViewMenuItem>
 
-            <ViewOrder isOpen={isOrderModalOpen} onClose={() => setIsOrderModalOpen(false)}>
-                <h1 className="flex-1 text-md font-semibold text-center text-taupe-600 dark:text-taupe-200">
-                    Your Orders
-                </h1>
-                <MenuItem
-                    price={500.0}
-                    name="Pizza"
-                    categories="Breakfast"
-                    description="breakfast food"
-                    image={food}
-                />
-                <MenuItem
-                    price={500.0}
-                    name="Pizza"
-                    categories="Breakfast"
-                    description="breakfast food"
-                    image={food}
-                />
-                <div className="flex items-center justify-center mt-2">
-                    <Button text="Order" />
-                </div>
-            </ViewOrder>
+            <ViewOrder isOpen={isOrderModalOpen} onClose={() => setIsOrderModalOpen(false)} />
         </div>
     );
 }

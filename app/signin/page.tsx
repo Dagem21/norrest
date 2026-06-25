@@ -3,16 +3,17 @@
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import useApiFetch from "@/hooks/useAPIFetch";
-import { MenuContext } from "@/providers/menu";
+import { useAppStore } from "@/hooks/useAppStore";
 import { faAt, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Register() {
-    const menuContext = useContext(MenuContext);
     const router = useRouter();
+    const { login } = useAppStore();
+
     const [credentials, setCredentials] = useState({
         identifier: "",
         password: "",
@@ -30,8 +31,8 @@ export default function Register() {
     useEffect(() => {
         if (!isLoading) {
             if (data) {
-                menuContext?.setUser(data?.user);
-                router.replace("/company");
+                login(data?.user);
+                router.replace("/dashboard");
             }
         }
     }, [data, isLoading, errors]);

@@ -3,7 +3,7 @@ import * as yup from "yup";
 const companySchema = yup.object().shape({
     companyID: yup.string(),
     name: yup.string().required("Name is required."),
-    email: yup.string(),
+    email: yup.string().email("Enter a valid email address."),
     phoneNumber: yup
         .string()
         .matches(/^[0-9]+$/, "Enter a valid phone number.")

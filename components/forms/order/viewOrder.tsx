@@ -1,12 +1,26 @@
-import { ReactNode, useEffect, useState } from "react";
+import MenuItem from "@/components/menuItem";
+import { useEffect, useState } from "react";
+import food from "../../../assets/images/fi3.png";
+import Button from "@/components/ui/button";
+import { useCartStore } from "@/hooks/useCartStore";
 
 type ViewOrderProps = {
     isOpen: boolean;
     onClose: () => void;
-    children: ReactNode;
 };
 
-export default function ViewOrder({ isOpen, onClose, children }: ViewOrderProps) {
+export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
+    const {
+        carts,
+        activeCartId,
+        addToActiveCart,
+        createNewCart,
+        deleteCart,
+        removeFromActiveCart,
+        setActiveCart,
+    } = useCartStore();
+
+    const activeCart = carts[activeCartId];
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -42,7 +56,28 @@ export default function ViewOrder({ isOpen, onClose, children }: ViewOrderProps)
                 onClick={(event) => event.stopPropagation()}
             >
                 <div className="px-2 py-5 overflow-auto" style={{ maxHeight: "calc(90vh - 72px)" }}>
-                    {children}
+                    <h1 className="flex-1 text-md font-semibold text-center text-taupe-600 dark:text-taupe-200">
+                        Your Orders
+                    </h1>
+                    {activeCart?.items?.length > 0 && (
+                        <div>
+                            <MenuItem
+                                price={500.0}
+                                name="Pizza"
+                                categories="Breakfast"
+                                description="breakfast food"
+                                image={food}
+                            />
+                            <div className="flex items-center justify-center mt-2">
+                                <Button text="Order" />
+                            </div>
+                        </div>
+                    )}
+                    {activeCart?.items?.length === 0 && (
+                        <div>
+                            <h1 className="text-sm text-center">Your cart is empty.</h1>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

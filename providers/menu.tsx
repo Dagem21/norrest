@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, ReactNode, useState } from "react";
+import { useAppStore } from "@/hooks/useAppStore";
+import { createContext, ReactNode, useEffect, useState } from "react";
 
 interface MenuContextType {
     showMenu: boolean;
@@ -21,6 +22,14 @@ export const MenuProvider = ({ children }: MenuProviderProps) => {
     const [showMenu, setShowMenu] = useState<boolean>(false);
     const [title, setTitle] = useState<string>("");
     const [user, setUser] = useState<any>();
+
+    const { isLoggedIn, user: userStore } = useAppStore();
+
+    useEffect(() => {
+        if (isLoggedIn && userStore) {
+            setUser(userStore);
+        }
+    }, [isLoggedIn, userStore]);
 
     return (
         <MenuContext.Provider value={{ showMenu, setShowMenu, title, setTitle, user, setUser }}>

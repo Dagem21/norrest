@@ -1,6 +1,7 @@
 "use client";
 import { handleLogout } from "@/actions/auth";
 import Sidebar from "@/components/menu/sidebar";
+import { useAppStore } from "@/hooks/useAppStore";
 import { MenuContext } from "@/providers/menu";
 import { faBars, faSignOut } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,6 +14,12 @@ export default function AuthenticatedLayout({
 }>) {
     const [isPending, startTransition] = useTransition();
     const menuContext = useContext(MenuContext);
+    const { logout } = useAppStore();
+
+    const handleLogoutClick = () => {
+        logout();
+        startTransition(() => handleLogout());
+    };
 
     return (
         <div className="relative h-screen bg-cover bg-taupe-100 dark:bg-taupe-900 overflow-y-auto">
@@ -32,7 +39,7 @@ export default function AuthenticatedLayout({
                     <FontAwesomeIcon
                         className="cursor-pointer"
                         icon={faSignOut}
-                        onClick={() => startTransition(() => handleLogout())}
+                        onClick={handleLogoutClick}
                     />
                 </div>
             </div>

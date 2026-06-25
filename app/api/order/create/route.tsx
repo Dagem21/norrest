@@ -1,4 +1,5 @@
 import { orderStatusTypes, permissionTypes } from "@/assets/enums/enum";
+import { findBranchByID } from "@/dal/company/branchDAL";
 import { createOrder } from "@/dal/order/orderDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
 import orderSchema from "@/yup/order/order";
@@ -12,20 +13,34 @@ export async function POST(request: NextRequest) {
         const validOrder = await orderSchema.validate(order, { abortEarly: false });
         try {
             const decodedToken = await verifyUserAuth();
-            order.userID = decodedToken.userId;
+
+            validOrder.userID = decodedToken.userId;
+            validOrder.items = validOrder?.items?.map((item) => {
+                return { ...item, userID: decodedToken.userId };
+            });
         } catch (error: any) {
             if (
                 error.message === "Unauthorized" &&
                 validOrder?.status !== orderStatusTypes.Pending
             ) {
-                return new Response(
-                    JSON.stringify({ error: "Please login to save your order!" }),
-                    {
-                        status: 403,
-                        headers: { "Content-Type": "application/json" },
-                    },
-                );
+                return new Response(JSON.stringify({ error: "Please login to save your order!" }), {
+                    status: 403,
+                    headers: { "Content-Type": "application/json" },
+                });
             }
+        }
+
+        const { branch, error: branchError } = await findBranchByID(validOrder.branchID);
+        if (!branch || branchError) {
+            return new Response(
+                JSON.stringify({
+                    error: branchError || "Branch not found.",
+                }),
+                {
+                    status: 400,
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
         }
 
         const { result, error } = await createOrder(validOrder);
