@@ -1,8 +1,8 @@
-import MenuItem from "@/components/menuItem";
 import { useEffect, useState } from "react";
 import food from "../../../assets/images/fi3.png";
 import Button from "@/components/ui/button";
 import { useCartStore } from "@/hooks/useCartStore";
+import OrderItem from "@/components/orderItem";
 
 type ViewOrderProps = {
     isOpen: boolean;
@@ -59,21 +59,35 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                     <h1 className="flex-1 text-md font-semibold text-center text-taupe-600 dark:text-taupe-200">
                         Your Orders
                     </h1>
-                    {activeCart?.items?.length > 0 && (
-                        <div>
-                            <MenuItem
-                                price={500.0}
-                                name="Pizza"
-                                categories="Breakfast"
-                                description="breakfast food"
-                                image={food}
-                            />
-                            <div className="flex items-center justify-center mt-2">
-                                <Button text="Order" />
-                            </div>
+                    {activeCart?.items?.length > 0 && <div>
+                        {
+                            (
+                                activeCart?.items.map((cartItem: any, index) => (
+                                    <div key={index}>
+                                        <OrderItem
+                                            id={cartItem?.item?._id}
+                                            price={cartItem?.item?.price}
+                                            name={cartItem?.item?.name}
+                                            categories={cartItem?.item?.category?.join(", ")}
+                                            description={cartItem?.item?.ingredients}
+                                            image={food}
+                                            quantity={cartItem?.quantity}
+                                            removeFromCart={removeFromActiveCart}
+                                        />
+                                    </div>
+                                ))
+                            )
+                        }
+                        <div className="flex items-center justify-center mt-2">
+                            <Button text="Order" />
+                            <Button text="Clear" style="secondary"
+                                onClick={() => {
+                                    deleteCart(activeCartId)
+                                }} />
                         </div>
-                    )}
-                    {activeCart?.items?.length === 0 && (
+                    </div>
+                    }
+                    {!activeCart?.items?.length && (
                         <div>
                             <h1 className="text-sm text-center">Your cart is empty.</h1>
                         </div>

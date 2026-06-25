@@ -4,19 +4,17 @@ import { persist, createJSONStorage } from "zustand/middleware";
 export interface Item {
     item: any;
     quantity: number;
-    price: number;
 }
 
 export interface Carts {
-    [cartId: string]: { items: Item[]; name?: string };
-    default: { items: Item[] };
+    [cartId: string]: { items: Item[]; name: string };
 }
 
 interface CartState {
     carts: Carts;
     activeCartId: string;
     setActiveCart: (cartId: string) => void;
-    createNewCart: (cartId: string) => void;
+    createNewCart: (cartId: string, name: string) => void;
     deleteCart: (cartId: string) => void;
     addToActiveCart: (item: Item) => void;
     removeFromActiveCart: (productId: string) => void;
@@ -25,18 +23,16 @@ interface CartState {
 export const useCartStore = create<CartState>()(
     persist(
         (set) => ({
-            carts: {
-                default: { items: [] },
-            },
-            activeCartId: "default",
+            carts: {},
+            activeCartId: '',
 
             setActiveCart: (cartId) => set({ activeCartId: cartId }),
 
-            createNewCart: (cartId) =>
+            createNewCart: (cartId, name) =>
                 set((state: any) => {
                     if (state.carts[cartId]) return {};
                     return {
-                        carts: { ...state.carts, [cartId]: [] },
+                        carts: { ...state.carts, [cartId]: { items: [], name } },
                         activeCartId: cartId,
                     };
                 }),
@@ -73,25 +69,28 @@ export const useCartStore = create<CartState>()(
                                 : item,
                         );
                     } else {
-                        updatedCart = [...currentCart, product];
+                        updatedCart = [...currentCart.items, product];
                     }
 
                     return {
-                        carts: { ...state.carts, [activeId]: updatedCart },
+                        carts: { ...state.carts, [activeId]: { items: updatedCart, name: currentCart.name } },
                     };
                 }),
 
             removeFromActiveCart: (productId) =>
                 set((state: any) => {
                     const activeId = state.activeCartId;
-                    const currentCart = state.carts[activeId] || [];
+                    const currentCart = state.carts[activeId] || { items: [] };
 
                     return {
                         carts: {
                             ...state.carts,
-                            [activeId]: currentCart.items.filter(
-                                (item: any) => item.item?._id !== productId,
-                            ),
+                            [activeId]: {
+                                items: currentCart.items.filter(
+                                    (item: any) => item.item?._id !== productId,
+                                ),
+                                name: currentCart.name
+                            },
                         },
                     };
                 }),

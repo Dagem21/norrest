@@ -17,11 +17,23 @@ import PageNavigator from "@/components/pageNavigator";
 import { ToastContext } from "@/providers/toastProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUtensils } from "@fortawesome/free-solid-svg-icons";
+import { useCartStore } from "@/hooks/useCartStore";
 
-export default function Branch() {
+export default function Menu() {
     const params = useParams<{ id: string }>();
     const menuContext = useContext(MenuContext);
     const toaster = useContext(ToastContext);
+
+    const {
+        carts,
+        activeCartId,
+        addToActiveCart,
+        createNewCart,
+        deleteCart,
+        removeFromActiveCart,
+        setActiveCart,
+    } = useCartStore();
+
     const [isModalOpen, setModalOpen] = useState(false);
     const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
     const [menu, setMenu] = useState<Array<any>>([]);
@@ -72,6 +84,14 @@ export default function Branch() {
         }
     }, [selectedCatagory, isLoading, data]);
 
+    const handleAddCart = (item: any, quantity: number) => {
+        createNewCart(params.id, `${data?.branch?.companyID?.name}, ${data?.branch?.name}`)
+        setActiveCart(params.id);
+        addToActiveCart({
+            item, quantity
+        })
+    }
+
     return (
         <div className="flex flex-col flex-1 items-center bg-taupe-100 dark:bg-taupe-900 p-2">
             <div className="fixed bottom-0 right-0 m-6">
@@ -82,7 +102,7 @@ export default function Branch() {
                     <FontAwesomeIcon icon={faUtensils} size="lg" />
                 </button>
             </div>
-            <div className="flex flex-col w-screen">
+            <div className="flex flex-col w-full">
                 <div className="flex flex-wrap justify-center gap-2 w-full px-2">
                     {!isLoading && data && (
                         <div className="relative flex flex-col gap-2 h-fit w-full sm:w-4/7">
@@ -167,7 +187,7 @@ export default function Branch() {
                     <div className="flex items-center flex-wrap shadow-lg">
                         <div>
                             <Image
-                                className="w-screen sm:max-w-sm rounded-lg object-cover"
+                                className="max-w-sm rounded-lg object-cover"
                                 src={selectedItem?.picture?.[1]}
                                 alt={selectedItem?.name}
                                 width={1000}
@@ -201,7 +221,7 @@ export default function Branch() {
                     </div>
                     <div className="flex flex-col gap-2 my-2">
                         <Button text="Order Now" />
-                        <Button text="Add to Orders" style="secondary" />
+                        <Button text="Add to Orders" style="secondary" onClick={() => { handleAddCart(selectedItem, 1) }} />
                     </div>
                 </div>
             </ViewMenuItem>
