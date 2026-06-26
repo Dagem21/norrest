@@ -7,7 +7,7 @@ export interface Item {
 }
 
 export interface Carts {
-    [cartId: string]: { items: Item[]; name: string };
+    [cartId: string]: { items: Item[]; name: string; id: string };
 }
 
 interface CartState {
@@ -17,6 +17,7 @@ interface CartState {
     createNewCart: (cartId: string, name: string) => void;
     deleteCart: (cartId: string) => void;
     addToActiveCart: (item: Item) => void;
+    updateActiveCartID: (item: Item) => void;
     removeFromActiveCart: (productId: string) => void;
 }
 
@@ -24,7 +25,7 @@ export const useCartStore = create<CartState>()(
     persist(
         (set) => ({
             carts: {},
-            activeCartId: '',
+            activeCartId: "",
 
             setActiveCart: (cartId) => set({ activeCartId: cartId }),
 
@@ -53,6 +54,19 @@ export const useCartStore = create<CartState>()(
                     };
                 }),
 
+            updateActiveCartID: (id) =>
+                set((state: any) => {
+                    const activeId = state.activeCartId;
+                    const currentCart = state.carts[activeId] || { items: [] };
+
+                    return {
+                        carts: {
+                            ...state.carts,
+                            [activeId]: { ...currentCart, id },
+                        },
+                    };
+                }),
+
             addToActiveCart: (product) =>
                 set((state: any) => {
                     const activeId = state.activeCartId;
@@ -73,7 +87,10 @@ export const useCartStore = create<CartState>()(
                     }
 
                     return {
-                        carts: { ...state.carts, [activeId]: { items: updatedCart, name: currentCart.name } },
+                        carts: {
+                            ...state.carts,
+                            [activeId]: { items: updatedCart, name: currentCart.name },
+                        },
                     };
                 }),
 
@@ -89,7 +106,7 @@ export const useCartStore = create<CartState>()(
                                 items: currentCart.items.filter(
                                     (item: any) => item.item?._id !== productId,
                                 ),
-                                name: currentCart.name
+                                name: currentCart.name,
                             },
                         },
                     };

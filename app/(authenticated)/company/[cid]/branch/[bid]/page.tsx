@@ -301,7 +301,7 @@ export default function Branch() {
             >
                 <QrGenerator
                     url={`${API_URL}/menu/${params?.bid}`}
-                    companyName={`${data?.branch?.companyID?.name}, ${data?.branch?.name}`}
+                    title={`${data?.branch?.companyID?.name}, ${data?.branch?.name}`}
                 />
             </Modal>
 

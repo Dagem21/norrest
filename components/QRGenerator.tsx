@@ -5,8 +5,7 @@ import Button from "./ui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faShare } from "@fortawesome/free-solid-svg-icons";
 
-export default function QrGenerator({ url, companyName }: { url: string, companyName: string }) {
-
+export default function QrGenerator({ url, title }: { url: string; title: string }) {
     const getCanvasBlob = (): Promise<Blob | null> => {
         return new Promise((resolve) => {
             const canvas = document.getElementById("my-qr-canvas") as HTMLCanvasElement | null;
@@ -35,54 +34,37 @@ export default function QrGenerator({ url, companyName }: { url: string, company
         const blob = await getCanvasBlob();
         if (!blob) return;
 
-        // Create a temporary file object from the blob
         const file = new File([blob], "qr-code.png", { type: "image/png" });
 
-        // Check if the browser supports sharing files natively
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
             try {
                 await navigator.share({
                     files: [file],
-                    title: companyName,
-                    text: "Scan the QR Code and discover our Menu!",
+                    title: title,
+                    text: "Scan the QR Code!",
                 });
             } catch (error) {
                 console.error("Error sharing:", error);
             }
         } else {
-            // Fallback if browser sharing is unsupported (like some desktop browsers)
-            alert("Native sharing is not supported on this browser. You can download the QR code instead!");
+            alert(
+                "Native sharing is not supported on this browser. You can download the QR code instead!",
+            );
         }
     };
 
     return (
         <div className="p-2 rounded-2xl shadow-xl flex flex-col items-center gap-6">
             <div className="bg-taupe-50 shadow-inner">
-                {/* <QRCodeSVG
-                    value={url}
-                    size={300}               // Size in pixels
-                    bgColor={"#ebebeb"}      // Background color
-                    fgColor={"#3b3b3b"}      // Foreground/Code color
-                    level={"H"}              // Error correction level (L, M, Q, H)
-                    includeMargin={true}     // Adds a clean white border around the QR
-                    imageSettings={{         // Optional: Add a center logo
-                        src: "/radblu.jpg",
-                        x: undefined,
-                        y: undefined,
-                        height: 60,
-                        width: 60,
-                        excavate: true,
-                    }}
-                /> */}
                 <QRCodeCanvas
                     id="my-qr-canvas"
                     value={url}
-                    size={300}               // Size in pixels
-                    bgColor={"#ebebeb"}      // Background color
-                    fgColor={"#3b3b3b"}      // Foreground/Code color
-                    level={"H"}              // Error correction level (L, M, Q, H)
-                    includeMargin={true}     // Adds a clean white border around the QR
-                    imageSettings={{         // Optional: Add a center logo
+                    size={300}
+                    bgColor={"#ebebeb"}
+                    fgColor={"#3b3b3b"}
+                    level={"H"}
+                    includeMargin={true}
+                    imageSettings={{
                         src: "/radblu.jpg",
                         x: undefined,
                         y: undefined,

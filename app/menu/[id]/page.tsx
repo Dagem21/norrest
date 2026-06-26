@@ -85,12 +85,21 @@ export default function Menu() {
     }, [selectedCatagory, isLoading, data]);
 
     const handleAddCart = (item: any, quantity: number) => {
-        createNewCart(params.id, `${data?.branch?.companyID?.name}, ${data?.branch?.name}`)
+        createNewCart(params.id, `${data?.branch?.companyID?.name}, ${data?.branch?.name}`);
         setActiveCart(params.id);
         addToActiveCart({
-            item, quantity
-        })
-    }
+            item,
+            quantity,
+        });
+
+        const toast = {
+            message: "Added to cart.",
+            type: "success",
+        };
+        toaster?.addToast(toast);
+
+        setModalOpen(false);
+    };
 
     return (
         <div className="flex flex-col flex-1 items-center bg-taupe-100 dark:bg-taupe-900 p-2">
@@ -221,7 +230,13 @@ export default function Menu() {
                     </div>
                     <div className="flex flex-col gap-2 my-2">
                         <Button text="Order Now" />
-                        <Button text="Add to Orders" style="secondary" onClick={() => { handleAddCart(selectedItem, 1) }} />
+                        <Button
+                            text="Add to Orders"
+                            style="secondary"
+                            onClick={() => {
+                                handleAddCart(selectedItem, 1);
+                            }}
+                        />
                     </div>
                 </div>
             </ViewMenuItem>
