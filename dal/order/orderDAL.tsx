@@ -65,3 +65,16 @@ export const updateOrder = async (id: string, update: object) => {
         return { result, error };
     }
 };
+
+export const deleteOrder = async (id: string) => {
+    let result,
+        error = null;
+    try {
+        const orderDe = await orderSchema.findByIdAndDelete(id);
+        result = orderDe !== null;
+    } catch (e: any) {
+        error = e.message;
+    } finally {
+        return { result, error };
+    }
+};

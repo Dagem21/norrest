@@ -25,14 +25,12 @@ export default function Menu() {
     const toaster = useContext(ToastContext);
 
     const {
-        carts,
-        activeCartId,
         addToActiveCart,
         createNewCart,
-        deleteCart,
-        removeFromActiveCart,
         setActiveCart,
     } = useCartStore();
+
+    useEffect(() => { setActiveCart(params.id) }, [params.id])
 
     const [isModalOpen, setModalOpen] = useState(false);
     const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
@@ -71,6 +69,7 @@ export default function Menu() {
     const handlePageChange = (page: number) => {
         setPageLimit((prev) => ({ ...prev, page }));
     };
+
     const handleLimitChange = (limit: number) => {
         setPageLimit((prev) => ({ ...prev, limit }));
     };

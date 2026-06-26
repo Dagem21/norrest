@@ -7,6 +7,7 @@ import Button from "./ui/button";
 
 type OrderItemProps = {
     id: string;
+    savedID?: string;
     name: string;
     price: number;
     image: StaticImageData;
@@ -14,11 +15,12 @@ type OrderItemProps = {
     categories: string;
     discount?: number;
     quantity: number;
-    removeFromCart: (id: string) => void;
+    removeFromCart: (id: string, savedID?: string) => void;
 };
 
 export default function OrderItem({
     id,
+    savedID,
     name,
     price,
     image,
@@ -68,7 +70,7 @@ export default function OrderItem({
 
             <div className="ml-2">
                 <Button style="secondary" icon={<FontAwesomeIcon icon={faTrash} color="red" />}
-                    onClick={() => { removeFromCart(id) }} />
+                    onClick={() => { removeFromCart(id, savedID) }} />
             </div>
         </div>
     );

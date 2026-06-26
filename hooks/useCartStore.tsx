@@ -4,6 +4,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 export interface Item {
     item: any;
     quantity: number;
+    id?: string;
 }
 
 export interface Carts {
@@ -18,6 +19,7 @@ interface CartState {
     deleteCart: (cartId: string) => void;
     addToActiveCart: (item: Item) => void;
     updateActiveCartID: (item: Item) => void;
+    updateItemFromActiveCart: (productId: string, id: string) => void;
     removeFromActiveCart: (productId: string) => void;
 }
 
@@ -45,11 +47,10 @@ export const useCartStore = create<CartState>()(
 
                     const remainingIds = Object.keys(newCarts);
                     const fallbackId = remainingIds.includes(state.activeCartId)
-                        ? state.activeCartId
-                        : remainingIds[0] || "default";
+                        ? state.activeCartId : remainingIds[0];
 
                     return {
-                        carts: remainingIds.length ? newCarts : { default: [] },
+                        carts: newCarts,
                         activeCartId: fallbackId,
                     };
                 }),
@@ -94,6 +95,23 @@ export const useCartStore = create<CartState>()(
                     };
                 }),
 
+            updateItemFromActiveCart: (productId, id) =>
+                set((state: any) => {
+                    const activeId = state.activeCartId;
+                    const currentCart = state.carts[activeId] || { items: [] };
+
+                    return {
+                        carts: {
+                            ...state.carts,
+                            [activeId]: {
+                                ...currentCart,
+                                items: currentCart?.items?.map(
+                                    (item: any) => { return item.item?._id === productId ? { ...item, id } : item },
+                                ),
+                            },
+                        },
+                    };
+                }),
             removeFromActiveCart: (productId) =>
                 set((state: any) => {
                     const activeId = state.activeCartId;
@@ -103,10 +121,10 @@ export const useCartStore = create<CartState>()(
                         carts: {
                             ...state.carts,
                             [activeId]: {
+                                ...currentCart,
                                 items: currentCart.items.filter(
                                     (item: any) => item.item?._id !== productId,
                                 ),
-                                name: currentCart.name,
                             },
                         },
                     };

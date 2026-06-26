@@ -11,6 +11,7 @@ import SigninPopup from "../signin/signinPopup";
 import Modal from "@/components/ui/modal";
 import QrGenerator from "@/components/QRGenerator";
 import { API_URL } from "@/config";
+import { useParams } from "next/navigation";
 
 type ViewOrderProps = {
     isOpen: boolean;
@@ -18,8 +19,9 @@ type ViewOrderProps = {
 };
 
 export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
+    const params = useParams<{ id: string }>();
     const toaster = useContext(ToastContext);
-    const { carts, activeCartId, updateActiveCartID, deleteCart, removeFromActiveCart } =
+    const { carts, activeCartId, setActiveCart, updateActiveCartID, deleteCart, updateItemFromActiveCart, removeFromActiveCart } =
         useCartStore();
 
     const activeCart = carts[activeCartId];
@@ -31,6 +33,22 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
         {
             url: `/api/order/create`,
             method: "POST",
+        },
+        false,
+    );
+
+    const { fetchData: fetchDataRemove } = useApiFetch(
+        {
+            url: `/api/order/item/delete`,
+            method: "DELETE",
+        },
+        false,
+    );
+
+    const { data: dataClear, fetchData: fetchDataClear, isLoading: isLoadingClear, errors: errorsClear } = useApiFetch(
+        {
+            url: `/api/order/delete`,
+            method: "DELETE",
         },
         false,
     );
@@ -58,10 +76,13 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
         if (activeCart?.id) {
             setQRModalOpen(true);
         } else {
+            if (!activeCartId) {
+                setActiveCart(params?.id)
+            }
             const order = {
-                branchID: activeCartId,
+                branchID: activeCartId || params?.id,
                 status: "Draft",
-                items: activeCart.items.map((item) => {
+                items: activeCart?.items?.map((item) => {
                     return {
                         itemID: item.item._id,
                         quantity: item.quantity,
@@ -73,9 +94,32 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
         }
     };
 
+    const handleItemRemove = (itemID: string, savedID?: string) => {
+        if (activeCart?.id && savedID) {
+            fetchDataRemove({
+                data: {
+                    "orderID": activeCart?.id,
+                    "orderItemID": savedID
+                }
+            })
+        }
+        removeFromActiveCart(itemID);
+    }
+
+    const handleCartClear = () => {
+        if (activeCart?.id) {
+            fetchDataClear({
+                data: { "orderID": activeCart?.id, }
+            })
+        }
+    }
+
     useEffect(() => {
         if (!isLoading && data) {
             updateActiveCartID(data?.order?._id);
+            data?.order?.items?.forEach((item: any) => {
+                updateItemFromActiveCart(item?.itemID, item?._id)
+            });
             setQRModalOpen(true);
         } else if (!isLoading && errors?.details) {
             const responseErrorCode = errors?.details?.status;
@@ -90,6 +134,18 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
             }
         }
     }, [isLoading, data, errors]);
+
+    useEffect(() => {
+        if (!isLoadingClear && dataClear) {
+            deleteCart(activeCartId);
+        } else if (!isLoadingClear && errorsClear?.details) {
+            const toast = {
+                message: errorsClear?.details?.response?.data?.error,
+                type: "error",
+            };
+            toaster?.addToast(toast);
+        }
+    }, [isLoadingClear, dataClear, errorsClear]);
 
     if (!isOpen) {
         return null;
@@ -124,13 +180,14 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                                 <div key={index}>
                                     <OrderItem
                                         id={cartItem?.item?._id}
+                                        savedID={cartItem?.id}
                                         price={cartItem?.item?.price}
                                         name={cartItem?.item?.name}
                                         categories={cartItem?.item?.category?.join(", ")}
                                         description={cartItem?.item?.ingredients}
                                         image={food}
                                         quantity={cartItem?.quantity}
-                                        removeFromCart={removeFromActiveCart}
+                                        removeFromCart={handleItemRemove}
                                     />
                                 </div>
                             ))}
@@ -139,9 +196,7 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                                 <Button
                                     text="Clear"
                                     style="secondary"
-                                    onClick={() => {
-                                        deleteCart(activeCartId);
-                                    }}
+                                    onClick={handleCartClear}
                                 />
                             </div>
                         </div>

@@ -1,17 +1,17 @@
 import { orderStatusTypes } from "@/assets/enums/enum";
-import { deleteOrder, findOrderByID, updateOrder } from "@/dal/order/orderDAL";
+import { findOrderByID, updateOrder } from "@/dal/order/orderDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
 import { NextRequest } from "next/server";
 
 export async function DELETE(request: NextRequest) {
     const body = await request.json();
-    const { orderID } = body;
+    const { orderID, orderItemID } = body;
 
     try {
         const decodedToken = await verifyUserAuth();
 
-        if (!orderID) {
-            return new Response(JSON.stringify({ error: "Order ID missing." }), {
+        if (!orderID || !orderItemID) {
+            return new Response(JSON.stringify({ error: "Order ID or Item ID missing." }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
             });
@@ -26,8 +26,9 @@ export async function DELETE(request: NextRequest) {
             });
         }
 
-        if (order.userID?.toString() !== decodedToken.userId) {
-            return new Response(JSON.stringify({ error: "You can not clear this order." }), {
+        const orderItem = order?.items?.find((item: any) => item?._id === orderItemID);
+        if (order.userID?.toString() !== decodedToken.userId && orderItem?.userID?.toString !== decodedToken.userId) {
+            return new Response(JSON.stringify({ error: "You can not remove this item from order." }), {
                 status: 403,
                 headers: { "Content-Type": "application/json" },
             });
@@ -40,7 +41,8 @@ export async function DELETE(request: NextRequest) {
             });
         }
 
-        const { result, error: errorUpdate } = await deleteOrder(orderID);
+        const updateItems = { $pull: { items: { _id: orderItemID } } }
+        const { result, error: errorUpdate } = await updateOrder(orderID, updateItems);
 
         if (!result || errorUpdate) {
             return new Response(JSON.stringify({ error: errorUpdate || "Order not found." }), {
@@ -49,7 +51,7 @@ export async function DELETE(request: NextRequest) {
             });
         }
 
-        return new Response(JSON.stringify({ message: "Order deleted." }), {
+        return new Response(JSON.stringify({ message: "Item removed from order." }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });
