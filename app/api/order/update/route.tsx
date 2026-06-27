@@ -1,23 +1,15 @@
 import { orderStatusTypes } from "@/assets/enums/enum";
-import { createOrder, findOrderByID, updateOrder } from "@/dal/order/orderDAL";
+import { findOrderByID, updateOrder } from "@/dal/order/orderDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
 import mongoose from "mongoose";
 import { NextRequest } from "next/server";
 
 export async function PUT(request: NextRequest) {
     const body = await request.json();
-    const { orderID, itemID, quantity } = body;
+    const { orderID, status }: { orderID: string; status: orderStatusTypes } = body;
 
     try {
-        const item: any = {
-            userID: null,
-            itemID,
-            quantity,
-        };
-        try {
-            const decodedToken = await verifyUserAuth();
-            item.userID = decodedToken.userId;
-        } catch (error) {}
+        const decodedToken = await verifyUserAuth();
 
         const { order, error: errorOrder } = await findOrderByID(orderID);
         if (!order || errorOrder) {
@@ -27,26 +19,17 @@ export async function PUT(request: NextRequest) {
             });
         }
 
-        const items = order?.items;
-        const savedItem = items?.find((it) => it.itemID.toString() === itemID);
-        let updateResult;
-
-        if (savedItem) {
-            const updateItems = { $inc: { "items.$.quantity": item?.quantity || 1 } };
-
-            updateResult = await updateOrder(
-                { _id: new mongoose.Types.ObjectId(orderID), "items._id": savedItem._id },
-                updateItems,
-            );
-        } else {
-            const updateItems = { $push: { items: item } };
-            updateResult = await updateOrder(
-                { _id: new mongoose.Types.ObjectId(orderID) },
-                updateItems,
-            );
+        if (order?.userID?.toString() !== decodedToken.userId) {
+            return new Response(JSON.stringify({ error: "You can not update this order." }), {
+                status: 403,
+                headers: { "Content-Type": "application/json" },
+            });
         }
 
-        let { result, error } = updateResult;
+        const { result, error } = await updateOrder(
+            { _id: new mongoose.Types.ObjectId(orderID) },
+            { $set: { status: status } },
+        );
 
         if (!result || error) {
             return new Response(JSON.stringify({ error: error || "Order not found." }), {

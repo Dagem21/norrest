@@ -1,3 +1,4 @@
+import { userTypes } from "@/assets/enums/enum";
 import { Schema, model, models } from "mongoose";
 
 const UserSchema = new Schema(
@@ -31,6 +32,12 @@ const UserSchema = new Schema(
         },
         lastLogin: {
             type: Date,
+        },
+        type: {
+            type: String,
+            enum: userTypes,
+            required: true,
+            default: userTypes.Customer,
         },
     },
     { timestamps: true },

@@ -53,11 +53,12 @@ export const createOrder = async (order: object) => {
     }
 };
 
-export const updateOrder = async (id: string, update: object) => {
+export const updateOrder = async (query: object | object, update: object, filter: object = {}) => {
     let result,
         error = null;
     try {
-        const orderUp = await orderSchema.findByIdAndUpdate(id, update);
+        const orderUp = await orderSchema.findOneAndUpdate(query, update, filter);
+        console.log(orderUp);
         result = orderUp !== null;
     } catch (e: any) {
         error = e.message;

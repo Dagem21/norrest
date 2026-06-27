@@ -1,6 +1,7 @@
 import { orderStatusTypes } from "@/assets/enums/enum";
 import { findOrderByID, updateOrder } from "@/dal/order/orderDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
+import mongoose from "mongoose";
 import { NextRequest } from "next/server";
 
 export async function DELETE(request: NextRequest) {
@@ -27,11 +28,17 @@ export async function DELETE(request: NextRequest) {
         }
 
         const orderItem = order?.items?.find((item: any) => item?._id === orderItemID);
-        if (order.userID?.toString() !== decodedToken.userId && orderItem?.userID?.toString !== decodedToken.userId) {
-            return new Response(JSON.stringify({ error: "You can not remove this item from order." }), {
-                status: 403,
-                headers: { "Content-Type": "application/json" },
-            });
+        if (
+            order.userID?.toString() !== decodedToken.userId &&
+            orderItem?.userID?.toString !== decodedToken.userId
+        ) {
+            return new Response(
+                JSON.stringify({ error: "You can not remove this item from order." }),
+                {
+                    status: 403,
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
         }
 
         if (order.status !== orderStatusTypes.Draft) {
@@ -41,8 +48,11 @@ export async function DELETE(request: NextRequest) {
             });
         }
 
-        const updateItems = { $pull: { items: { _id: orderItemID } } }
-        const { result, error: errorUpdate } = await updateOrder(orderID, updateItems);
+        const updateItems = { $pull: { items: { _id: orderItemID } } };
+        const { result, error: errorUpdate } = await updateOrder(
+            { _id: new mongoose.Types.ObjectId(orderID) },
+            updateItems,
+        );
 
         if (!result || errorUpdate) {
             return new Response(JSON.stringify({ error: errorUpdate || "Order not found." }), {

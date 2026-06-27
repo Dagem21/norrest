@@ -12,6 +12,7 @@ import Modal from "@/components/ui/modal";
 import QrGenerator from "@/components/QRGenerator";
 import { API_URL } from "@/config";
 import { useParams } from "next/navigation";
+import { orderStatusTypes } from "@/assets/enums/enum";
 
 type ViewOrderProps = {
     isOpen: boolean;
@@ -21,8 +22,15 @@ type ViewOrderProps = {
 export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
     const params = useParams<{ id: string }>();
     const toaster = useContext(ToastContext);
-    const { carts, activeCartId, setActiveCart, updateActiveCartID, deleteCart, updateItemFromActiveCart, removeFromActiveCart } =
-        useCartStore();
+    const {
+        carts,
+        activeCartId,
+        setActiveCart,
+        updateActiveCartID,
+        deleteCart,
+        updateItemFromActiveCart,
+        removeFromActiveCart,
+    } = useCartStore();
 
     const activeCart = carts[activeCartId];
     const [isVisible, setIsVisible] = useState(false);
@@ -37,6 +45,19 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
         false,
     );
 
+    const {
+        data: dataOrderUpdate,
+        fetchData: fetchDataOrderUpdate,
+        isLoading: isLoadingOrderUpdate,
+        errors: errorsOrderUpdate,
+    } = useApiFetch(
+        {
+            url: `/api/order/update`,
+            method: "PUT",
+        },
+        false,
+    );
+
     const { fetchData: fetchDataRemove } = useApiFetch(
         {
             url: `/api/order/item/delete`,
@@ -45,7 +66,12 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
         false,
     );
 
-    const { data: dataClear, fetchData: fetchDataClear, isLoading: isLoadingClear, errors: errorsClear } = useApiFetch(
+    const {
+        data: dataClear,
+        fetchData: fetchDataClear,
+        isLoading: isLoadingClear,
+        errors: errorsClear,
+    } = useApiFetch(
         {
             url: `/api/order/delete`,
             method: "DELETE",
@@ -72,53 +98,11 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
         };
     }, [isOpen, onClose]);
 
-    const handleShare = () => {
-        if (activeCart?.id) {
-            setQRModalOpen(true);
-        } else {
-            if (!activeCartId) {
-                setActiveCart(params?.id)
-            }
-            const order = {
-                branchID: activeCartId || params?.id,
-                status: "Draft",
-                items: activeCart?.items?.map((item) => {
-                    return {
-                        itemID: item.item._id,
-                        quantity: item.quantity,
-                    };
-                }),
-            };
-
-            fetchData({ data: { order } });
-        }
-    };
-
-    const handleItemRemove = (itemID: string, savedID?: string) => {
-        if (activeCart?.id && savedID) {
-            fetchDataRemove({
-                data: {
-                    "orderID": activeCart?.id,
-                    "orderItemID": savedID
-                }
-            })
-        }
-        removeFromActiveCart(itemID);
-    }
-
-    const handleCartClear = () => {
-        if (activeCart?.id) {
-            fetchDataClear({
-                data: { "orderID": activeCart?.id, }
-            })
-        }
-    }
-
     useEffect(() => {
         if (!isLoading && data) {
             updateActiveCartID(data?.order?._id);
             data?.order?.items?.forEach((item: any) => {
-                updateItemFromActiveCart(item?.itemID, item?._id)
+                updateItemFromActiveCart(item?.itemID, item?._id);
             });
             setQRModalOpen(true);
         } else if (!isLoading && errors?.details) {
@@ -136,6 +120,24 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
     }, [isLoading, data, errors]);
 
     useEffect(() => {
+        if (!isLoadingOrderUpdate && dataOrderUpdate) {
+            deleteCart(activeCartId);
+
+            const toast = {
+                message: "Your order has been submitted.",
+                type: "success",
+            };
+            toaster?.addToast(toast);
+        } else if (!isLoadingOrderUpdate && errorsOrderUpdate?.details) {
+            const toast = {
+                message: errorsOrderUpdate?.details?.response?.data?.error,
+                type: "error",
+            };
+            toaster?.addToast(toast);
+        }
+    }, [isLoadingOrderUpdate, dataOrderUpdate, errorsOrderUpdate]);
+
+    useEffect(() => {
         if (!isLoadingClear && dataClear) {
             deleteCart(activeCartId);
         } else if (!isLoadingClear && errorsClear?.details) {
@@ -146,6 +148,72 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
             toaster?.addToast(toast);
         }
     }, [isLoadingClear, dataClear, errorsClear]);
+
+    const handleShare = () => {
+        if (activeCart?.id) {
+            setQRModalOpen(true);
+        } else {
+            if (!activeCartId) {
+                setActiveCart(params?.id);
+            }
+            const order = {
+                branchID: activeCartId || params?.id,
+                status: orderStatusTypes.Draft,
+                items: activeCart?.items?.map((item) => {
+                    return {
+                        itemID: item.item._id,
+                        quantity: item.quantity,
+                    };
+                }),
+            };
+
+            fetchData({ data: { order } });
+        }
+    };
+
+    const handleItemRemove = (itemID: string, savedID?: string) => {
+        if (activeCart?.id && savedID) {
+            fetchDataRemove({
+                data: {
+                    orderID: activeCart?.id,
+                    orderItemID: savedID,
+                },
+            });
+        }
+        removeFromActiveCart(itemID);
+    };
+
+    const handleCartClear = () => {
+        if (activeCart?.id) {
+            fetchDataClear({
+                data: { orderID: activeCart?.id },
+            });
+        }
+    };
+
+    const handleOrder = () => {
+        if (carts?.[params.id]?.id) {
+            fetchDataOrderUpdate({
+                data: {
+                    orderID: carts?.[params.id]?.id,
+                    status: orderStatusTypes.Pending,
+                },
+            });
+        } else {
+            const order = {
+                branchID: activeCartId || params?.id,
+                status: orderStatusTypes.Pending,
+                items: carts?.[activeCartId]?.items?.map((item) => {
+                    return {
+                        itemID: item.item._id,
+                        quantity: item.quantity,
+                    };
+                }),
+            };
+
+            fetchData({ data: { order } });
+        }
+    };
 
     if (!isOpen) {
         return null;
@@ -192,12 +260,8 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                                 </div>
                             ))}
                             <div className="flex items-center justify-center mt-2">
-                                <Button text="Order" />
-                                <Button
-                                    text="Clear"
-                                    style="secondary"
-                                    onClick={handleCartClear}
-                                />
+                                <Button text="Order" onClick={handleOrder} />
+                                <Button text="Clear" style="secondary" onClick={handleCartClear} />
                             </div>
                         </div>
                     )}

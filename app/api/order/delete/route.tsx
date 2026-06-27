@@ -1,5 +1,5 @@
 import { orderStatusTypes } from "@/assets/enums/enum";
-import { deleteOrder, findOrderByID, updateOrder } from "@/dal/order/orderDAL";
+import { deleteOrder, findOrderByID } from "@/dal/order/orderDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
 import { NextRequest } from "next/server";
 

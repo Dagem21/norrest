@@ -1,4 +1,5 @@
 "use client";
+import { userTypes } from "@/assets/enums/enum";
 import { MenuContext } from "@/providers/menu";
 import { faBuilding, faClose, faGear, faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,12 +9,28 @@ type MenuItem = {
     label: string;
     href: string;
     icon?: ReactNode;
+    userType?: userTypes[];
 };
 
 const menuItems: MenuItem[] = [
-    { label: "Dashboard", href: "/dashboard", icon: <FontAwesomeIcon icon={faHome} /> },
-    { label: "Company", href: "/company", icon: <FontAwesomeIcon icon={faBuilding} /> },
-    { label: "Settings", href: "/settings", icon: <FontAwesomeIcon icon={faGear} /> },
+    {
+        label: "Home",
+        href: "/dashboard",
+        icon: <FontAwesomeIcon icon={faHome} />,
+        userType: [userTypes.Customer, userTypes.Buisness],
+    },
+    {
+        label: "Company",
+        href: "/company",
+        icon: <FontAwesomeIcon icon={faBuilding} />,
+        userType: [userTypes.Buisness],
+    },
+    {
+        label: "Settings",
+        href: "/settings",
+        icon: <FontAwesomeIcon icon={faGear} />,
+        userType: [userTypes.Customer, userTypes.Buisness],
+    },
 ];
 
 const Sidebar = () => {
@@ -48,14 +65,20 @@ const Sidebar = () => {
                 <hr className="mb-6 text-taupe-400" />
                 <nav>
                     <ul className="flex flex-col gap-2">
-                        {menuItems.map((item) => (
-                            <li key={item.href} className="my-2">
-                                <a href={item.href} className="font-bold">
-                                    {item.icon && <span className="me-4 p-2 shadow shadow-taupe-400">{item.icon}</span>}
-                                    <span>{item.label}</span>
-                                </a>
-                            </li>
-                        ))}
+                        {menuItems
+                            .filter((item) => item.userType?.includes(menuContext?.user?.type))
+                            .map((item) => (
+                                <li key={item.href} className="my-2">
+                                    <a href={item.href} className="font-bold">
+                                        {item.icon && (
+                                            <span className="me-4 p-2 shadow shadow-taupe-400">
+                                                {item.icon}
+                                            </span>
+                                        )}
+                                        <span>{item.label}</span>
+                                    </a>
+                                </li>
+                            ))}
                     </ul>
                 </nav>
             </aside>
