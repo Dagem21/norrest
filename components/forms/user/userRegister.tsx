@@ -48,7 +48,12 @@ export default function UserRegisterForm() {
                 toaster?.addToast(toast);
                 router.replace("/signin");
             } else if (errorsRegiter?.details) {
-                alert(errorsRegiter?.details?.response?.data?.error);
+                console.log(errorsRegiter);
+                const toast = {
+                    message: errorsRegiter?.details?.response?.data?.error,
+                    type: "error",
+                };
+                toaster?.addToast(toast);
             }
         }
     }, [data, isLoading, errorsRegiter]);

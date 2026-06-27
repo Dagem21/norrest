@@ -22,7 +22,7 @@ export default function AuthenticatedLayout({
     };
 
     return (
-        <div className="relative h-screen bg-cover bg-taupe-100 dark:bg-taupe-900 overflow-y-auto">
+        <div className="relative h-screen bg-cover overflow-y-auto">
             <Sidebar />
             <div className="sticky top-0 left-0 z-9 p-2 bg-taupe-200 dark:bg-taupe-900">
                 <div className="flex items-center justify-between p-4 shadow-lg bg-taupe-200 dark:bg-taupe-600 rounded-lg">

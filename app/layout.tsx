@@ -31,9 +31,9 @@ export default function RootLayout({
     return (
         <html
             lang="en"
-            className={`${geistSans.variable} ${geistMono.variable} h-screen antialiased bg-taupe-100 dark:bg-taupe-900 scroll-smooth`}
+            className={`${geistSans.variable} ${geistMono.variable} h-screen antialiased bg-taupe-200 dark:bg-taupe-900 scroll-smooth`}
         >
-            <body className="flex flex-col font-sans text-taupe-600 dark:text-taupe-200 bg-taupe-100 dark:bg-taupe-900">
+            <body className="flex flex-col font-sans text-taupe-600 dark:text-taupe-200 bg-taupe-200 dark:bg-taupe-900">
                 <ToastProvider>
                     <MenuProvider>{children}</MenuProvider>
                 </ToastProvider>

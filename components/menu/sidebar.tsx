@@ -20,7 +20,7 @@ const Sidebar = () => {
     const menuContext = useContext(MenuContext);
     return (
         <div
-            className={`fixed min-h-screen w-full max-w-96 bg-taupe-900 me-6 rounded-e-lg top-0 left-0 z-10 
+            className={`fixed min-h-screen w-full max-w-96 bg-taupe-200 dark:bg-taupe-900 me-6 rounded-e-lg top-0 left-0 z-10 
                 transform transition-transform duration-300 ease-in-out shadow-lg shadow-taupe-800
                 ${menuContext?.showMenu ? "translate-x-0" : "-translate-x-full"}`}
         >

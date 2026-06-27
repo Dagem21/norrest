@@ -16,7 +16,7 @@ export default function Branch() {
     });
 
     return (
-        <div className="flex flex-col flex-1 items-center bg-taupe-100 dark:bg-taupe-900 p-2">
+        <div className="flex flex-col flex-1 items-centers p-2">
             <div className="flex flex-col w-full">
                 <div className="bg-taupe-200 dark:bg-taupe-600 p-2 rounded-lg flex flex-col items-center">
                     <h1 className="text-sm font-bold">Explore Menu</h1>

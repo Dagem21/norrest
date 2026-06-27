@@ -101,7 +101,7 @@ export default function Menu() {
     };
 
     return (
-        <div className="flex flex-col flex-1 items-center bg-taupe-100 dark:bg-taupe-900 p-2">
+        <div className="flex flex-col flex-1 items-center p-2">
             <div className="fixed bottom-0 right-0 m-6">
                 <button
                     className="rounded-full bg-taupe-400 dark:bg-taupe-600 p-3 shadow-lg"

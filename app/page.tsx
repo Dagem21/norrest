@@ -15,8 +15,8 @@ import Link from "next/link";
 
 export default function Home() {
     return (
-        <div className="flex flex-col flex-1 items-center font-sans bg-taupe-100 dark:bg-taupe-900">
-            <div id="home" className="flex flex-col items-center justify-center w-full min-h-screen bg-taupe-200 dark:bg-taupe-900 rounded-lg">
+        <div className="flex flex-col flex-1 items-center font-sans">
+            <div id="home" className="flex flex-col items-center justify-center w-full min-h-screen  rounded-lg">
                 <div className="w-full">
                     <div className="flex flex-col items-center gap-6">
                         <h1 className="text-3xl font-bold">Welcome to Food Haven</h1>
@@ -77,7 +77,7 @@ export default function Home() {
                 </div>
             </div>
 
-            <div id="explore-restaurants" className="flex flex-col items-center justify-center w-full min-h-screen bg-taupe-200 dark:bg-taupe-900 overflow-y-auto">
+            <div id="explore-restaurants" className="flex flex-col items-center justify-center w-full min-h-screen overflow-y-auto">
                 <div className="flex flex-wrap items-center justify-center w-full h-full">
                     <div className="w-full rounded-lg">
                         <h2 className="text-taupe-900 dark:text-taupe-200 text-lg text-center font-bold mb-4">

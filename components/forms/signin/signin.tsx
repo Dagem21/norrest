@@ -4,7 +4,7 @@ import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import useApiFetch from "@/hooks/useAPIFetch";
 import { useAppStore } from "@/hooks/useAppStore";
-import { faAt, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { faAt, faEye, faEyeSlash, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -113,7 +113,7 @@ export default function SignInForm({
                 )}
 
                 <div className="flex flex-col items-strech w-full">
-                    <Button text="Login" type="submit" />
+                    <Button text={isLoading ? " Logging In" : "Login"} type="submit" disabled={isLoading} icon={isLoading && <FontAwesomeIcon icon={faSpinner} spin />} />
                     <h1 className="text-center text-xs">
                         Don't have an account?{" "}
                         <Link href={`/register`} className="text-sm cusrsor-pointer">
