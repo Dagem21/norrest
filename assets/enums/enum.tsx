@@ -1,3 +1,9 @@
+export enum userTypes {
+    Customer = "Customer",
+    Buisness = "Buisness",
+    Admin = "Admin",
+}
+
 export enum permissionTypes {
     Admin = "Admin",
     Read = "Read",

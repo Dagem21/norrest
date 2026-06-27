@@ -12,12 +12,13 @@ import ViewOrder from "@/components/forms/order/viewOrder";
 import { useParams } from "next/navigation";
 import useApiFetch from "@/hooks/useAPIFetch";
 import Loading from "@/components/loadingComponent";
-import { categoryTypes } from "@/assets/enums/enum";
+import { categoryTypes, orderStatusTypes } from "@/assets/enums/enum";
 import PageNavigator from "@/components/pageNavigator";
 import { ToastContext } from "@/providers/toastProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUtensils } from "@fortawesome/free-solid-svg-icons";
+import { faMinus, faPlus, faUtensils } from "@fortawesome/free-solid-svg-icons";
 import { useCartStore } from "@/hooks/useCartStore";
+import Input from "@/components/ui/input";
 
 export default function Menu() {
     const params = useParams<{ id: string }>();
@@ -25,17 +26,24 @@ export default function Menu() {
     const toaster = useContext(ToastContext);
 
     const {
+        activeCartId,
+        carts,
         addToActiveCart,
         createNewCart,
         setActiveCart,
+        updateActiveCartID,
+        updateItemFromActiveCart,
     } = useCartStore();
 
-    useEffect(() => { setActiveCart(params.id) }, [params.id])
+    useEffect(() => {
+        setActiveCart(params.id);
+    }, [params.id]);
 
     const [isModalOpen, setModalOpen] = useState(false);
     const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
     const [menu, setMenu] = useState<Array<any>>([]);
     const [selectedItem, setSelectedItem] = useState<any>();
+    const [quantity, setQuantity] = useState<number>(1);
     const [selectedCatagory, setSelectedCategory] = useState<string | null>();
     const [pageLimit, setPageLimit] = useState({
         page: 1,
@@ -48,6 +56,32 @@ export default function Menu() {
             method: "GET",
         },
         true,
+    );
+
+    const {
+        data: dataUpdate,
+        fetchData: fetchDataUpdate,
+        isLoading: isLoadingUpdate,
+        errors: errorsUpdate,
+    } = useApiFetch(
+        {
+            url: `/api/order/item/update`,
+            method: "PUT",
+        },
+        false,
+    );
+
+    const {
+        data: dataOrder,
+        fetchData: fetchDataOrder,
+        isLoading: isLoadingOrder,
+        errors: errorsOrder,
+    } = useApiFetch(
+        {
+            url: `/api/order/create`,
+            method: "POST",
+        },
+        false,
     );
 
     useEffect(() => {
@@ -83,6 +117,32 @@ export default function Menu() {
         }
     }, [selectedCatagory, isLoading, data]);
 
+    useEffect(() => {
+        if (!isLoading && errorsUpdate?.details?.status === 404) {
+            updateActiveCartID(null);
+            carts[activeCartId].items.forEach((item) => {
+                updateItemFromActiveCart(item?.item?._id, null);
+            });
+        }
+    }, [isLoadingUpdate, dataUpdate, errorsUpdate]);
+
+    useEffect(() => {
+        if (!isLoadingOrder && dataOrder) {
+            setModalOpen(false);
+            const toast = {
+                message: "Your order has been submitted.",
+                type: "success",
+            };
+            toaster?.addToast(toast);
+        } else if (!isLoadingOrder && errorsOrder?.details) {
+            const toast = {
+                message: errorsOrder?.details?.response?.data?.error,
+                type: "error",
+            };
+            toaster?.addToast(toast);
+        }
+    }, [isLoadingOrder, dataOrder, errorsOrder]);
+
     const handleAddCart = (item: any, quantity: number) => {
         createNewCart(params.id, `${data?.branch?.companyID?.name}, ${data?.branch?.name}`);
         setActiveCart(params.id);
@@ -91,6 +151,16 @@ export default function Menu() {
             quantity,
         });
 
+        if (carts?.[params.id]?.id) {
+            fetchDataUpdate({
+                data: {
+                    orderID: carts?.[params.id]?.id,
+                    itemID: item?._id,
+                    quantity: quantity,
+                },
+            });
+        }
+
         const toast = {
             message: "Added to cart.",
             type: "success",
@@ -98,6 +168,21 @@ export default function Menu() {
         toaster?.addToast(toast);
 
         setModalOpen(false);
+    };
+
+    const handleOrder = () => {
+        const order = {
+            branchID: params?.id,
+            status: orderStatusTypes.Pending,
+            items: [
+                {
+                    itemID: selectedItem?._id,
+                    quantity: quantity,
+                },
+            ],
+        };
+
+        fetchDataOrder({ data: { order } });
     };
 
     return (
@@ -155,6 +240,7 @@ export default function Menu() {
                                                     onClick={() => {
                                                         setSelectedItem(item);
                                                         setModalOpen(true);
+                                                        setQuantity(1);
                                                     }}
                                                     key={item?._id}
                                                 >
@@ -227,13 +313,48 @@ export default function Menu() {
                             <p className="text-xs">{selectedItem?.category?.join(",")}</p>
                         </div>
                     </div>
+                    <div className="px-2">
+                        <Input
+                            className="text-center"
+                            type="number"
+                            value={quantity}
+                            min={1}
+                            max={10}
+                            onChange={(e) => {
+                                setQuantity((prev) =>
+                                    0 > parseInt(e.target.value || "1") ||
+                                    parseInt(e.target.value || "1") > 10
+                                        ? prev
+                                        : parseInt(e.target.value || "0"),
+                                );
+                            }}
+                            start={
+                                <Button
+                                    style="teritary"
+                                    onClick={() => {
+                                        setQuantity((prev) => (prev === 1 ? 1 : prev - 1));
+                                    }}
+                                    icon={<FontAwesomeIcon icon={faMinus} />}
+                                />
+                            }
+                            end={
+                                <Button
+                                    style="teritary"
+                                    onClick={() => {
+                                        setQuantity((prev) => prev + 1);
+                                    }}
+                                    icon={<FontAwesomeIcon icon={faPlus} />}
+                                />
+                            }
+                        />
+                    </div>
                     <div className="flex flex-col gap-2 my-2">
-                        <Button text="Order Now" />
+                        <Button text="Order Now" onClick={handleOrder} />
                         <Button
                             text="Add to Orders"
                             style="secondary"
                             onClick={() => {
-                                handleAddCart(selectedItem, 1);
+                                handleAddCart(selectedItem, quantity);
                             }}
                         />
                     </div>

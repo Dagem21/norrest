@@ -6,6 +6,7 @@ const orderSchema = yup.object().shape({
     branchID: yup.string().required("Branch ID is required."),
     items: yup.array().of(
         yup.object().shape({
+            _id: yup.string(),
             userID: yup.string(),
             itemID: yup.string().required("Item ID is required."),
             quantity: yup.number().min(1, "Minimum orders is 1."),

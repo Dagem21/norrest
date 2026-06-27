@@ -18,8 +18,8 @@ interface CartState {
     createNewCart: (cartId: string, name: string) => void;
     deleteCart: (cartId: string) => void;
     addToActiveCart: (item: Item) => void;
-    updateActiveCartID: (item: Item) => void;
-    updateItemFromActiveCart: (productId: string, id: string) => void;
+    updateActiveCartID: (id: string | null) => void;
+    updateItemFromActiveCart: (productId: string, id: string | null) => void;
     removeFromActiveCart: (productId: string) => void;
 }
 
@@ -47,7 +47,8 @@ export const useCartStore = create<CartState>()(
 
                     const remainingIds = Object.keys(newCarts);
                     const fallbackId = remainingIds.includes(state.activeCartId)
-                        ? state.activeCartId : remainingIds[0];
+                        ? state.activeCartId
+                        : remainingIds[0];
 
                     return {
                         carts: newCarts,
@@ -90,7 +91,7 @@ export const useCartStore = create<CartState>()(
                     return {
                         carts: {
                             ...state.carts,
-                            [activeId]: { items: updatedCart, name: currentCart.name },
+                            [activeId]: { ...currentCart, items: updatedCart },
                         },
                     };
                 }),
@@ -105,9 +106,9 @@ export const useCartStore = create<CartState>()(
                             ...state.carts,
                             [activeId]: {
                                 ...currentCart,
-                                items: currentCart?.items?.map(
-                                    (item: any) => { return item.item?._id === productId ? { ...item, id } : item },
-                                ),
+                                items: currentCart?.items?.map((item: any) => {
+                                    return item.item?._id === productId ? { ...item, id } : item;
+                                }),
                             },
                         },
                     };
