@@ -1,5 +1,5 @@
 "use client";
-import adminUserSchema from "@/yup/userRegistration/userRegisteration";
+import userSchema from "@/yup/userRegistration/userRegisteration";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import { faAt, faCheckCircle, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -21,7 +21,7 @@ export default function UserRegisterForm() {
         handleSubmit,
         watch,
     } = useForm({
-        resolver: yupResolver(adminUserSchema),
+        resolver: yupResolver(userSchema),
         mode: "onChange",
     });
 
@@ -109,7 +109,7 @@ export default function UserRegisterForm() {
                         Email
                     </label>
                     <Input
-                        placeholder="Type here..."
+                        placeholder="example@gmail.com"
                         start={<FontAwesomeIcon icon={faAt} />}
                         {...register("email")}
                         error={errors?.email}
@@ -120,7 +120,7 @@ export default function UserRegisterForm() {
                         Phone number
                     </label>
                     <Input
-                        placeholder="Type here..."
+                        placeholder="7/9********"
                         start="+251"
                         {...register("phoneNumber")}
                         error={errors?.phoneNumber}

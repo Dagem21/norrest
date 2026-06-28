@@ -3,6 +3,7 @@ import userSchema from "@/yup/userRegistration/userRegisteration";
 import { hashPassword } from "./encryption";
 import companySchema from "@/yup/company/company";
 import branchSchema from "@/yup/company/branch";
+import profileUpdateSchema from "@/yup/userRegistration/updateUser";
 
 export function formatPhone(phone: string): string {
     phone = "+251" + phone.slice(-9);
@@ -13,6 +14,13 @@ export async function formatUser(user: yup.InferType<typeof userSchema>): Promis
     user.phoneNumber = "+251" + user.phoneNumber.slice(-9);
     user.password = await hashPassword(user.password);
 
+    return user;
+}
+
+export function formatUserUpdate(user: yup.InferType<typeof profileUpdateSchema>): any {
+    if (user.phoneNumber) {
+        user.phoneNumber = "+251" + user.phoneNumber.slice(-9);
+    }
     return user;
 }
 
