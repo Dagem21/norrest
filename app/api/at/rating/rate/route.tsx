@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
                 totalRatings: newTotalRating,
             };
             const { result: updateResult, error: updateError } = await updateMenu(
-                new mongoose.Types.ObjectId(menu._id),
+                menu._id?.toString() || "",
                 menuUpdate,
             );
 

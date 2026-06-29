@@ -100,11 +100,20 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
 
     useEffect(() => {
         if (!isLoading && data) {
-            updateActiveCartID(data?.order?._id);
-            data?.order?.items?.forEach((item: any) => {
-                updateItemFromActiveCart(item?.itemID, item?._id);
-            });
-            setQRModalOpen(true);
+            if (data?.order?.status !== orderStatusTypes.Draft) {
+                deleteCart(activeCartId);
+                const toast = {
+                    message: "Order submitted.",
+                    type: "success",
+                };
+                toaster?.addToast(toast);
+            } else {
+                updateActiveCartID(data?.order?._id);
+                data?.order?.items?.forEach((item: any) => {
+                    updateItemFromActiveCart(item?.itemID, item?._id);
+                });
+                setQRModalOpen(true);
+            }
         } else if (!isLoading && errors?.details) {
             const responseErrorCode = errors?.details?.status;
             if (responseErrorCode === 403) {

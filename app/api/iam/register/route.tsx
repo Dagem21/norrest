@@ -1,3 +1,5 @@
+import { orderStatusTypes } from "@/assets/enums/enum";
+import { createOrderCount } from "@/dal/order/orderCountDAL";
 import { createUser } from "@/dal/user/userDAL";
 import { formatUser } from "@/utils/format";
 import userSchema from "@/yup/userRegistration/userRegisteration";
@@ -14,6 +16,17 @@ export async function POST(request: NextRequest) {
         let { result, error } = await createUser(formattedUser);
 
         if (result && !error) {
+            const orderCount = {
+                userID: result?._id,
+                counts: Object.values(orderStatusTypes).map((status) => {
+                    return {
+                        status,
+                        count: 0,
+                    };
+                }),
+            };
+            const { result: resultOC, error: errorOC } = await createOrderCount(orderCount);
+
             return new Response(JSON.stringify({ message: "Registeration successful." }), {
                 status: 200,
                 headers: { "Content-Type": "application/json" },

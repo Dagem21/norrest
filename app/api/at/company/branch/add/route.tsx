@@ -1,10 +1,12 @@
-import { permissionTypes } from "@/assets/enums/enum";
+import { orderStatusTypes, permissionTypes } from "@/assets/enums/enum";
 import { createBranch } from "@/dal/company/branchDAL";
+import { createOrderCount } from "@/dal/order/orderCountDAL";
 import { findPermission } from "@/dal/permissions/permissionsDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
 import { formatBranch } from "@/utils/format";
 import branchSchema from "@/yup/company/branch";
 import { NextRequest } from "next/server";
+import { object } from "yup";
 
 export async function POST(request: NextRequest) {
     const body = await request.json();
@@ -46,6 +48,17 @@ export async function POST(request: NextRequest) {
         const { result, error: errorCreate } = await createBranch(formattedbranch);
 
         if (result && !errorCreate) {
+            const orderCount = {
+                branchID: result?._id,
+                counts: Object.values(orderStatusTypes).map((status) => {
+                    return {
+                        status,
+                        count: 0,
+                    };
+                }),
+            };
+            const { result: resultOC, error: errorOC } = await createOrderCount(orderCount);
+
             return new Response(JSON.stringify({ message: "Branch Registered." }), {
                 status: 200,
                 headers: { "Content-Type": "application/json" },

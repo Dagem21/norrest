@@ -6,8 +6,6 @@ import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import ViewMenuItem from "@/components/forms/menu/viewMenuItem";
 import Button from "@/components/ui/button";
-import profile from "../../../assets/images/radblu.jpg";
-import food from "../../../assets/images/fi3.png";
 import ViewOrder from "@/components/forms/order/viewOrder";
 import { useParams } from "next/navigation";
 import useApiFetch from "@/hooks/useAPIFetch";
@@ -18,7 +16,6 @@ import { ToastContext } from "@/providers/toastProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faUtensils } from "@fortawesome/free-solid-svg-icons";
 import { useCartStore } from "@/hooks/useCartStore";
-import Input from "@/components/ui/input";
 
 export default function Menu() {
     const params = useParams<{ id: string }>();
@@ -43,6 +40,7 @@ export default function Menu() {
     const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
     const [menu, setMenu] = useState<Array<any>>([]);
     const [selectedItem, setSelectedItem] = useState<any>();
+    const [isLoadingImage, setIsLoadingImage] = useState(true);
     const [quantity, setQuantity] = useState<number>(1);
     const [selectedCatagory, setSelectedCategory] = useState<string | null>();
     const [pageLimit, setPageLimit] = useState({
@@ -201,9 +199,11 @@ export default function Menu() {
                         <div className="relative flex flex-col gap-2 h-fit w-full sm:w-4/7">
                             <div className="bg-taupe-200 dark:bg-taupe-600 p-2 rounded-lg flex flex-col items-center">
                                 <Image
-                                    className="w-15 h-15 object-cover"
-                                    src={profile}
+                                    className="object-cover rounded-lg"
+                                    src={data?.branch?.companyID?.picture?.[0]}
                                     alt={"Company profile"}
+                                    width={200}
+                                    height={50}
                                 />
                                 <h1 className="text-sm font-bold mt-2">{`${data?.branch?.companyID?.name}, ${data?.branch?.name}`}</h1>
                             </div>
@@ -279,14 +279,17 @@ export default function Menu() {
             <ViewMenuItem isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
                 <div className="flex flex-col p-2 cursor-pointer">
                     <div className="flex items-center flex-wrap shadow-lg">
-                        <div>
+                        <div className="flex items-center justify-center">
                             <Image
                                 className="max-w-sm rounded-lg object-cover"
                                 src={selectedItem?.picture?.[1]}
                                 alt={selectedItem?.name}
                                 width={1000}
                                 height={1000}
+                                onLoad={() => setIsLoadingImage(false)}
+                                onError={() => setIsLoadingImage(false)}
                             />
+                            <Loading loading={isLoadingImage} />
                         </div>
                     </div>
                     <div className="flex flex-col justify-between my-2">
@@ -314,21 +317,11 @@ export default function Menu() {
                         </div>
                     </div>
                     <div className="px-2">
-                        <Input
-                            className="text-center"
-                            type="number"
-                            value={quantity}
-                            min={1}
-                            max={10}
-                            onChange={(e) => {
-                                setQuantity((prev) =>
-                                    0 > parseInt(e.target.value || "1") ||
-                                    parseInt(e.target.value || "1") > 10
-                                        ? prev
-                                        : parseInt(e.target.value || "0"),
-                                );
-                            }}
-                            start={
+                        <div
+                            className={`flex items-center text-sm border border-gray-400 rounded-md transition duration-300 ease shadow-sm 
+                                    hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
+                        >
+                            <div className="flex items-center h-full border-e border-gray-400 select-none">
                                 <Button
                                     style="teritary"
                                     onClick={() => {
@@ -336,8 +329,24 @@ export default function Menu() {
                                     }}
                                     icon={<FontAwesomeIcon icon={faMinus} />}
                                 />
-                            }
-                            end={
+                            </div>
+                            <input
+                                className="w-full p-2 outline-none rounded-md accent-taupe-900 text-center"
+                                type="number"
+                                value={quantity}
+                                min={1}
+                                max={10}
+                                onChange={(e) => {
+                                    setQuantity((prev) =>
+                                        0 > parseInt(e.target.value || "1") ||
+                                        parseInt(e.target.value || "1") > 10
+                                            ? prev
+                                            : parseInt(e.target.value || "0"),
+                                    );
+                                }}
+                            />
+
+                            <div className="flex items-center h-full border-s border-gray-400 select-none">
                                 <Button
                                     style="teritary"
                                     onClick={() => {
@@ -345,8 +354,8 @@ export default function Menu() {
                                     }}
                                     icon={<FontAwesomeIcon icon={faPlus} />}
                                 />
-                            }
-                        />
+                            </div>
+                        </div>
                     </div>
                     <div className="flex flex-col gap-2 my-2">
                         <Button text="Order Now" onClick={handleOrder} />

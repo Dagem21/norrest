@@ -1,8 +1,10 @@
 import { orderStatusTypes, permissionTypes } from "@/assets/enums/enum";
 import { findBranchByID } from "@/dal/company/branchDAL";
+import { updateOrderCount } from "@/dal/order/orderCountDAL";
 import { createOrder } from "@/dal/order/orderDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
 import orderSchema from "@/yup/order/order";
+import mongoose from "mongoose";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -51,6 +53,17 @@ export async function POST(request: NextRequest) {
                 headers: { "Content-Type": "application/json" },
             });
         }
+
+        const updateOC = { $inc: { "counts.$.count": 1 } };
+
+        const { result: resultOC, error: errorOC } = await updateOrderCount(
+            {
+                branchID: new mongoose.Types.ObjectId(validOrder.branchID),
+                "counts.status": validOrder?.status,
+            },
+            updateOC,
+        );
+        console.log("resultOC", resultOC, errorOC);
 
         return new Response(JSON.stringify({ order: result, message: "Order created." }), {
             status: 200,

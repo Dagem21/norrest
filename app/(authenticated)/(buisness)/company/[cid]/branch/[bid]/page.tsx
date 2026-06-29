@@ -26,6 +26,7 @@ export default function Branch() {
     const params = useParams<{ cid: string; bid: string }>();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isViewModalOpen, setViewModalOpen] = useState(false);
+    const [isLoadingImage, setIsLoadingImage] = useState(true);
     const [isQRModalOpen, setQRModalOpen] = useState(false);
     const [menu, setMenu] = useState<Array<any>>([]);
     const [pageLimit, setPageLimit] = useState({
@@ -100,6 +101,7 @@ export default function Branch() {
     const handlePageChange = (page: number) => {
         setPageLimit((prev) => ({ ...prev, page }));
     };
+
     const handleLimitChange = (limit: number) => {
         setPageLimit((prev) => ({ ...prev, limit }));
     };
@@ -315,7 +317,10 @@ export default function Branch() {
                                 alt={selectedItem?.name}
                                 width={1000}
                                 height={1000}
+                                onLoad={() => setIsLoadingImage(false)}
+                                onError={() => setIsLoadingImage(false)}
                             />
+                            <Loading loading={isLoadingImage} />
                         </div>
                     </div>
                     <div className="flex flex-col justify-between my-2">
@@ -343,8 +348,7 @@ export default function Branch() {
                         </div>
                     </div>
                     <div className="flex flex-col gap-2 my-2">
-                        <Button text="Order Now" />
-                        <Button text="Add to Orders" style="secondary" />
+                        <Button text="Edit" />
                     </div>
                 </div>
             </ViewMenuItem>

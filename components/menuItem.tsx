@@ -23,16 +23,15 @@ export default function MenuItem({
     return (
         <div className="flex items-center justify-between p-2 shadow-lg cursor-pointer w-full">
             <div className="flex items-center flex-1 min-w-0">
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 flex items-center justify-center">
                     <Image
                         className="w-15 h-15 rounded-lg object-cover"
                         src={image}
                         alt={name}
                         width={100}
                         height={100}
-                        onLoad={() => {
-                            setIsLoading(false);
-                        }}
+                        onLoad={() => setIsLoading(false)}
+                        onError={() => setIsLoading(false)}
                     />
                     <Loading loading={isLoading} />
                 </div>

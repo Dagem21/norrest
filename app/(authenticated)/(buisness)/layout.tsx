@@ -15,13 +15,15 @@ export default function BuisnessLayout({
     const menuContext = useContext(MenuContext);
 
     if (menuContext?.user?.type !== userTypes.Buisness) {
-        return <div className="flex flex-col items-center justify-center">
-            <p>Please upgrade your account to buisness first.</p>
-            <Link href='/settings'>Go to settings. <FontAwesomeIcon icon={faExternalLink} /></Link>
-        </div>
+        return (
+            <div className="flex flex-col items-center justify-center">
+                <p>Please upgrade your account to buisness first.</p>
+                <Link href="/settings">
+                    Go to settings. <FontAwesomeIcon icon={faExternalLink} />
+                </Link>
+            </div>
+        );
     }
 
-    return (
-        { children }
-    );
+    return <>{children}</>;
 }

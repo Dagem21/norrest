@@ -30,7 +30,12 @@ export default function Setting() {
         true,
     );
 
-    const { data: dataBranch, fetchData, isLoading: isLoadingBranch, errors: errorsBranch } = useApiFetch(
+    const {
+        data: dataBranch,
+        fetchData,
+        isLoading: isLoadingBranch,
+        errors: errorsBranch,
+    } = useApiFetch(
         {
             url: `/api/at/company/branch?companyID=${params?.cid}`,
             method: "GET",
@@ -55,9 +60,9 @@ export default function Setting() {
                                 icon={<FontAwesomeIcon icon={faPen} />}
                             />
                         </div>
-                        {!isLoading && data &&
+                        {!isLoading && data && (
                             <div className="flex flex-wrap gap-4">
-                                <div className="max-w-sm shadow-lg">
+                                <div className="flex items-center justify-center max-w-sm shadow-lg">
                                     <Image
                                         className="w-screen sm:max-w-sm rounded-lg object-cover"
                                         src={data?.company?.picture?.[1]}
@@ -115,7 +120,7 @@ export default function Setting() {
                                     </div>
                                 </div>
                             </div>
-                        }
+                        )}
                         <div className="w-fit m-auto my-2">
                             <Loading loading={isLoading} />
                         </div>
@@ -223,9 +228,9 @@ export default function Setting() {
                                         ))}
                                 </tbody>
                             </table>
-                            {!isLoadingBranch && dataBranch?.branches?.length === 0 &&
+                            {!isLoadingBranch && dataBranch?.branches?.length === 0 && (
                                 <h1 className="text-sm text-center my-2">No branches yet.</h1>
-                            }
+                            )}
                             <div className="w-fit m-auto my-2">
                                 <Loading loading={isLoading} />
                             </div>
@@ -235,10 +240,12 @@ export default function Setting() {
             </div>
 
             <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="Add Branch">
-                <BranchForm onFinish={() => {
-                    fetchData();
-                    setModalOpen(false);
-                }} />
+                <BranchForm
+                    onFinish={() => {
+                        fetchData();
+                        setModalOpen(false);
+                    }}
+                />
             </Modal>
         </div>
     );

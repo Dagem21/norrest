@@ -19,13 +19,15 @@ export default function Settings() {
     const menuContext = useContext(MenuContext);
     const toaster = useContext(ToastContext);
     const [isModalOpen, setModalOpen] = useState(false);
-    const [isBuisness, setIsBuisness] = useState<boolean>(menuContext?.user?.type === userTypes.Buisness);
+    const [isBuisness, setIsBuisness] = useState<boolean>(
+        menuContext?.user?.type === userTypes.Buisness,
+    );
 
     const {
         register,
         formState: { errors },
         handleSubmit,
-        reset
+        reset,
     } = useForm({
         resolver: yupResolver(profileUpdateSchema),
         mode: "onChange",
@@ -36,7 +38,7 @@ export default function Settings() {
             lastName: menuContext?.user?.lastName ?? "",
             email: menuContext?.user?.email ?? "",
             phoneNumber: menuContext?.user?.phoneNumber ?? "",
-        }
+        },
     });
 
     const {
@@ -52,40 +54,41 @@ export default function Settings() {
         false,
     );
 
-    useEffect(() => { menuContext?.setTitle('Profile Setting') });
+    useEffect(() => {
+        menuContext?.setTitle("Profile Setting");
+    });
 
     useEffect(() => {
         if (!isLoading && data) {
-            setModalOpen(false)
+            setModalOpen(false);
             const toast = {
                 message: "Account updated. Please login again.",
                 type: "success",
             };
             toaster?.addToast(toast);
-        }
-        else if (!isLoading && errorsUpdate?.details) {
+        } else if (!isLoading && errorsUpdate?.details) {
             const toast = {
                 message: errorsUpdate?.details?.response?.data?.error,
                 type: "error",
             };
             toaster?.addToast(toast);
         }
-    }, [isLoading, data, errorsUpdate])
+    }, [isLoading, data, errorsUpdate]);
 
     const handleUserTypeChange = (e: any) => {
         setIsBuisness(e.target.checked);
-    }
+    };
 
     const handleUpdate = (data: any) => {
         fetchData({
             data: {
                 user: {
                     ...data,
-                    userType: isBuisness ? userTypes.Buisness : userTypes.Customer
-                }
-            }
-        })
-    }
+                    type: isBuisness ? userTypes.Buisness : userTypes.Customer,
+                },
+            },
+        });
+    };
 
     return (
         <div className="flex flex-col flex-1 items-center min-h-screen">
@@ -96,31 +99,46 @@ export default function Settings() {
                             <label htmlFor="firstName" className="block mb-2 text-xs">
                                 First Name
                             </label>
-                            <Input
-                                disabled
-                                className="border-0 cursor-not-allowed shadow-lg"
-                                value={menuContext?.user?.firstName}
-                            />
+                            <div
+                                className={`flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
+                            >
+                                <div
+                                    className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                >
+                                    {menuContext?.user?.firstName || "N/A"}
+                                </div>
+                            </div>
                         </div>
                         <div>
                             <label htmlFor="fatherName" className="block mb-2 text-xs">
                                 Father Name
                             </label>
-                            <Input
-                                disabled
-                                className="border-0 cursor-not-allowed shadow-lg"
-                                value={menuContext?.user?.fatherName}
-                            />
+                            <div
+                                className={`flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
+                            >
+                                <div
+                                    className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                >
+                                    {menuContext?.user?.fatherName || "N/A"}
+                                </div>
+                            </div>
                         </div>
                         <div>
                             <label htmlFor="lastName" className="block mb-2 text-xs">
                                 Last Name
                             </label>
-                            <Input
-                                disabled
-                                className="border-0 cursor-not-allowed shadow-lg"
-                                value={menuContext?.user?.lastName}
-                            />
+                            <div
+                                className={`flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
+                            >
+                                <div
+                                    className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                >
+                                    {menuContext?.user?.lastName || "N/A"}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="grid gap-4 mb-4 md:grid-cols-2">
@@ -128,30 +146,51 @@ export default function Settings() {
                             <label htmlFor="email" className="block mb-2 text-xs">
                                 Email
                             </label>
-                            <Input
-                                disabled
-                                className="border-0 cursor-not-allowed shadow-lg"
-                                value={menuContext?.user?.email}
-                                start={<FontAwesomeIcon icon={faAt} />}
-                            />
+                            <div
+                                className={`flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
+                            >
+                                <div className="flex items-center h-full border-e border-gray-400 py-2 px-4 select-none">
+                                    <FontAwesomeIcon icon={faAt} />
+                                </div>
+                                <div
+                                    className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                >
+                                    {menuContext?.user?.email || "N/A"}
+                                </div>
+                            </div>
                         </div>
                         <div>
                             <label htmlFor="phone" className="block mb-2 text-xs">
                                 Phone number
                             </label>
-                            <Input
-                                disabled
-                                className="border-0 cursor-not-allowed shadow-lg"
-                                value={menuContext?.user?.phoneNumber?.slice(-9)}
-                                start="+251"
-                            />
+                            <div
+                                className={`flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
+                            >
+                                <div className="flex items-center h-full border-e border-gray-400 py-2 px-4 select-none">
+                                    +251
+                                </div>
+                                <div
+                                    className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                >
+                                    {menuContext?.user?.phoneNumber?.slice(-9) || "N/A"}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="flex flex-wrap items-center justify-center gap-4">
-                        <Button icon={<FontAwesomeIcon icon={faPen} />} text=" Edit profile" onClick={() => {
-                            reset({ ...menuContext?.user, phoneNumber: menuContext?.user?.phoneNumber?.slice(-9) })
-                            setModalOpen(true)
-                        }} />
+                        <Button
+                            icon={<FontAwesomeIcon icon={faPen} />}
+                            text=" Edit profile"
+                            onClick={() => {
+                                reset({
+                                    ...menuContext?.user,
+                                    phoneNumber: menuContext?.user?.phoneNumber?.slice(-9),
+                                });
+                                setModalOpen(true);
+                            }}
+                        />
                         <Button text=" Change password" />
                     </div>
                 </div>

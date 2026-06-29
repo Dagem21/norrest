@@ -41,4 +41,5 @@ export enum orderStatusTypes {
     Processed = "Processed",
     Served = "Served",
     Completed = "Completed",
+    Paid = "Paid",
 }
