@@ -4,8 +4,9 @@ import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
 import Button from "./ui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faShare } from "@fortawesome/free-solid-svg-icons";
+import { ReactNode } from "react";
 
-export default function QrGenerator({ url, title }: { url: string; title: string }) {
+export default function QrGenerator({ url, title, children }: { url: string; title: string, children?: ReactNode }) {
     const getCanvasBlob = (): Promise<Blob | null> => {
         return new Promise((resolve) => {
             const canvas = document.getElementById("my-qr-canvas") as HTMLCanvasElement | null;
@@ -74,6 +75,7 @@ export default function QrGenerator({ url, title }: { url: string; title: string
                     }}
                 />
             </div>
+            {children}
             <div className="flex items-center justify-center">
                 <Button icon={<FontAwesomeIcon icon={faShare} />} onClick={handleShare} />
                 <Button icon={<FontAwesomeIcon icon={faDownload} />} onClick={handleDownload} />

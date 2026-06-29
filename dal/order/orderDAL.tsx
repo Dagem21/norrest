@@ -29,11 +29,23 @@ export const findOrder = async (query: object) => {
     }
 };
 
-export const findOrders = async (query: object) => {
+export const findOrders = async (query: object, page: number = 1, limit: number = 10) => {
     let orders,
         error = null;
     try {
-        orders = await orderSchema.find(query).lean();
+        const order = await orderSchema.find(query)
+            .populate({
+                path: "userID",
+                select: "firstName phoneNumber",
+            })
+            .populate("items.itemID")
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .lean();
+
+        const total = await orderSchema.countDocuments(query);
+        const totalPages = Math.ceil((total ?? 0) / limit);
+        orders = { orders: order, page, limit, total, totalPages };
     } catch (e: any) {
         error = e.message;
     } finally {

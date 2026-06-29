@@ -235,7 +235,7 @@ export default function Home() {
                                         className="w-15 h-15 rounded-full object-cover"
                                     />
                                     <div className="px-3">
-                                        <p className="text-sm font-bold">Manage your buisness</p>
+                                        <p className="text-sm font-bold">Manage your Business</p>
                                     </div>
                                 </div>
                             </li>

@@ -19,8 +19,8 @@ export default function Settings() {
     const menuContext = useContext(MenuContext);
     const toaster = useContext(ToastContext);
     const [isModalOpen, setModalOpen] = useState(false);
-    const [isBuisness, setIsBuisness] = useState<boolean>(
-        menuContext?.user?.type === userTypes.Buisness,
+    const [isBusiness, setIsBusiness] = useState<boolean>(
+        menuContext?.user?.type === userTypes.Business,
     );
 
     const {
@@ -76,7 +76,7 @@ export default function Settings() {
     }, [isLoading, data, errorsUpdate]);
 
     const handleUserTypeChange = (e: any) => {
-        setIsBuisness(e.target.checked);
+        setIsBusiness(e.target.checked);
     };
 
     const handleUpdate = (data: any) => {
@@ -84,7 +84,7 @@ export default function Settings() {
             data: {
                 user: {
                     ...data,
-                    type: isBuisness ? userTypes.Buisness : userTypes.Customer,
+                    type: isBusiness ? userTypes.Business : userTypes.Customer,
                 },
             },
         });
@@ -255,8 +255,8 @@ export default function Settings() {
                     </div>
                     <div className="grid gap-4 mb-4 md:grid-cols-1">
                         <div className="flex gap-2">
-                            <ToggleSwitch value={isBuisness} onChange={handleUserTypeChange} />
-                            <label className="text-sm">Enable Buisness access.</label>
+                            <ToggleSwitch value={isBusiness} onChange={handleUserTypeChange} />
+                            <label className="text-sm">Enable Business access.</label>
                         </div>
                     </div>
                     <div className="flex flex-wrap items-center justify-center gap-4">

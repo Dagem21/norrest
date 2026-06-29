@@ -18,25 +18,25 @@ const menuItems: MenuItem[] = [
         label: "Home",
         href: "/dashboard",
         icon: <FontAwesomeIcon icon={faHome} size="xs" />,
-        userType: [userTypes.Customer, userTypes.Buisness],
+        userType: [userTypes.Customer, userTypes.Business],
     },
     {
         label: "Orders",
         href: "/orders",
         icon: <FontAwesomeIcon icon={faUtensils} size="xs" />,
-        userType: [userTypes.Customer, userTypes.Buisness],
+        userType: [userTypes.Customer, userTypes.Business],
     },
     {
         label: "Company",
         href: "/company",
         icon: <FontAwesomeIcon icon={faBuilding} size="xs" />,
-        userType: [userTypes.Buisness],
+        userType: [userTypes.Business],
     },
     {
         label: "Settings",
         href: "/settings",
         icon: <FontAwesomeIcon icon={faGear} size="xs" />,
-        userType: [userTypes.Customer, userTypes.Buisness],
+        userType: [userTypes.Customer, userTypes.Business],
     },
 ];
 
@@ -80,7 +80,7 @@ const Sidebar = () => {
                                 <li key={item.href} className="my-2">
                                     <a
                                         href={item.href}
-                                        className={`${pathname.startsWith(item.href) && "font-bold"}`}
+                                        className={`block w-full ${pathname.startsWith(item.href) && "font-bold"}`}
                                     >
                                         {item.icon && (
                                             <span

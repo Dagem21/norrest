@@ -277,15 +277,15 @@ export default function Menu() {
                 </div>
             </div>
             <ViewMenuItem isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-                <div className="flex flex-col p-2 cursor-pointer">
+                <div className="flex flex-col p-2">
                     <div className="flex items-center flex-wrap shadow-lg">
                         <div className="flex items-center justify-center">
                             <Image
                                 className="max-w-sm rounded-lg object-cover"
                                 src={selectedItem?.picture?.[1]}
                                 alt={selectedItem?.name}
-                                width={1000}
-                                height={1000}
+                                width={300}
+                                height={300}
                                 onLoad={() => setIsLoadingImage(false)}
                                 onError={() => setIsLoadingImage(false)}
                             />
@@ -339,7 +339,7 @@ export default function Menu() {
                                 onChange={(e) => {
                                     setQuantity((prev) =>
                                         0 > parseInt(e.target.value || "1") ||
-                                        parseInt(e.target.value || "1") > 10
+                                            parseInt(e.target.value || "1") > 10
                                             ? prev
                                             : parseInt(e.target.value || "0"),
                                     );

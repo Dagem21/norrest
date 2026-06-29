@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
@@ -24,3 +27,21 @@ export const useAppStore = create<AppState>()(
         },
     ),
 );
+
+export const useAppStoreHydrated = () => {
+    const [hydrated, setHydrated] = useState(false);
+
+    useEffect(() => {
+        const unsub = useAppStore.persist.onHydrate(() => setHydrated(false));
+        const unsubFinish = useAppStore.persist.onFinishHydration(() => setHydrated(true));
+
+        setHydrated(useAppStore.persist.hasHydrated());
+
+        return () => {
+            unsub();
+            unsubFinish();
+        };
+    }, []);
+
+    return hydrated;
+};

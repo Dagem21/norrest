@@ -7,12 +7,13 @@ const orderCountSchema = new Schema(
             type: Types.ObjectId,
             ref: "branches",
             unique: true,
+            sparse: true
         },
         userID: {
             type: Types.ObjectId,
             ref: "users",
-            required: true,
             unique: true,
+            sparse: true
         },
         counts: [
             {

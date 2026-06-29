@@ -6,7 +6,7 @@ import QrGenerator from "@/components/QRGenerator";
 import Modal from "@/components/ui/modal";
 import useApiFetch from "@/hooks/useAPIFetch";
 import { MenuContext } from "@/providers/menu";
-import { faGear, faPlus, faQrcode, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faGear, faPlus, faQrcode, faUsers, faWarning } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -17,8 +17,9 @@ import ViewMenuItem from "@/components/forms/menu/viewMenuItem";
 import Button from "@/components/ui/button";
 import PageNavigator from "@/components/pageNavigator";
 import { ToastContext } from "@/providers/toastProvider";
-import { permissionTypes } from "@/assets/enums/enum";
+import { orderStatusTypes, permissionTypes } from "@/assets/enums/enum";
 import { API_URL } from "@/config";
+import Input from "@/components/ui/input";
 
 export default function Branch() {
     const toaster = useContext(ToastContext);
@@ -28,6 +29,7 @@ export default function Branch() {
     const [isViewModalOpen, setViewModalOpen] = useState(false);
     const [isLoadingImage, setIsLoadingImage] = useState(true);
     const [isQRModalOpen, setQRModalOpen] = useState(false);
+    const [tableNumer, setTableNumber] = useState('');
     const [menu, setMenu] = useState<Array<any>>([]);
     const [pageLimit, setPageLimit] = useState({
         page: 1,
@@ -64,6 +66,19 @@ export default function Branch() {
     } = useApiFetch(
         {
             url: `/api/at/company/branch/permission?branchID=${params?.bid}`,
+            method: "GET",
+        },
+        true,
+    );
+
+    const {
+        data: dataOrderCount,
+        fetchData: fetchOrderCount,
+        isLoading: isLoadingOrderCount,
+        errors: errorsOrderCount,
+    } = useApiFetch(
+        {
+            url: `/api/at/company/branch/orders/count?branchID=${params?.bid}`,
             method: "GET",
         },
         true,
@@ -183,7 +198,7 @@ export default function Branch() {
                                         (dataPermission?.permission?.branchID === params?.bid ||
                                             (!dataPermission?.permission?.branchID &&
                                                 dataPermission?.permission?.companyID ===
-                                                    params?.cid)) &&
+                                                params?.cid)) &&
                                         dataPermission?.permission?.permissions?.includes(
                                             permissionTypes?.Admin,
                                         ) && (
@@ -246,40 +261,48 @@ export default function Branch() {
                         <div className="flex gap-2 flex-wrap justify-center">
                             <Link
                                 className="flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2 cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
-                                href={`/company/${1}/orders?status=all`}
+                                href={`/company/${params.cid}/branch/${params.bid}/orders`}
                             >
                                 <h1 className="text-sm text-center text-taupe-600 dark:text-taupe-200">
                                     All Orders
                                 </h1>
                                 <div className="p-2">
                                     <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
-                                        0
+                                        <Loading loading={isLoadingOrderCount} />
+                                        {!isLoadingOrderCount && errorsOrderCount?.details && <FontAwesomeIcon icon={faWarning} />}
+                                        {!isLoadingOrderCount && !errorsOrderCount?.details && dataOrderCount?.orderCount?.counts?.reduce((acc: number, current: any) => acc + current.count, 0)}
                                     </h1>
                                 </div>
                             </Link>
                             <Link
                                 className="flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2 cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
-                                href={`/company/${1}/orders?status=incoming`}
-                            >
-                                <h1 className="text-sm text-center text-taupe-600 dark:text-taupe-200">
-                                    Incoming Orders
-                                </h1>
-                                <div className="p-2">
-                                    <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
-                                        0
-                                    </h1>
-                                </div>
-                            </Link>
-                            <Link
-                                className="flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2 cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
-                                href={`/company/${1}/orders?status=pending`}
+                                href={`/company/${params.cid}/branch/${params.bid}/orders?status=Pending`}
                             >
                                 <h1 className="text-sm text-center text-taupe-600 dark:text-taupe-200">
                                     Pending Orders
                                 </h1>
                                 <div className="p-2">
                                     <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
-                                        0
+
+                                        <Loading loading={isLoadingOrderCount} />
+                                        {!isLoadingOrderCount && errorsOrderCount?.details && <FontAwesomeIcon icon={faWarning} />}
+                                        {!isLoadingOrderCount && !errorsOrderCount?.details && dataOrderCount?.orderCount?.counts?.find((ct: any) => ct.status === orderStatusTypes.Pending)?.count}
+                                    </h1>
+                                </div>
+                            </Link>
+                            <Link
+                                className="flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2 cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
+                                href={`/company/${params.cid}/branch/${params.bid}/orders?status=Processing`}
+                            >
+                                <h1 className="text-sm text-center text-taupe-600 dark:text-taupe-200">
+                                    Processing Orders
+                                </h1>
+                                <div className="p-2">
+                                    <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
+
+                                        <Loading loading={isLoadingOrderCount} />
+                                        {!isLoadingOrderCount && errorsOrderCount?.details && <FontAwesomeIcon icon={faWarning} />}
+                                        {!isLoadingOrderCount && !errorsOrderCount?.details && dataOrderCount?.orderCount?.counts?.find((ct: any) => ct.status === orderStatusTypes.Processing)?.count}
                                     </h1>
                                 </div>
                             </Link>
@@ -302,9 +325,14 @@ export default function Branch() {
                 title="Menu QR Code"
             >
                 <QrGenerator
-                    url={`${API_URL}/menu/${params?.bid}`}
+                    url={`${API_URL}/menu/${params?.bid}${tableNumer ? `?table=${tableNumer}` : ""}`}
                     title={`${data?.branch?.companyID?.name}, ${data?.branch?.name}`}
-                />
+                >
+                    <div className="flex items-center gap-2">
+                        <p className="text-sm">Table Number : </p>
+                        <Input type="number" onChange={(e) => setTableNumber(e.target.value)} />
+                    </div>
+                </QrGenerator>
             </Modal>
 
             <ViewMenuItem isOpen={isViewModalOpen} onClose={() => setViewModalOpen(false)}>

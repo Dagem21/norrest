@@ -1,6 +1,7 @@
 "use client";
 
-import { useAppStore } from "@/hooks/useAppStore";
+import Loading from "@/components/loadingComponent";
+import { useAppStore, useAppStoreHydrated } from "@/hooks/useAppStore";
 import { createContext, ReactNode, useEffect, useState } from "react";
 
 interface MenuContextType {
@@ -24,12 +25,21 @@ export const MenuProvider = ({ children }: MenuProviderProps) => {
     const [user, setUser] = useState<any>();
 
     const { isLoggedIn, user: userStore } = useAppStore();
+    const isHydrated = useAppStoreHydrated();
 
     useEffect(() => {
         if (isLoggedIn && userStore) {
             setUser(userStore);
         }
     }, [isLoggedIn, userStore]);
+
+    if (!isHydrated) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <Loading loading={true} />
+            </div>
+        );
+    }
 
     return (
         <MenuContext.Provider value={{ showMenu, setShowMenu, title, setTitle, user, setUser }}>
