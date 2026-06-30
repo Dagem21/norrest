@@ -43,3 +43,29 @@ export enum orderStatusTypes {
     Completed = "Completed",
     Paid = "Paid",
 }
+
+export enum companyStatusTypes {
+    Acitve = "Acitve",
+    Closed = "Closed",
+    Deleted = "Deleted",
+}
+
+export enum branchStatusTypes {
+    Acitve = "Acitve",
+    Closed = "Closed",
+    Deleted = "Deleted",
+}
+
+export enum employeeStatusTypes {
+    Acitve = "Acitve",
+    Deactivated = "Deactivated",
+    Blocked = "Blocked",
+    Deleted = "Deleted",
+}
+
+export enum userStatusTypes {
+    Acitve = "Acitve",
+    Deactivated = "Deactivated",
+    Blocked = "Blocked",
+    Deleted = "Deleted",
+}

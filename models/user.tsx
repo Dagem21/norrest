@@ -1,4 +1,4 @@
-import { userTypes } from "@/assets/enums/enum";
+import { userStatusTypes, userTypes } from "@/assets/enums/enum";
 import { Schema, model, models } from "mongoose";
 
 const UserSchema = new Schema(
@@ -41,6 +41,12 @@ const UserSchema = new Schema(
             required: true,
             default: userTypes.Customer,
         },
+        status: {
+            type: String,
+            enum: userStatusTypes,
+            required: true,
+            default: userStatusTypes.Acitve,
+        }
     },
     { timestamps: true },
 );

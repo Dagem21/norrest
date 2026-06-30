@@ -23,6 +23,7 @@ const branchUpdateSchema = yup.object().shape({
             return value.startsWith("9") || value.startsWith("7");
         }),
     address: yup.string(),
+    status: yup.string(),
 });
 
 export default branchUpdateSchema;

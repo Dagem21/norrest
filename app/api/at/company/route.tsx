@@ -221,6 +221,10 @@ export async function PUT(request: NextRequest) {
 
         const formattedCompany = formatCompany(validatedCompany);
 
+        Object.keys(formattedCompany).forEach(key => {
+            if (!formattedCompany[key]) delete formattedCompany[key];
+        });
+
         if (formattedCompany?.picture) {
             const imageBuffers = await createFile(validatedCompany?.picture as File);
             const urls = await uploadImage(imageBuffers);

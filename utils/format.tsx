@@ -5,8 +5,10 @@ import companySchema from "@/yup/company/company";
 import branchSchema from "@/yup/company/branch";
 import profileUpdateSchema from "@/yup/userRegistration/updateUser";
 import companyUpdateSchema from "@/yup/company/companyUpdate";
+import branchUpdateSchema from "@/yup/company/branchUpdate";
 
 export function formatPhone(phone: string): string {
+    if (!phone) return phone;
     phone = "+251" + phone.slice(-9);
     return phone;
 }
@@ -33,8 +35,8 @@ export function formatCompany(
     return company;
 }
 
-export function formatBranch(branch: yup.InferType<typeof branchSchema>): any {
-    branch.phoneNumber = "+251" + branch.phoneNumber.slice(-9);
+export function formatBranch(branch: yup.InferType<typeof branchSchema> | yup.InferType<typeof branchUpdateSchema>): any {
+    if (branch.phoneNumber) branch.phoneNumber = "+251" + branch.phoneNumber.slice(-9);
 
     return branch;
 }

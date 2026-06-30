@@ -1,3 +1,4 @@
+import { companyStatusTypes } from "@/assets/enums/enum";
 import { Schema, model, models, Types } from "mongoose";
 
 const companySchema = new Schema(
@@ -25,6 +26,12 @@ const companySchema = new Schema(
             type: [String],
             required: true,
         },
+        status: {
+            type: String,
+            enum: companyStatusTypes,
+            required: true,
+            default: companyStatusTypes.Acitve,
+        }
     },
     { timestamps: true },
 );

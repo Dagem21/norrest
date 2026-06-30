@@ -211,7 +211,12 @@ export async function PUT(request: NextRequest) {
         const decodedToken = await verifyUserAuth();
 
         const validatedBranch = await branchUpdateSchema.validate(newBranch, { abortEarly: false });
-        validatedBranch.phoneNumber = formatPhone(validatedBranch.phoneNumber || "");
+
+        const formattedBranch = formatBranch(validatedBranch)
+
+        Object.keys(formattedBranch).forEach(key => {
+            if (!formattedBranch[key]) delete formattedBranch[key];
+        });
 
         if (!branchID) {
             return new Response(JSON.stringify({ error: "Missing branch ID." }), {
@@ -256,7 +261,7 @@ export async function PUT(request: NextRequest) {
             );
         }
 
-        const { result, error } = await updateBranch(branchID, validatedBranch);
+        const { result, error } = await updateBranch(branchID, formattedBranch);
 
         if (!result || error) {
             return new Response(JSON.stringify({ error }), {

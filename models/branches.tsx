@@ -1,3 +1,4 @@
+import { branchStatusTypes } from "@/assets/enums/enum";
 import { Schema, model, models, Types } from "mongoose";
 
 const branchSchema = new Schema(
@@ -22,6 +23,12 @@ const branchSchema = new Schema(
             type: String,
             required: true,
         },
+        status: {
+            type: String,
+            enum: branchStatusTypes,
+            required: true,
+            default: branchStatusTypes.Acitve,
+        }
     },
     { timestamps: true },
 );

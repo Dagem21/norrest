@@ -24,6 +24,7 @@ const profileUpdateSchema = yup.object().shape({
             return value.startsWith("9") || value.startsWith("7");
         }),
     userType: yup.string(),
+    status: yup.string(),
     lastLogin: yup.date(),
 });
 
