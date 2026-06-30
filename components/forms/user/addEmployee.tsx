@@ -36,7 +36,7 @@ export default function EmployeeForm({ onFinish }: { onFinish: () => void }) {
         errors: errorsRegister,
     } = useApiFetch(
         {
-            url: `/api/at/company/employee/add`,
+            url: `/api/at/company/employee`,
             method: "POST",
         },
         false,
@@ -140,11 +140,7 @@ export default function EmployeeForm({ onFinish }: { onFinish: () => void }) {
                 </div>
             </fieldset>
 
-            <Button
-                type="submit"
-                text={`${isLoading ? "Adding Employee" : "Add Employee"}`}
-                disabled={isLoading}
-            />
+            <Button type="submit" text="Add Employee" disabled={isLoading} isLoading={isLoading} />
         </form>
     );
 }

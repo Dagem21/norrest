@@ -4,6 +4,7 @@ import { hashPassword } from "./encryption";
 import companySchema from "@/yup/company/company";
 import branchSchema from "@/yup/company/branch";
 import profileUpdateSchema from "@/yup/userRegistration/updateUser";
+import companyUpdateSchema from "@/yup/company/companyUpdate";
 
 export function formatPhone(phone: string): string {
     phone = "+251" + phone.slice(-9);
@@ -24,8 +25,10 @@ export function formatUserUpdate(user: yup.InferType<typeof profileUpdateSchema>
     return user;
 }
 
-export function formatCompany(company: yup.InferType<typeof companySchema>): any {
-    company.phoneNumber = "+251" + company.phoneNumber.slice(-9);
+export function formatCompany(
+    company: yup.InferType<typeof companySchema> | yup.InferType<typeof companyUpdateSchema>,
+): any {
+    if (company.phoneNumber) company.phoneNumber = "+251" + company.phoneNumber.slice(-9);
 
     return company;
 }

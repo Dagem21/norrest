@@ -4,7 +4,7 @@ import BranchForm from "@/components/forms/company/companyBranch";
 import Modal from "@/components/ui/modal";
 import Button from "@/components/ui/button";
 import { MenuContext } from "@/providers/menu";
-import { faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faAt, faGear, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
 import Input from "@/components/ui/input";
@@ -12,10 +12,15 @@ import { useParams } from "next/navigation";
 import useApiFetch from "@/hooks/useAPIFetch";
 import Image from "next/image";
 import Loading from "@/components/loadingComponent";
+import Link from "next/link";
+import UpdateBranchForm from "@/components/forms/company/companyUpdateBranch";
+import UpdateCompanyForm from "@/components/forms/company/companyUpdate";
 
 export default function Setting() {
     const params = useParams<{ cid: string }>();
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isCompanyModalOpen, setCompanyModalOpen] = useState(false);
+    const [selectedBranch, setSelectedBranch] = useState<any>();
     const menuContext = useContext(MenuContext);
 
     useEffect(() => {
@@ -45,6 +50,15 @@ export default function Setting() {
 
     const [editGeneralInfoMode, setEditGeneralInfoMode] = useState(false);
 
+    const handleEditCompany = () => {
+        setCompanyModalOpen(true);
+    };
+
+    const handleEdit = (branch: any) => {
+        setSelectedBranch(branch);
+        setModalOpen(true);
+    };
+
     return (
         <div className="flex flex-col flex-1 items-center">
             <div className="flex flex-col w-full">
@@ -56,7 +70,7 @@ export default function Setting() {
                             </h1>
                             <Button
                                 type="button"
-                                onClick={() => setEditGeneralInfoMode(!editGeneralInfoMode)}
+                                onClick={handleEditCompany}
                                 icon={<FontAwesomeIcon icon={faPen} />}
                             />
                         </div>
@@ -67,56 +81,79 @@ export default function Setting() {
                                         className="w-screen sm:max-w-sm rounded-lg object-cover"
                                         src={data?.company?.picture?.[1]}
                                         alt={data?.company?.name}
-                                        width={1000}
-                                        height={1000}
+                                        width={500}
+                                        height={500}
                                     />
                                 </div>
                                 <div className="grow flex flex-col gap-2">
-                                    <div className="w-full md:w-sm">
-                                        <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-400 mb-1">
+                                    <div>
+                                        <label htmlFor="fatherName" className="block mb-2 text-xs">
                                             Name
                                         </label>
-                                        <Input
-                                            disabled={!editGeneralInfoMode}
-                                            className={`${!editGeneralInfoMode && "border-0 cursor-not-allowed shadow-lg"}`}
-                                            value={data?.company?.name}
-                                        />
+                                        <div
+                                            className={`w-70 flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
+                                        >
+                                            <div
+                                                className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                            >
+                                                {data?.company?.name || "N/A"}
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div className="w-full md:w-sm">
-                                        <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-400 mb-1">
-                                            Phone Number
+                                    <div>
+                                        <label htmlFor="phone" className="block mb-2 text-xs">
+                                            Phone number
                                         </label>
-                                        <Input
-                                            type="phone"
-                                            disabled={!editGeneralInfoMode}
-                                            className={`${!editGeneralInfoMode && "border-0 cursor-not-allowed shadow-lg"}`}
-                                            value={data?.company?.phoneNumber}
-                                        />
+                                        <div
+                                            className={`w-70 flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
+                                        >
+                                            <div className="flex items-center h-full border-e border-gray-400 py-2 px-4 select-none">
+                                                +251
+                                            </div>
+                                            <div
+                                                className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                            >
+                                                {data?.company?.phoneNumber?.slice(-9) || "N/A"}
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div className="w-full md:w-sm">
-                                        <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-400 mb-1">
-                                            Email Address
+                                    <div>
+                                        <label htmlFor="email" className="block mb-2 text-xs">
+                                            Email
                                         </label>
-                                        <Input
-                                            type="email"
-                                            disabled={!editGeneralInfoMode}
-                                            className={`${!editGeneralInfoMode && "border-0 cursor-not-allowed shadow-lg"}`}
-                                            value={data?.company?.email}
-                                        />
+                                        <div
+                                            className={`w-70 flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                                                                                            hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
+                                        >
+                                            <div className="flex items-center h-full border-e border-gray-400 py-2 px-4 select-none">
+                                                <FontAwesomeIcon icon={faAt} />
+                                            </div>
+                                            <div
+                                                className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                            >
+                                                {data?.company?.email || "N/A"}
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div className="w-full md:w-sm">
-                                        <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-400 mb-1">
-                                            Website URL
+                                    <div>
+                                        <label htmlFor="fatherName" className="block mb-2 text-xs">
+                                            Name
                                         </label>
-                                        <Input
-                                            type="url"
-                                            disabled={!editGeneralInfoMode}
-                                            className={`${!editGeneralInfoMode && "border-0 cursor-not-allowed shadow-lg"}`}
-                                            value={data?.company?.website}
-                                        />
+                                        <div
+                                            className={`w-70 flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
+                                        >
+                                            <div
+                                                className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                            >
+                                                {data?.company?.website || "N/A"}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -214,9 +251,17 @@ export default function Setting() {
                                                     <button
                                                         className="bg-blue-950 py-1 px-2 hover:bg-blue-700 text-white font-bold rounded"
                                                         title="Edit"
+                                                        onClick={() => handleEdit(branch)}
                                                     >
                                                         <FontAwesomeIcon icon={faPen} />
                                                     </button>
+                                                    <Link
+                                                        className="bg-taupe-900 py-1 px-2 hover:bg-taupe-700 text-white font-bold rounded"
+                                                        title="Remove"
+                                                        href={`/company/${params.cid}/branch/${branch?._id}/settings`}
+                                                    >
+                                                        <FontAwesomeIcon icon={faGear} />
+                                                    </Link>
                                                     <button
                                                         className="bg-red-950 py-1 px-2 hover:bg-red-700 text-white font-bold rounded"
                                                         title="Remove"
@@ -244,6 +289,29 @@ export default function Setting() {
                     onFinish={() => {
                         fetchData();
                         setModalOpen(false);
+                    }}
+                />
+            </Modal>
+
+            <Modal
+                isOpen={isCompanyModalOpen}
+                onClose={() => setCompanyModalOpen(false)}
+                title="Update Company"
+            >
+                <UpdateCompanyForm
+                    company={data?.company}
+                    onFinish={() => {
+                        setCompanyModalOpen(false);
+                    }}
+                />
+            </Modal>
+
+            <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="Update Branch">
+                <UpdateBranchForm
+                    branch={selectedBranch}
+                    onFinish={() => {
+                        setModalOpen(false);
+                        fetchData();
                     }}
                 />
             </Modal>

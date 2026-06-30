@@ -339,7 +339,7 @@ export default function Menu() {
                                 onChange={(e) => {
                                     setQuantity((prev) =>
                                         0 > parseInt(e.target.value || "1") ||
-                                            parseInt(e.target.value || "1") > 10
+                                        parseInt(e.target.value || "1") > 10
                                             ? prev
                                             : parseInt(e.target.value || "0"),
                                     );
@@ -358,7 +358,7 @@ export default function Menu() {
                         </div>
                     </div>
                     <div className="flex flex-col gap-2 my-2">
-                        <Button text="Order Now" onClick={handleOrder} />
+                        <Button text="Order Now" onClick={handleOrder} isLoading={isLoadingOrder} />
                         <Button
                             text="Add to Orders"
                             style="secondary"

@@ -1,11 +1,14 @@
 "use client";
 
+import BranchForm from "@/components/forms/company/companyBranch";
+import UpdateBranchForm from "@/components/forms/company/companyUpdateBranch";
 import Loading from "@/components/loadingComponent";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
+import Modal from "@/components/ui/modal";
 import useApiFetch from "@/hooks/useAPIFetch";
 import { MenuContext } from "@/providers/menu";
-import { faPen } from "@fortawesome/free-solid-svg-icons";
+import { faAt, faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -13,6 +16,7 @@ import { useContext, useEffect, useState } from "react";
 export default function Setting() {
     const menuContext = useContext(MenuContext);
     const params = useParams<{ cid: string; bid: string }>();
+    const [isModalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
         menuContext?.setTitle("Setting");
@@ -26,8 +30,6 @@ export default function Setting() {
         true,
     );
 
-    const [editGeneralInfoMode, setEditGeneralInfoMode] = useState(false);
-
     return (
         <div className="flex flex-col flex-1 items-center">
             <div className="flex flex-col w-full">
@@ -39,71 +41,97 @@ export default function Setting() {
                             </h1>
                             <Button
                                 type="button"
-                                onClick={() => setEditGeneralInfoMode(!editGeneralInfoMode)}
+                                onClick={() => setModalOpen(true)}
                                 icon={<FontAwesomeIcon icon={faPen} />}
                             />
                         </div>
-                        {!isLoading && data &&
+                        {!isLoading && data && (
                             <div className="flex flex-wrap justify-between gap-4 mt-4">
-                                <div className="w-full md:w-1/2 lg:w-1/4">
-                                    <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-400 mb-1">
+                                <div>
+                                    <label htmlFor="fatherName" className="block mb-2 text-xs">
                                         Name
                                     </label>
-                                    <Input
-                                        className={`${!editGeneralInfoMode && "border-0 cursor-not-allowed shadow-lg"}`}
-                                        type="text"
-                                        value={data?.branch?.name}
-                                        disabled={!editGeneralInfoMode}
-                                    />
+                                    <div
+                                        className={`w-70 flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
+                                    >
+                                        <div
+                                            className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                        >
+                                            {data?.branch?.name || "N/A"}
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="w-full md:w-1/2 lg:w-1/4">
-                                    <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-400 mb-1">
-                                        Phone Number
+                                <div>
+                                    <label htmlFor="phone" className="block mb-2 text-xs">
+                                        Phone number
                                     </label>
-                                    <Input
-                                        className={`${!editGeneralInfoMode && "border-0 cursor-not-allowed shadow-lg"}`}
-                                        type="phone"
-                                        value={data?.branch?.phoneNumber}
-                                        disabled={!editGeneralInfoMode}
-                                    />
+                                    <div
+                                        className={`w-70 flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
+                                    >
+                                        <div className="flex items-center h-full border-e border-gray-400 py-2 px-4 select-none">
+                                            +251
+                                        </div>
+                                        <div
+                                            className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                        >
+                                            {data?.branch?.phoneNumber?.slice(-9) || "N/A"}
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="w-full md:w-1/2 lg:w-1/4">
-                                    <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-400 mb-1">
-                                        Email Address
+                                <div>
+                                    <label htmlFor="email" className="block mb-2 text-xs">
+                                        Email
                                     </label>
-                                    <Input
-                                        className={`${!editGeneralInfoMode && "border-0 cursor-not-allowed shadow-lg"}`}
-                                        type="email"
-                                        value={data?.branch?.email}
-                                        disabled={!editGeneralInfoMode}
-                                    />
+                                    <div
+                                        className={`w-70 flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
+                                    >
+                                        <div className="flex items-center h-full border-e border-gray-400 py-2 px-4 select-none">
+                                            <FontAwesomeIcon icon={faAt} />
+                                        </div>
+                                        <div
+                                            className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                        >
+                                            {data?.branch?.email || "N/A"}
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="w-full md:w-1/2 lg:w-1/5">
-                                    <label className="block text-xs font-medium text-taupe-600 dark:text-taupe-400 mb-1">
+                                <div>
+                                    <label htmlFor="fatherName" className="block mb-2 text-xs">
                                         Address
                                     </label>
-                                    <Input
-                                        className={`${!editGeneralInfoMode && "border-0 cursor-not-allowed shadow-lg"}`}
-                                        type="text"
-                                        value={data?.branch?.address}
-                                        disabled={!editGeneralInfoMode}
-                                    />
+                                    <div
+                                        className={`w-70 flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
+                                    >
+                                        <div
+                                            className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                        >
+                                            {data?.branch?.address || "N/A"}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>}
+                            </div>
+                        )}
                         <div className="w-fit m-auto">
                             <Loading loading={isLoading} />
                         </div>
-                        {editGeneralInfoMode && (
-                            <div className="flex justify-center mt-4">
-                                <Button text="Update" type="button" />
-                            </div>
-                        )}
                     </div>
                 </div>
             </div>
+            <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="Update Branch">
+                <UpdateBranchForm
+                    branch={data?.branch}
+                    onFinish={() => {
+                        setModalOpen(false);
+                    }}
+                />
+            </Modal>
         </div>
     );
 }

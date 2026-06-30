@@ -121,11 +121,7 @@ export default function MenuItemForm({ onFinish }: { onFinish: () => void }) {
                     <label htmlFor="website" className="block mb-2.5 text-xs">
                         Picture
                     </label>
-                    <Input
-                        type="file"
-                        {...register("picture")}
-                        error={errors?.picture}
-                    />
+                    <Input type="file" {...register("picture")} error={errors?.picture} />
                 </div>
                 <div>
                     {Object.values(menuItemPicture ?? {})?.length > 0 && (
@@ -141,11 +137,7 @@ export default function MenuItemForm({ onFinish }: { onFinish: () => void }) {
                 </div>
             </div>
 
-            <Button
-                type="submit"
-                text={`${isLoading ? "Adding Item" : "Add Menu Item"}`}
-                disabled={isLoading}
-            />
+            <Button type="submit" text="Add Menu Item" isLoading={isLoading} disabled={isLoading} />
         </form>
     );
 }

@@ -33,10 +33,19 @@ export const findOrders = async (query: object, page: number = 1, limit: number 
     let orders,
         error = null;
     try {
-        const order = await orderSchema.find(query)
+        const order = await orderSchema
+            .find(query)
             .populate({
                 path: "userID",
                 select: "firstName phoneNumber",
+            })
+            .populate({
+                path: "branchID",
+                select: "name",
+                populate: {
+                    path: "companyID",
+                    select: "name picture",
+                },
             })
             .populate("items.itemID")
             .skip((page - 1) * limit)

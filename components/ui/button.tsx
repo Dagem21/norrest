@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import Loading from "../loadingComponent";
 
 type ButtonProps = {
     text?: string;
@@ -8,6 +9,7 @@ type ButtonProps = {
     disabled?: boolean;
     type?: "button" | "submit" | "reset" | undefined;
     style?: "primary" | "secondary" | "teritary" | undefined;
+    isLoading?: boolean;
 };
 
 export default function Button({
@@ -18,6 +20,7 @@ export default function Button({
     disabled = false,
     type,
     style = "primary",
+    isLoading = false,
 }: ButtonProps) {
     return (
         <button
@@ -29,11 +32,16 @@ export default function Button({
                 mx-2 hover:bg-taupe-500 text-white font-bold py-2 px-4 rounded-lg cursor-pointer
             `}
             onClick={onClick}
-            disabled={disabled}
+            disabled={disabled || isLoading}
             title={title}
         >
-            {icon}
-            {text}
+            <Loading loading={isLoading} />
+            {!isLoading && (
+                <>
+                    {icon}
+                    {text}
+                </>
+            )}
         </button>
     );
 }

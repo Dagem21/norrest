@@ -30,7 +30,7 @@ export default function PageNavigator({
             <div className="flex items-center">
                 <div className="flex items-center gap-1">
                     <select
-                        className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-blue-700 text-white font-bold rounded"
+                        className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-taupe-700 text-white font-bold rounded"
                         onChange={(e) => {
                             onLimitChange(parseInt(e.target.value));
                         }}
@@ -42,7 +42,7 @@ export default function PageNavigator({
                         <option value={50}>50</option>
                     </select>
                     <button
-                        className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-blue-700 text-white font-bold rounded"
+                        className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-taupe-700 text-white font-bold rounded"
                         onClick={() => {
                             onPageChange(1);
                         }}
@@ -52,7 +52,7 @@ export default function PageNavigator({
                     </button>
 
                     <button
-                        className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-blue-700 text-white font-bold rounded"
+                        className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-taupe-700 text-white font-bold rounded"
                         onClick={() => {
                             onPageChange(page > 1 ? page - 1 : 1);
                         }}
@@ -63,7 +63,7 @@ export default function PageNavigator({
 
                     {page > 1 && (
                         <button
-                            className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-blue-700 text-white font-bold rounded"
+                            className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-taupe-700 text-white font-bold rounded"
                             onClick={() => {
                                 onPageChange(page > 1 ? page - 1 : 1);
                             }}
@@ -73,13 +73,13 @@ export default function PageNavigator({
                         </button>
                     )}
 
-                    <button className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-blue-700 text-white font-bold rounded">
+                    <button className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-taupe-700 text-white font-bold rounded">
                         {page}
                     </button>
 
                     {page < totalPages && (
                         <button
-                            className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-blue-700 text-white font-bold rounded"
+                            className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-taupe-700 text-white font-bold rounded"
                             onClick={() => {
                                 onPageChange(page < totalPages ? page + 1 : totalPages);
                             }}
@@ -89,7 +89,7 @@ export default function PageNavigator({
                         </button>
                     )}
                     <button
-                        className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-blue-700 text-white font-bold rounded"
+                        className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-taupe-700 text-white font-bold rounded"
                         onClick={() => {
                             onPageChange(page < totalPages ? page + 1 : totalPages);
                         }}
@@ -98,7 +98,7 @@ export default function PageNavigator({
                         <FontAwesomeIcon icon={faAngleRight} />
                     </button>
                     <button
-                        className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-blue-700 text-white font-bold rounded"
+                        className="bg-taupe-400 dark:bg-taupe-800 px-2 py-1 hover:bg-taupe-700 text-white font-bold rounded"
                         onClick={() => {
                             onPageChange(page < totalPages ? page + 1 : totalPages);
                         }}

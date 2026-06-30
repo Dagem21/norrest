@@ -2,26 +2,34 @@ import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import useApiFetch from "@/hooks/useAPIFetch";
 import { ToastContext } from "@/providers/toastProvider";
-import branchSchema from "@/yup/company/branch";
+import branchUpdateSchema from "@/yup/company/branchUpdate";
 import { faAt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useParams } from "next/navigation";
 import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-export default function BranchForm({ onFinish }: { onFinish: () => void }) {
-    const params = useParams<{ cid: string }>();
+export default function UpdateBranchForm({
+    branch,
+    onFinish,
+}: {
+    branch: any;
+    onFinish: () => void;
+}) {
     const toaster = useContext(ToastContext);
     const {
         register,
         formState: { errors },
         handleSubmit,
     } = useForm({
-        resolver: yupResolver(branchSchema),
+        resolver: yupResolver(branchUpdateSchema),
         mode: "onChange",
         defaultValues: {
-            companyID: params?.cid,
+            _id: branch?._id,
+            name: branch?.name,
+            phoneNumber: branch?.phoneNumber?.slice(-9),
+            email: branch?.email,
+            address: branch?.address,
         },
     });
 
@@ -32,8 +40,8 @@ export default function BranchForm({ onFinish }: { onFinish: () => void }) {
         errors: errorsRegister,
     } = useApiFetch(
         {
-            url: `/api/at/company/branch`,
-            method: "POST",
+            url: `/api/at/company/branch?branchID=${branch?._id}`,
+            method: "PUT",
         },
         false,
     );
@@ -41,7 +49,7 @@ export default function BranchForm({ onFinish }: { onFinish: () => void }) {
     useEffect(() => {
         if (!isLoading && data) {
             const toast = {
-                message: "Branch added.",
+                message: "Branch updated.",
                 type: "success",
             };
             toaster?.addToast(toast);
@@ -108,7 +116,7 @@ export default function BranchForm({ onFinish }: { onFinish: () => void }) {
                 />
             </div>
 
-            <Button type="submit" text="Add Branch" isLoading={isLoading} disabled={isLoading} />
+            <Button type="submit" text="Update Branch" isLoading={isLoading} disabled={isLoading} />
         </form>
     );
 }

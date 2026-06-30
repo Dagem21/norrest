@@ -113,7 +113,7 @@ export default function SignInForm({
                 )}
 
                 <div className="flex flex-col items-strech w-full">
-                    <Button text={isLoading ? " Logging In" : "Login"} type="submit" disabled={isLoading} icon={isLoading && <FontAwesomeIcon icon={faSpinner} spin />} />
+                    <Button text="Login" type="submit" isLoading={isLoading} disabled={isLoading} />
                     <h1 className="text-center text-xs">
                         Don't have an account?{" "}
                         <Link href={`/register`} className="text-sm cusrsor-pointer">

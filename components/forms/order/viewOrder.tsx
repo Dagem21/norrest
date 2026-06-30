@@ -269,7 +269,11 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                                 </div>
                             ))}
                             <div className="flex items-center justify-center mt-2">
-                                <Button text="Order" onClick={handleOrder} />
+                                <Button
+                                    text="Order"
+                                    onClick={handleOrder}
+                                    isLoading={isLoadingOrderUpdate}
+                                />
                                 <Button text="Clear" style="secondary" onClick={handleCartClear} />
                             </div>
                         </div>

@@ -191,7 +191,7 @@ export default function Settings() {
                                 setModalOpen(true);
                             }}
                         />
-                        <Button text=" Change password" />
+                        <Button text="Change password" />
                     </div>
                 </div>
             </div>

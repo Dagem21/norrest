@@ -4,6 +4,7 @@ import Input from "@/components/ui/input";
 import useApiFetch from "@/hooks/useAPIFetch";
 import { ToastContext } from "@/providers/toastProvider";
 import companySchema from "@/yup/company/company";
+import companyUpdateSchema from "@/yup/company/companyUpdate";
 import { faAt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -11,7 +12,13 @@ import Image from "next/image";
 import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-export default function CompanyRegisterForm({ onFinish }: { onFinish: () => void }) {
+export default function UpdateCompanyForm({
+    company,
+    onFinish,
+}: {
+    company: any;
+    onFinish: () => void;
+}) {
     const toaster = useContext(ToastContext);
     const {
         register,
@@ -19,8 +26,15 @@ export default function CompanyRegisterForm({ onFinish }: { onFinish: () => void
         formState: { errors },
         handleSubmit,
     } = useForm({
-        resolver: yupResolver(companySchema),
+        resolver: yupResolver(companyUpdateSchema),
         mode: "onChange",
+        defaultValues: {
+            _id: company?._id,
+            phoneNumber: company?.phoneNumber?.slice(-9),
+            email: company?.email,
+            name: company?.name,
+            website: company?.website,
+        },
     });
 
     const {
@@ -30,8 +44,8 @@ export default function CompanyRegisterForm({ onFinish }: { onFinish: () => void
         errors: errorsRegister,
     } = useApiFetch(
         {
-            url: "/api/at/company",
-            method: "POST",
+            url: `/api/at/company?companyID=${company?._id}`,
+            method: "PUT",
         },
         false,
     );
@@ -61,7 +75,9 @@ export default function CompanyRegisterForm({ onFinish }: { onFinish: () => void
         formData.append("email", data?.email);
         formData.append("phoneNumber", data?.phoneNumber);
         formData.append("website", data?.website);
-        formData.append("picture", data?.picture[0]);
+        if (data?.picture?.[0]) {
+            formData.append("picture", data?.picture?.[0]);
+        }
 
         fetchData({ data: formData });
     };
@@ -136,7 +152,7 @@ export default function CompanyRegisterForm({ onFinish }: { onFinish: () => void
             <div className="flex items-center justify-center">
                 <Button
                     type="submit"
-                    text="Register Company"
+                    text="Update Company"
                     isLoading={isLoading}
                     disabled={isLoading}
                 />

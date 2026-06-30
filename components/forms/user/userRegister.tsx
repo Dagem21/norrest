@@ -202,7 +202,7 @@ export default function UserRegisterForm() {
                 </label>
             </div>
             <div className="flex items-center justify-center">
-                <Button text="Continue" type="submit" />
+                <Button text="Continue" type="submit" isLoading={isLoading} />
             </div>
             <h1 className="text-center mt-2 text-xs">
                 Already registered?{" "}
