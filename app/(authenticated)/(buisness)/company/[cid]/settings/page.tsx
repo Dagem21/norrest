@@ -20,6 +20,7 @@ export default function Setting() {
     const params = useParams<{ cid: string }>();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isCompanyModalOpen, setCompanyModalOpen] = useState(false);
+    const [isBranchModalOpen, setBranchModalOpen] = useState(false);
     const [selectedBranch, setSelectedBranch] = useState<any>();
     const menuContext = useContext(MenuContext);
 
@@ -48,15 +49,13 @@ export default function Setting() {
         true,
     );
 
-    const [editGeneralInfoMode, setEditGeneralInfoMode] = useState(false);
-
     const handleEditCompany = () => {
         setCompanyModalOpen(true);
     };
 
     const handleEdit = (branch: any) => {
         setSelectedBranch(branch);
-        setModalOpen(true);
+        setBranchModalOpen(true);
     };
 
     return (
@@ -161,15 +160,6 @@ export default function Setting() {
                         <div className="w-fit m-auto my-2">
                             <Loading loading={isLoading} />
                         </div>
-                        {editGeneralInfoMode && (
-                            <div className="flex justify-center mt-4">
-                                <Button
-                                    text="Update"
-                                    type="button"
-                                    onClick={() => setModalOpen(true)}
-                                />
-                            </div>
-                        )}
                     </div>
                     <div className="mb-2 p-4 bg-taupe-200 dark:bg-taupe-600 rounded-lg">
                         <div className="flex items-center justify-between mb-4">
@@ -257,7 +247,7 @@ export default function Setting() {
                                                     </button>
                                                     <Link
                                                         className="bg-taupe-900 py-1 px-2 hover:bg-taupe-700 text-white font-bold rounded"
-                                                        title="Remove"
+                                                        title="Setting"
                                                         href={`/company/${params.cid}/branch/${branch?._id}/settings`}
                                                     >
                                                         <FontAwesomeIcon icon={faGear} />
@@ -306,11 +296,15 @@ export default function Setting() {
                 />
             </Modal>
 
-            <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="Update Branch">
+            <Modal
+                isOpen={isBranchModalOpen}
+                onClose={() => setBranchModalOpen(false)}
+                title="Update Branch"
+            >
                 <UpdateBranchForm
                     branch={selectedBranch}
                     onFinish={() => {
-                        setModalOpen(false);
+                        setBranchModalOpen(false);
                         fetchData();
                     }}
                 />

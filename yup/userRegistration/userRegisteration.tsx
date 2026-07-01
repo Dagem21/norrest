@@ -24,6 +24,7 @@ const userSchema = yup.object().shape({
             return password === value;
         }),
     userType: yup.string(),
+    status: yup.string(),
     lastLogin: yup.date(),
 });
 

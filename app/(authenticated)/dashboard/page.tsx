@@ -1,6 +1,14 @@
 "use client";
 
+import { MenuContext } from "@/providers/menu";
+import { useContext, useEffect } from "react";
+
 export default function Dashboard() {
+    const menuContext = useContext(MenuContext);
+
+    useEffect(() => {
+        menuContext?.setTitle("Dashboard");
+    });
     return (
         <div className="flex flex-col flex-1 items-center">
             <div className="flex flex-col w-full">

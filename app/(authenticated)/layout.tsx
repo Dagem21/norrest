@@ -3,8 +3,9 @@ import { handleLogout } from "@/actions/auth";
 import Sidebar from "@/components/menu/sidebar";
 import { useAppStore } from "@/hooks/useAppStore";
 import { MenuContext } from "@/providers/menu";
-import { faBars, faSignOut } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faExternalLink, faSignOut } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import { useContext, useTransition } from "react";
 
 export default function AuthenticatedLayout({
@@ -20,6 +21,17 @@ export default function AuthenticatedLayout({
         logout();
         startTransition(() => handleLogout());
     };
+
+    if (!menuContext?.user) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center">
+                <p>Please signin to access your account.</p>
+                <Link replace href="/signin">
+                    Go to login page. <FontAwesomeIcon icon={faExternalLink} />
+                </Link>
+            </div>
+        );
+    }
 
     return (
         <div className="relative h-screen bg-cover overflow-y-auto">

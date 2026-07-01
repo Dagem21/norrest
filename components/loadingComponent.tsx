@@ -4,11 +4,16 @@ import { ReactNode } from "react";
 
 export default function Loading({ loading }: { loading: boolean }) {
     if (!loading) {
-        return
+        return;
     }
     return (
         <div className="m-auto">
-            <FontAwesomeIcon icon={faSpinner} size="xl" spin />
+            <FontAwesomeIcon
+                className="text-taupe-900 dark:text-taupe-100"
+                icon={faSpinner}
+                size="xl"
+                spin
+            />
         </div>
     );
 }

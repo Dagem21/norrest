@@ -278,19 +278,21 @@ export default function Menu() {
             </div>
             <ViewMenuItem isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
                 <div className="flex flex-col p-2">
-                    <div className="flex items-center flex-wrap shadow-lg">
-                        <div className="flex items-center justify-center">
-                            <Image
-                                className="max-w-sm rounded-lg object-cover"
-                                src={selectedItem?.picture?.[1]}
-                                alt={selectedItem?.name}
-                                width={300}
-                                height={300}
-                                onLoad={() => setIsLoadingImage(false)}
-                                onError={() => setIsLoadingImage(false)}
-                            />
-                            <Loading loading={isLoadingImage} />
-                        </div>
+                    <div className="relative min-w-100 min-h-100 flex-shrink-0 flex items-center justify-center overflow-hidden rounded-lg shadow-lg">
+                        <Image
+                            className="w-full h-full object-cover"
+                            src={selectedItem?.picture?.[1]}
+                            alt={selectedItem?.name}
+                            width={300}
+                            height={300}
+                            onLoad={() => setIsLoadingImage(false)}
+                            onError={() => setIsLoadingImage(false)}
+                        />
+                        {isLoadingImage && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-taupe-100 dark:bg-taupe-900">
+                                <Loading loading={isLoadingImage} />
+                            </div>
+                        )}
                     </div>
                     <div className="flex flex-col justify-between my-2">
                         <div className="flex items-center justify-between tracking-wide">

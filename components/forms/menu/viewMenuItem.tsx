@@ -8,6 +8,7 @@ type ViewMenuItemProps = {
 
 export default function ViewMenuItem({ isOpen, onClose, children }: ViewMenuItemProps) {
     const [isVisible, setIsVisible] = useState(false);
+    const [shouldRender, setShouldRender] = useState(false);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -17,33 +18,40 @@ export default function ViewMenuItem({ isOpen, onClose, children }: ViewMenuItem
         };
 
         if (isOpen) {
+            setShouldRender(true);
             window.addEventListener("keydown", handleKeyDown);
             document.body.style.overflow = "hidden";
-            setIsVisible(true);
-        }
 
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown);
+            const timer = setTimeout(() => setIsVisible(true), 10);
+            return () => {
+                window.removeEventListener("keydown", handleKeyDown);
+                clearTimeout(timer);
+            };
+        } else {
+            setIsVisible(false);
             document.body.style.overflow = "auto";
-        };
+
+            const timer = setTimeout(() => setShouldRender(false), 900);
+            return () => clearTimeout(timer);
+        }
     }, [isOpen, onClose]);
 
-    if (!isOpen) {
+    if (!shouldRender) {
         return null;
     }
 
     return (
         <div
-            className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 shadow-lg transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"}`}
+            className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 shadow-lg transition-opacity duration-300 ${
+                isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            }`}
             onClick={onClose}
         >
             <div
-                className={`max-h-[90vh] rounded-2xl bg-taupe-200 dark:bg-taupe-600 shadow-xl transition-all duration-300 ease-out transform flex flex-col ${isVisible ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
+                className={`w-full max-w-lg max-h-[90vh] rounded-2xl bg-taupe-200 dark:bg-taupe-600 shadow-xl flex flex-col`}
                 onClick={(event) => event.stopPropagation()}
             >
-                <div className="px-2 py-5 overflow-auto" style={{ maxHeight: "calc(90vh - 72px)" }}>
-                    {children}
-                </div>
+                <div className="p-5 overflow-y-auto flex-1 min-h-0">{children}</div>
             </div>
         </div>
     );

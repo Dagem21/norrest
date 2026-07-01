@@ -1,6 +1,7 @@
+import { userStatusTypes } from "@/assets/enums/enum";
 import { findUser } from "@/dal/user/userDAL";
 import { verifyPassword } from "@/utils/encryption";
-import { generateRefreshToken, generateToken } from "@/utils/token";
+import { generateToken } from "@/utils/token";
 import { validateEmail, validatePhone } from "@/utils/validation";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
@@ -35,6 +36,15 @@ export async function POST(request: NextRequest) {
             const { password: savedPass, ...loggedUser } = user;
             const checkPassword = await verifyPassword(password, savedPass);
             if (checkPassword) {
+                if (loggedUser.status !== userStatusTypes.Active) {
+                    return new Response(
+                        JSON.stringify({ error: "Your account is blocked or inactive." }),
+                        {
+                            status: 400,
+                            headers: { "Content-Type": "application/json" },
+                        },
+                    );
+                }
                 const token = generateToken({
                     userId: loggedUser?._id,
                     email: loggedUser?.email,

@@ -3,10 +3,10 @@
 import { toastTypes } from "@/assets/enums/enum";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useState, useEffect } from "react";
 
 interface ToastContextType {
-    addToast: React.Dispatch<React.SetStateAction<any>>;
+    addToast: (toast: any) => void;
 }
 
 interface toastType {
@@ -17,55 +17,88 @@ interface toastType {
 export const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 const ToastProvider = ({ children }: { children: ReactNode }) => {
-    const [toasts, setToasts] = useState<toastType | null>();
+    const [toast, setToast] = useState<toastType | null>(null);
+    const [isVisible, setIsVisible] = useState(false);
+    const [shouldRender, setShouldRender] = useState(false);
 
-    const deleteToast = () => {
-        setToasts(null);
-    };
+    useEffect(() => {
+        if (toast) {
+            setShouldRender(true);
+            const entryTimer = setTimeout(() => setIsVisible(true), 10);
 
-    const addToast = (toast: toastType) => {
-        if (toasts) {
-            deleteToast();
+            const autoDismissTimer = setTimeout(() => {
+                setIsVisible(false);
+            }, 5000);
+
+            return () => {
+                clearTimeout(entryTimer);
+                clearTimeout(autoDismissTimer);
+            };
+        } else {
+            setIsVisible(false);
         }
-        setToasts(toast);
+    }, [toast]);
+
+    useEffect(() => {
+        if (!isVisible && shouldRender) {
+            const unmountTimer = setTimeout(() => {
+                setShouldRender(false);
+                setToast(null);
+            }, 300);
+
+            return () => clearTimeout(unmountTimer);
+        }
+    }, [isVisible, shouldRender]);
+
+    const addToast = (newToast: toastType) => {
+        if (toast) {
+            setIsVisible(false);
+            setTimeout(() => {
+                setToast(newToast);
+            }, 200);
+        } else {
+            setToast(newToast);
+        }
     };
 
-    const MakeToast = ({ toast }: { toast: toastType }) => {
-        const color =
-            toast?.type === toastTypes.success
-                ? "#62ff54c7"
-                : toast?.type === toastTypes.error
-                  ? "#ff5f54c7"
-                  : toast?.type === toastTypes.warning
-                    ? "#ffe554c7"
-                    : "#62ff54c7";
+    const handleManualDelete = () => {
+        setIsVisible(false);
+    };
 
-        const timerID = setTimeout(() => {
-            deleteToast();
-        }, 5000);
-
-        const handleDelete = () => {
-            deleteToast();
-            clearTimeout(timerID);
-        };
-
-        return (
-            <div
-                className="flex justify-between items-center p-3 rounded max-w-sm mt-2"
-                style={{ backgroundColor: color }}
-            >
-                <p className="flex-1 m-0 text-sm">{toast?.message}</p>
-                <FontAwesomeIcon icon={faClose} onClick={handleDelete} className="m-0 p-0" />
-            </div>
-        );
+    const getBorderColor = () => {
+        switch (toast?.type) {
+            case toastTypes.success:
+                return "#62ff54c7";
+            case toastTypes.error:
+                return "#ff5f54c7";
+            case toastTypes.warning:
+                return "#ffe554c7";
+            default:
+                return "#62ff54c7";
+        }
     };
 
     return (
         <ToastContext.Provider value={{ addToast }}>
-            <div className="bg-transparent fixed top-0 end-0 w-sm z-100">
-                {toasts && <MakeToast toast={toasts} />}
-            </div>
             {children}
+
+            <div className="fixed top-4 end-4 w-full max-w-sm z-[100] pointer-events-none flex flex-col items-end gap-2 overflow-hidden p-2">
+                {shouldRender && toast && (
+                    <div
+                        className={`w-full flex justify-between items-center p-3 rounded bg-taupe-800 shadow-md shadow-taupe-600/30 border-l-4 pointer-events-auto transform transition-all duration-300 ease-out ${
+                            isVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
+                        }`}
+                        style={{ borderColor: getBorderColor() }}
+                    >
+                        <p className="flex-1 m-0 text-sm text-white">{toast.message}</p>
+                        <FontAwesomeIcon
+                            icon={faClose}
+                            onClick={handleManualDelete}
+                            className="m-0 p-1 text-taupe-400 hover:text-white cursor-pointer rounded transition-colors"
+                        />
+                    </div>
+                )}
+            </div>
         </ToastContext.Provider>
     );
 };

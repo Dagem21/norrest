@@ -3,7 +3,7 @@ import { findPermission, findUserCompanies } from "@/dal/permissions/permissions
 import { verifyUserAuth } from "@/utils/authHelper";
 import mongoose from "mongoose";
 import { NextRequest } from "next/server";
-import { permissionTypes, roleTypes } from "@/assets/enums/enum";
+import { employeeStatusTypes, permissionTypes, roleTypes } from "@/assets/enums/enum";
 import { createCompany } from "@/dal/company/companyDAL";
 import { createPermission } from "@/dal/permissions/permissionsDAL";
 import { createFile } from "@/utils/createFile";
@@ -100,10 +100,10 @@ export async function GET(request: NextRequest) {
                 userID: decodedToken?.userId,
             });
 
-            if (!permission || error) {
+            if (!permission || error || permission.status !== employeeStatusTypes.Active) {
                 return new Response(
                     JSON.stringify({
-                        error: error || "You do not have permission to perform this action.",
+                        error: error || "Access denied.",
                     }),
                     {
                         status: 403,
@@ -113,13 +113,10 @@ export async function GET(request: NextRequest) {
             }
 
             if (permission?.branchID) {
-                return new Response(
-                    JSON.stringify({ error: "You do not have permission to perform this action." }),
-                    {
-                        status: 403,
-                        headers: { "Content-Type": "application/json" },
-                    },
-                );
+                return new Response(JSON.stringify({ error: "Access denied." }), {
+                    status: 403,
+                    headers: { "Content-Type": "application/json" },
+                });
             }
 
             const { company, error: companyError } = await findCompanyByID(companyID);
@@ -141,6 +138,7 @@ export async function GET(request: NextRequest) {
         let { permission, error } = await findUserCompanies(
             {
                 userID: new mongoose.Types.ObjectId(decodedToken?.userId),
+                status: employeeStatusTypes.Active,
             },
             parseInt(page),
             parseInt(limit),
@@ -221,7 +219,7 @@ export async function PUT(request: NextRequest) {
 
         const formattedCompany = formatCompany(validatedCompany);
 
-        Object.keys(formattedCompany).forEach(key => {
+        Object.keys(formattedCompany).forEach((key) => {
             if (!formattedCompany[key]) delete formattedCompany[key];
         });
 

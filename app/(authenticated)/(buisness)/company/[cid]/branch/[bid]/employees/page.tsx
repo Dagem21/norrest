@@ -5,17 +5,26 @@ import Modal from "@/components/ui/modal";
 import PageNavigator from "@/components/pageNavigator";
 import { MenuContext } from "@/providers/menu";
 import { formatDate } from "@/utils/formatDate";
-import { faBan, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faCheckCircle, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
 import Button from "@/components/ui/button";
 import useApiFetch from "@/hooks/useAPIFetch";
 import { useParams } from "next/navigation";
 import Loading from "@/components/loadingComponent";
+import UpdateEmployeeForm from "@/components/forms/user/updateEmployee";
+import { employeeStatusTypes, userStatusTypes } from "@/assets/enums/enum";
+import { ToastContext } from "@/providers/toastProvider";
 
 export default function Employee() {
     const params = useParams<{ cid: string; bid: string }>();
+    const toaster = useContext(ToastContext);
     const [isModalOpen, setModalOpen] = useState(false);
+    const [selectedEmpoyee, setSelectedEmpoyee] = useState<any>();
+    const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
+    const [isActivateModalOpen, setActivateModalOpen] = useState(false);
+    const [isDisableModalOpen, setDisableModalOpen] = useState(false);
+    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const menuContext = useContext(MenuContext);
 
     useEffect(() => {
@@ -29,6 +38,72 @@ export default function Employee() {
         },
         true,
     );
+
+    const {
+        data: dataUpdate,
+        fetchData: fetchDataUpdate,
+        isLoading: isLoadingUpdate,
+        errors: errorsUpdate,
+    } = useApiFetch(
+        {
+            url: `/api/at/company/employee?branchID=${params.bid}`,
+            method: "PUT",
+        },
+        false,
+    );
+
+    useEffect(() => {
+        if (!isLoadingUpdate && dataUpdate) {
+            setActivateModalOpen(false);
+            setDisableModalOpen(false);
+            setDeleteModalOpen(false);
+
+            fetchData();
+
+            const toast = {
+                message: "Permission updated.",
+                type: "success",
+            };
+            toaster?.addToast(toast);
+        } else if (!isLoadingUpdate && errorsUpdate?.details) {
+            const toast = {
+                message: errorsUpdate?.details?.response?.data?.error,
+                type: "error",
+            };
+            toaster?.addToast(toast);
+        }
+    }, [isLoadingUpdate, dataUpdate, errorsUpdate]);
+
+    const handleEdit = (permission: any) => {
+        setSelectedEmpoyee(permission);
+        setUpdateModalOpen(true);
+    };
+
+    const handleActivate = (permission: any) => {
+        setSelectedEmpoyee(permission);
+        setActivateModalOpen(true);
+    };
+
+    const handleDisable = (permission: any) => {
+        setSelectedEmpoyee(permission);
+        setDisableModalOpen(true);
+    };
+
+    const handleDelete = (permission: any) => {
+        setSelectedEmpoyee(permission);
+        setDeleteModalOpen(true);
+    };
+
+    const handleUpdate = (permission: any, status: userStatusTypes) => {
+        fetchDataUpdate({
+            data: {
+                employee: {
+                    _id: permission?._id,
+                    status,
+                },
+            },
+        });
+    };
 
     return (
         <div className="flex flex-col flex-1 items-center">
@@ -123,18 +198,44 @@ export default function Employee() {
                                                 <button
                                                     className="bg-blue-950 p-1 hover:bg-blue-700 text-white font-bold rounded"
                                                     title="Edit"
+                                                    onClick={() => {
+                                                        handleEdit(permission);
+                                                    }}
                                                 >
                                                     <FontAwesomeIcon icon={faPen} />
                                                 </button>
-                                                <button
-                                                    className="bg-yellow-900 p-1 hover:bg-yellow-700 text-white font-bold rounded"
-                                                    title="Disable"
-                                                >
-                                                    <FontAwesomeIcon icon={faBan} />
-                                                </button>
+
+                                                {permission?.status === userStatusTypes.Active && (
+                                                    <button
+                                                        className="bg-yellow-900 p-1 hover:bg-yellow-700 text-white font-bold rounded"
+                                                        title="Disable"
+                                                        onClick={() => {
+                                                            handleDisable(permission);
+                                                        }}
+                                                    >
+                                                        <FontAwesomeIcon icon={faBan} />
+                                                    </button>
+                                                )}
+
+                                                {permission?.status ===
+                                                    userStatusTypes.Deactivated && (
+                                                    <button
+                                                        className="bg-green-900 p-1 hover:bg-green-700 text-white font-bold rounded"
+                                                        title="Activate"
+                                                        onClick={() => {
+                                                            handleActivate(permission);
+                                                        }}
+                                                    >
+                                                        <FontAwesomeIcon icon={faCheckCircle} />
+                                                    </button>
+                                                )}
+
                                                 <button
                                                     className="bg-red-950 p-1 hover:bg-red-700 text-white font-bold rounded"
                                                     title="Remove"
+                                                    onClick={() => {
+                                                        handleDelete(permission);
+                                                    }}
                                                 >
                                                     <FontAwesomeIcon icon={faTrash} />
                                                 </button>
@@ -164,6 +265,7 @@ export default function Employee() {
                     />
                 </div>
             </div>
+
             <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="Add Employee">
                 <EmployeeForm
                     onFinish={() => {
@@ -171,6 +273,98 @@ export default function Employee() {
                         setModalOpen(false);
                     }}
                 />
+            </Modal>
+
+            <Modal
+                isOpen={isUpdateModalOpen}
+                onClose={() => setUpdateModalOpen(false)}
+                title="Update Employee"
+            >
+                <UpdateEmployeeForm
+                    permission={selectedEmpoyee}
+                    onFinish={() => {
+                        fetchData();
+                        setUpdateModalOpen(false);
+                    }}
+                />
+            </Modal>
+
+            <Modal
+                isOpen={isActivateModalOpen}
+                onClose={() => setDisableModalOpen(false)}
+                title="Activate Employee Access"
+            >
+                <div>
+                    <h1>Are you sure you want to activate this employees' access?</h1>
+                    <div className="flex items-center justify-center mt-2">
+                        <Button
+                            text="Activate"
+                            onClick={() => {
+                                handleUpdate(selectedEmpoyee, userStatusTypes.Active);
+                            }}
+                            isLoading={isLoadingUpdate}
+                        />
+                        <Button
+                            text="Cancel"
+                            style="secondary"
+                            onClick={() => {
+                                setDisableModalOpen(false);
+                            }}
+                        />
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal
+                isOpen={isDisableModalOpen}
+                onClose={() => setDisableModalOpen(false)}
+                title="Disable Employee Access"
+            >
+                <div>
+                    <h1>Are you sure you want to disable this employees' access?</h1>
+                    <div className="flex items-center justify-center mt-2">
+                        <Button
+                            text="Disable"
+                            onClick={() => {
+                                handleUpdate(selectedEmpoyee, userStatusTypes.Deactivated);
+                            }}
+                            isLoading={isLoadingUpdate}
+                        />
+                        <Button
+                            text="Cancel"
+                            style="secondary"
+                            onClick={() => {
+                                setDisableModalOpen(false);
+                            }}
+                        />
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                title="Remove Employee Access"
+            >
+                <div>
+                    <h1>Are you sure you want to remove this employees' access?</h1>
+                    <div className="flex items-center justify-center mt-2">
+                        <Button
+                            text="Remove"
+                            onClick={() => {
+                                handleUpdate(selectedEmpoyee, userStatusTypes.Deleted);
+                            }}
+                            isLoading={isLoadingUpdate}
+                        />
+                        <Button
+                            text="Cancel"
+                            style="secondary"
+                            onClick={() => {
+                                setDeleteModalOpen(false);
+                            }}
+                        />
+                    </div>
+                </div>
             </Modal>
         </div>
     );

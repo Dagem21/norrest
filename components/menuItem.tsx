@@ -23,9 +23,9 @@ export default function MenuItem({
     return (
         <div className="flex items-center justify-between p-2 shadow-lg cursor-pointer w-full">
             <div className="flex items-center flex-1 min-w-0">
-                <div className="flex-shrink-0 flex items-center justify-center">
+                <div className="relative w-15 h-15 flex-shrink-0 flex items-center justify-center overflow-hidden rounded-lg">
                     <Image
-                        className="w-15 h-15 rounded-lg object-cover"
+                        className="w-full h-full object-cover"
                         src={image}
                         alt={name}
                         width={100}
@@ -33,7 +33,11 @@ export default function MenuItem({
                         onLoad={() => setIsLoading(false)}
                         onError={() => setIsLoading(false)}
                     />
-                    <Loading loading={isLoading} />
+                    {isLoading && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-taupe-100 dark:bg-taupe-900">
+                            <Loading loading={isLoading} />
+                        </div>
+                    )}
                 </div>
 
                 <div className="mx-2 tracking-wide flex-1 min-w-0">

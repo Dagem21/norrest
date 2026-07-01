@@ -1,4 +1,4 @@
-import { orderStatusTypes, permissionTypes } from "@/assets/enums/enum";
+import { employeeStatusTypes, orderStatusTypes, permissionTypes } from "@/assets/enums/enum";
 import { findBranchByID, findBranchs, updateBranch } from "@/dal/company/branchDAL";
 import { findPermission } from "@/dal/permissions/permissionsDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
 
         const { permission, error: errorPerm } = await findPermission(permissionQuery);
 
-        if (!permission || errorPerm) {
+        if (!permission || errorPerm || permission.status !== employeeStatusTypes.Active) {
             return new Response(
                 JSON.stringify({
                     error: errorPerm || "Access denied.",
@@ -153,14 +153,15 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        if (permission?.branchID || !permission?.permissions.includes(permissionTypes.Admin)) {
-            return new Response(
-                JSON.stringify({ error: "You do not have permission to perform this action." }),
-                {
-                    status: 403,
-                    headers: { "Content-Type": "application/json" },
-                },
-            );
+        if (
+            permission?.branchID ||
+            permission.status !== employeeStatusTypes.Active ||
+            !permission?.permissions.includes(permissionTypes.Admin)
+        ) {
+            return new Response(JSON.stringify({ error: "Access denied." }), {
+                status: 403,
+                headers: { "Content-Type": "application/json" },
+            });
         }
 
         const { result, error: errorCreate } = await createBranch(formattedbranch);
@@ -212,9 +213,9 @@ export async function PUT(request: NextRequest) {
 
         const validatedBranch = await branchUpdateSchema.validate(newBranch, { abortEarly: false });
 
-        const formattedBranch = formatBranch(validatedBranch)
+        const formattedBranch = formatBranch(validatedBranch);
 
-        Object.keys(formattedBranch).forEach(key => {
+        Object.keys(formattedBranch).forEach((key) => {
             if (!formattedBranch[key]) delete formattedBranch[key];
         });
 
@@ -248,6 +249,7 @@ export async function PUT(request: NextRequest) {
         if (
             !permission ||
             errorPerm ||
+            permission.status !== employeeStatusTypes.Active ||
             (permission?.branchID && permission?.branchID !== branchID)
         ) {
             return new Response(

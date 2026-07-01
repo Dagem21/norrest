@@ -29,7 +29,7 @@ export default function Select({
             )}
 
             <select
-                className="w-full p-2 outline-none rounded-md accent-taupe-900 text-white px-4 py-2 text-base text-sm"
+                className="w-full p-2 outline-none rounded-md accent-taupe-900 text-white px-4 py-2 text-base text-sm cursor-pointer"
                 {...rest}
             >
                 {options.map((opt) => (

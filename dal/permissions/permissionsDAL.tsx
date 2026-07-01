@@ -1,3 +1,4 @@
+import { employeeStatusTypes } from "@/assets/enums/enum";
 import mongoose from "mongoose";
 require("@/models/permissions");
 
@@ -7,6 +8,7 @@ interface permissionSch {
     userID: string;
     role: string;
     permissions: [string];
+    status: employeeStatusTypes;
 }
 
 const permissionSchema = mongoose.model("permissions");

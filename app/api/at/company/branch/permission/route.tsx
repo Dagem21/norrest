@@ -1,3 +1,4 @@
+import { employeeStatusTypes } from "@/assets/enums/enum";
 import { findBranchByID } from "@/dal/company/branchDAL";
 import { findPermission } from "@/dal/permissions/permissionsDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
@@ -60,7 +61,7 @@ export async function GET(request: NextRequest) {
 
         const { permission, error: errorPerm } = await findPermission(permissionQuery);
 
-        if (!permission || errorPerm) {
+        if (!permission || errorPerm || permission.status !== employeeStatusTypes.Active) {
             return new Response(
                 JSON.stringify({
                     error: errorPerm || "Access denied.",

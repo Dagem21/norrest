@@ -1,7 +1,6 @@
+import { branchStatusTypes } from "@/assets/enums/enum";
 import { findBranchByID } from "@/dal/company/branchDAL";
 import { findMenus } from "@/dal/menu/menuDAL";
-import { findPermission } from "@/dal/permissions/permissionsDAL";
-import { verifyUserAuth } from "@/utils/authHelper";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -16,7 +15,7 @@ export async function GET(request: NextRequest) {
             });
         }
         const { branch, error: branchError } = await findBranchByID(branchID);
-        if (!branch || branchError) {
+        if (!branch || branchError || branch.status !== branchStatusTypes.Active) {
             return new Response(
                 JSON.stringify({
                     error: branchError || "Branch not found.",
