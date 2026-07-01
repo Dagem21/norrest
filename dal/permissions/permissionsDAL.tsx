@@ -122,6 +122,19 @@ export const updatePermission = async (id: string, update: object) => {
     }
 };
 
+export const deletePermission = async (id: string) => {
+    let result,
+        error = null;
+    try {
+        const permissionUp = await permissionSchema.findByIdAndDelete(id);
+        result = permissionUp !== null;
+    } catch (e: any) {
+        error = e.message;
+    } finally {
+        return { result, error };
+    }
+};
+
 export const findUserCompanies = async (query: object, page: number = 1, limit: number = 10) => {
     let permission,
         error = null;

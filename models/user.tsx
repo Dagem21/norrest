@@ -45,7 +45,7 @@ const UserSchema = new Schema(
             type: String,
             enum: userStatusTypes,
             required: true,
-            default: userStatusTypes.Acitve,
+            default: userStatusTypes.Active,
         }
     },
     { timestamps: true },

@@ -74,3 +74,17 @@ export const updateBranch = async (id: string, update: object) => {
         return { result, error };
     }
 };
+
+export const deleteBranch = async (id: string) => {
+    let result,
+        error = null;
+    try {
+        const branchUp = await branchSchema.findByIdAndDelete(id);
+        result = branchUp !== null;
+    } catch (e: any) {
+        error = e.message;
+    } finally {
+        return { result, error };
+    }
+};
+

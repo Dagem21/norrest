@@ -36,7 +36,7 @@ const permissionsSchema = new Schema(
             type: String,
             enum: employeeStatusTypes,
             required: true,
-            default: employeeStatusTypes.Acitve,
+            default: employeeStatusTypes.Active,
         }
     },
     { timestamps: true },

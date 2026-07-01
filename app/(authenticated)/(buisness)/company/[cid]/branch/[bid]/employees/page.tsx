@@ -13,7 +13,7 @@ import useApiFetch from "@/hooks/useAPIFetch";
 import { useParams } from "next/navigation";
 import Loading from "@/components/loadingComponent";
 import UpdateEmployeeForm from "@/components/forms/user/updateEmployee";
-import { employeeStatusTypes, userStatusTypes } from "@/assets/enums/enum";
+import { userStatusTypes } from "@/assets/enums/enum";
 import { ToastContext } from "@/providers/toastProvider";
 
 export default function Employee() {
@@ -52,11 +52,23 @@ export default function Employee() {
         false,
     );
 
+    const {
+        data: dataDelete,
+        fetchData: fetchDataDelete,
+        isLoading: isLoadingDelete,
+        errors: errorsDelete,
+    } = useApiFetch(
+        {
+            url: `/api/at/company/employee?branchID=${params.bid}`,
+            method: "DELETE",
+        },
+        false,
+    );
+
     useEffect(() => {
         if (!isLoadingUpdate && dataUpdate) {
             setActivateModalOpen(false);
             setDisableModalOpen(false);
-            setDeleteModalOpen(false);
 
             fetchData();
 
@@ -73,6 +85,26 @@ export default function Employee() {
             toaster?.addToast(toast);
         }
     }, [isLoadingUpdate, dataUpdate, errorsUpdate]);
+
+    useEffect(() => {
+        if (!isLoadingDelete && dataDelete) {
+            setDeleteModalOpen(false);
+
+            fetchData();
+
+            const toast = {
+                message: "Permission removed.",
+                type: "success",
+            };
+            toaster?.addToast(toast);
+        } else if (!isLoadingDelete && errorsDelete?.details) {
+            const toast = {
+                message: errorsDelete?.details?.response?.data?.error,
+                type: "error",
+            };
+            toaster?.addToast(toast);
+        }
+    }, [isLoadingDelete, dataDelete, errorsDelete]);
 
     const handleEdit = (permission: any) => {
         setSelectedEmpoyee(permission);
@@ -219,16 +251,16 @@ export default function Employee() {
 
                                                 {permission?.status ===
                                                     userStatusTypes.Deactivated && (
-                                                    <button
-                                                        className="bg-green-900 p-1 hover:bg-green-700 text-white font-bold rounded"
-                                                        title="Activate"
-                                                        onClick={() => {
-                                                            handleActivate(permission);
-                                                        }}
-                                                    >
-                                                        <FontAwesomeIcon icon={faCheckCircle} />
-                                                    </button>
-                                                )}
+                                                        <button
+                                                            className="bg-green-900 p-1 hover:bg-green-700 text-white font-bold rounded"
+                                                            title="Activate"
+                                                            onClick={() => {
+                                                                handleActivate(permission);
+                                                            }}
+                                                        >
+                                                            <FontAwesomeIcon icon={faCheckCircle} />
+                                                        </button>
+                                                    )}
 
                                                 <button
                                                     className="bg-red-950 p-1 hover:bg-red-700 text-white font-bold rounded"
@@ -352,9 +384,9 @@ export default function Employee() {
                         <Button
                             text="Remove"
                             onClick={() => {
-                                handleUpdate(selectedEmpoyee, userStatusTypes.Deleted);
+                                fetchDataDelete({ data: { id: selectedEmpoyee?._id } })
                             }}
-                            isLoading={isLoadingUpdate}
+                            isLoading={isLoadingDelete}
                         />
                         <Button
                             text="Cancel"

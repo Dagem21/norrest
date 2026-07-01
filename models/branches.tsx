@@ -27,7 +27,7 @@ const branchSchema = new Schema(
             type: String,
             enum: branchStatusTypes,
             required: true,
-            default: branchStatusTypes.Acitve,
+            default: branchStatusTypes.Active,
         }
     },
     { timestamps: true },

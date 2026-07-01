@@ -93,7 +93,7 @@ export default function Settings() {
     return (
         <div className="flex flex-col flex-1 items-center min-h-screen">
             <div className="w-full flex flex items-center justify-center">
-                <div className="bg-taupe-200 dark:bg-taupe-600 rounded-lg p-4">
+                <div className="w-full max-w-2xl bg-taupe-200 dark:bg-taupe-600 rounded-lg p-4">
                     <div className="grid gap-4 mb-4 md:grid-cols-3">
                         <div>
                             <label htmlFor="firstName" className="block mb-2 text-xs">

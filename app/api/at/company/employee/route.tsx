@@ -1,6 +1,7 @@
 import { employeeStatusTypes, permissionTypes } from "@/assets/enums/enum";
 import {
     createPermission,
+    deletePermission,
     findPermission,
     findPermissionByID,
     findPermissions,
@@ -332,6 +333,111 @@ export async function PUT(request: NextRequest) {
             });
         }
         return new Response(JSON.stringify({ message: "Permission updated." }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        });
+    } catch (error: any) {
+        if (error.message === "Unauthorized") {
+            return new Response(JSON.stringify({ error: "Session expired. Please login again!" }), {
+                status: 401,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+        return new Response(JSON.stringify({ error }), {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+        });
+    }
+}
+
+export async function DELETE(request: NextRequest) {
+    const searchParams = request?.nextUrl?.searchParams;
+    const branchID = searchParams.get("branchID");
+    const body = await request.json();
+    const { id } = body;
+
+    try {
+        const decodedToken = await verifyUserAuth();
+
+        if (!branchID) {
+            return new Response(JSON.stringify({ error: "Missing branch ID." }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        const { branch, error: branchError } = await findBranchByID(branchID);
+        if (!branch || branchError) {
+            return new Response(
+                JSON.stringify({
+                    error: branchError || "Branch not found.",
+                }),
+                {
+                    status: 400,
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
+        }
+
+        const { permission: permissionUser, error: errorUserPerm } = await findPermission({
+            companyID: branch.companyID,
+            userID: decodedToken?.userId,
+        });
+
+        if (
+            !permissionUser ||
+            errorUserPerm ||
+            !permissionUser?.permissions.includes(permissionTypes.Admin)
+        ) {
+            return new Response(
+                JSON.stringify({
+                    error: errorUserPerm || "You do not have permission to perform this action.",
+                }),
+                {
+                    status: 403,
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
+        }
+
+        const { permission, error: errorPerm } = await findPermissionByID(id);
+
+        if (!permission || errorPerm) {
+            return new Response(
+                JSON.stringify({
+                    error: errorPerm || "You do not have permission to perform this action.",
+                }),
+                {
+                    status: 403,
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
+        }
+
+        if (
+            permission?.branchID &&
+            permissionUser.branchID &&
+            permission?.branchID?.toString() !== permissionUser?.branchID?.toString()
+        ) {
+            return new Response(
+                JSON.stringify({
+                    error: errorUserPerm || "You do not have permission to perform this action.",
+                }),
+                {
+                    status: 403,
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
+        }
+
+        const { result, error } = await deletePermission(id);
+        if (!result || error) {
+            return new Response(JSON.stringify({ error: error }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+        return new Response(JSON.stringify({ message: "Permission removed." }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });

@@ -7,7 +7,6 @@ import { MenuContext } from "@/providers/menu";
 import { faAt, faGear, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
-import Input from "@/components/ui/input";
 import { useParams } from "next/navigation";
 import useApiFetch from "@/hooks/useAPIFetch";
 import Image from "next/image";
@@ -15,12 +14,15 @@ import Loading from "@/components/loadingComponent";
 import Link from "next/link";
 import UpdateBranchForm from "@/components/forms/company/companyUpdateBranch";
 import UpdateCompanyForm from "@/components/forms/company/companyUpdate";
+import { ToastContext } from "@/providers/toastProvider";
 
 export default function Setting() {
     const params = useParams<{ cid: string }>();
+    const toaster = useContext(ToastContext);
     const [isModalOpen, setModalOpen] = useState(false);
     const [isCompanyModalOpen, setCompanyModalOpen] = useState(false);
     const [isBranchModalOpen, setBranchModalOpen] = useState(false);
+    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [selectedBranch, setSelectedBranch] = useState<any>();
     const menuContext = useContext(MenuContext);
 
@@ -48,6 +50,40 @@ export default function Setting() {
         },
         true,
     );
+
+    const {
+        data: dataDelete,
+        fetchData: fetchDataDelete,
+        isLoading: isLoadingDelete,
+        errors: errorsDelete,
+    } = useApiFetch(
+        {
+            url: `/api/at/company/branch?companyID=${params.cid}`,
+            method: "DELETE",
+        },
+        false,
+    );
+
+
+    useEffect(() => {
+        if (!isLoadingDelete && dataDelete) {
+            setDeleteModalOpen(false);
+
+            fetchData();
+
+            const toast = {
+                message: "Branch deleted.",
+                type: "success",
+            };
+            toaster?.addToast(toast);
+        } else if (!isLoadingDelete && errorsDelete?.details) {
+            const toast = {
+                message: errorsDelete?.details?.response?.data?.error,
+                type: "error",
+            };
+            toaster?.addToast(toast);
+        }
+    }, [isLoadingDelete, dataDelete, errorsDelete]);
 
     const handleEditCompany = () => {
         setCompanyModalOpen(true);
@@ -255,6 +291,10 @@ export default function Setting() {
                                                     <button
                                                         className="bg-red-950 py-1 px-2 hover:bg-red-700 text-white font-bold rounded"
                                                         title="Remove"
+                                                        onClick={() => {
+                                                            setSelectedBranch(branch);
+                                                            setDeleteModalOpen(true);
+                                                        }}
                                                     >
                                                         <FontAwesomeIcon icon={faTrash} />
                                                     </button>
@@ -308,6 +348,32 @@ export default function Setting() {
                         fetchData();
                     }}
                 />
+            </Modal>
+
+            <Modal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                title={`Delete ${selectedBranch?.name}`}
+            >
+                <div>
+                    <h1>Are you sure you want to delete this branch?</h1>
+                    <div className="flex items-center justify-center mt-2">
+                        <Button
+                            text="Remove"
+                            onClick={() => {
+                                fetchDataDelete({ data: { branchID: selectedBranch?._id } })
+                            }}
+                            isLoading={isLoadingDelete}
+                        />
+                        <Button
+                            text="Cancel"
+                            style="secondary"
+                            onClick={() => {
+                                setDeleteModalOpen(false);
+                            }}
+                        />
+                    </div>
+                </div>
             </Modal>
         </div>
     );

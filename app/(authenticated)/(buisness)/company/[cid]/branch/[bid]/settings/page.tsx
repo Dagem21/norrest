@@ -46,73 +46,72 @@ export default function Setting() {
                             />
                         </div>
                         {!isLoading && data && (
-                            <div className="flex flex-wrap justify-between gap-4 mt-4">
-                                <div>
-                                    <label htmlFor="fatherName" className="block mb-2 text-xs">
-                                        Name
-                                    </label>
-                                    <div
-                                        className={`w-70 flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
-                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
-                                    >
+                            <div className="w-full gap-4 mt-4">
+                                <div className="grid gap-4 mb-4 md:grid-cols-2 xl:grid-cols-4">
+                                    <div>
+                                        <label htmlFor="firstName" className="block mb-2 text-xs">
+                                            Name
+                                        </label>
                                         <div
-                                            className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                            className={`flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
                                         >
-                                            {data?.branch?.name || "N/A"}
+                                            <div
+                                                className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                            >
+                                                {data?.branch?.name || "N/A"}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div>
-                                    <label htmlFor="phone" className="block mb-2 text-xs">
-                                        Phone number
-                                    </label>
-                                    <div
-                                        className={`w-70 flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
-                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
-                                    >
-                                        <div className="flex items-center h-full border-e border-gray-400 py-2 px-4 select-none">
-                                            +251
-                                        </div>
+                                    <div>
+                                        <label htmlFor="lastName" className="block mb-2 text-xs">
+                                            Phone number
+                                        </label>
                                         <div
-                                            className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                            className={`flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
                                         >
-                                            {data?.branch?.phoneNumber?.slice(-9) || "N/A"}
+                                            <div className="flex items-center h-full border-e border-gray-400 py-2 px-4 select-none">
+                                                +251
+                                            </div>
+                                            <div
+                                                className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                            >
+                                                {data?.branch?.phoneNumber?.slice(-9) || "N/A"}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div>
-                                    <label htmlFor="email" className="block mb-2 text-xs">
-                                        Email
-                                    </label>
-                                    <div
-                                        className={`w-70 flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
-                                                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
-                                    >
-                                        <div className="flex items-center h-full border-e border-gray-400 py-2 px-4 select-none">
-                                            <FontAwesomeIcon icon={faAt} />
-                                        </div>
+                                    <div>
+                                        <label htmlFor="lastName" className="block mb-2 text-xs">
+                                            Email
+                                        </label>
                                         <div
-                                            className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                            className={`flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
                                         >
-                                            {data?.branch?.email || "N/A"}
+                                            <div className="flex items-center h-full border-e border-gray-400 py-2 px-4 select-none">
+                                                <FontAwesomeIcon icon={faAt} />
+                                            </div>
+                                            <div
+                                                className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                            >
+                                                {data?.branch?.email || "N/A"}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div>
-                                    <label htmlFor="fatherName" className="block mb-2 text-xs">
-                                        Address
-                                    </label>
-                                    <div
-                                        className={`w-70 flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
-                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
-                                    >
+                                    <div>
+                                        <label htmlFor="lastName" className="block mb-2 text-xs">
+                                            Address
+                                        </label>
                                         <div
-                                            className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                            className={`flex items-center text-sm rounded-md transition duration-300 ease shadow-sm 
+                                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
                                         >
-                                            {data?.branch?.address || "N/A"}
+                                            <div
+                                                className={`w-full p-2 outline-none rounded-md accent-taupe-900`}
+                                            >
+                                                {data?.branch?.address || "N/A"}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

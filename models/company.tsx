@@ -30,7 +30,7 @@ const companySchema = new Schema(
             type: String,
             enum: companyStatusTypes,
             required: true,
-            default: companyStatusTypes.Acitve,
+            default: companyStatusTypes.Active,
         }
     },
     { timestamps: true },

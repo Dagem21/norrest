@@ -1,4 +1,4 @@
-import { employeeStatusTypes, orderStatusTypes, permissionTypes } from "@/assets/enums/enum";
+import { branchStatusTypes, employeeStatusTypes, orderStatusTypes, permissionTypes } from "@/assets/enums/enum";
 import { findBranchByID, findBranchs, updateBranch } from "@/dal/company/branchDAL";
 import { findPermission } from "@/dal/permissions/permissionsDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import { NextRequest } from "next/server";
 import { createBranch } from "@/dal/company/branchDAL";
 import { createOrderCount } from "@/dal/order/orderCountDAL";
-import { formatBranch, formatPhone } from "@/utils/format";
+import { formatBranch } from "@/utils/format";
 import branchSchema from "@/yup/company/branch";
 import branchUpdateSchema from "@/yup/company/branchUpdate";
 
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
             });
         }
 
-        const { branches, error } = await findBranchs({ companyID });
+        const { branches, error } = await findBranchs({ companyID, status: { $ne: branchStatusTypes.Deleted } });
 
         if (!branches || error) {
             return new Response(JSON.stringify({ error }), {
@@ -273,6 +273,87 @@ export async function PUT(request: NextRequest) {
         }
 
         return new Response(JSON.stringify({ message: "Branch updated." }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        });
+    } catch (error: any) {
+        if (error.message === "Unauthorized") {
+            return new Response(JSON.stringify({ error: "Session expired. Please login again!" }), {
+                status: 401,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+        return new Response(JSON.stringify({ error: error.message }), {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+        });
+    }
+}
+
+export async function DELETE(request: NextRequest) {
+    const searchParams = request?.nextUrl?.searchParams;
+    const companyID = searchParams.get("companyID");
+
+    const body = await request.json();
+    let { branchID } = body;
+    try {
+        const decodedToken = await verifyUserAuth();
+
+        if (!companyID) {
+            return new Response(JSON.stringify({ error: "Missing company ID." }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        const { branch, error: branchError } = await findBranchByID(branchID);
+        if (!branch || branchError) {
+            return new Response(
+                JSON.stringify({
+                    error: branchError || "Branch not found.",
+                }),
+                {
+                    status: 400,
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
+        }
+
+        const permissionQuery: permssionQueryType = {
+            userID: new mongoose.Types.ObjectId(decodedToken?.userId),
+            companyID: new mongoose.Types.ObjectId(companyID),
+        };
+
+        const { permission, error: errorPerm } = await findPermission(permissionQuery);
+
+        if (
+            !permission ||
+            errorPerm ||
+            permission.status !== employeeStatusTypes.Active ||
+            permission?.branchID ||
+            !permission?.permissions.includes(permissionTypes.Admin)
+        ) {
+            return new Response(
+                JSON.stringify({
+                    error: errorPerm || "Access denied.",
+                }),
+                {
+                    status: 403,
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
+        }
+
+        const { result, error } = await updateBranch(branchID, { status: branchStatusTypes.Deleted });
+
+        if (!result || error) {
+            return new Response(JSON.stringify({ error }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        return new Response(JSON.stringify({ message: "Branch removed." }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });
