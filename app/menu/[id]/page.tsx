@@ -68,7 +68,7 @@ export default function Menu() {
         errors: errorsUpdate,
     } = useApiFetch(
         {
-            url: `/api/order/item/update`,
+            url: `/api/order/item`,
             method: "PUT",
         },
         false,
@@ -101,6 +101,10 @@ export default function Menu() {
     );
 
     useEffect(() => {
+        menuContext?.setTitle(`${data?.branch?.companyID?.name}, ${data?.branch?.name}`);
+    }, [data]);
+
+    useEffect(() => {
         if (!isLoading && data && !selectedCatagory) {
             setMenu(data?.items);
         } else if (!isLoading && errors?.details) {
@@ -111,10 +115,6 @@ export default function Menu() {
             toaster?.addToast(toast);
         }
     }, [isLoading, data, errors]);
-
-    useEffect(() => {
-        menuContext?.setTitle(`${data?.branch?.companyID?.name}, ${data?.branch?.name}`);
-    }, [data]);
 
     useEffect(() => {
         if (!isLoading && selectedCatagory && data) {
@@ -129,7 +129,7 @@ export default function Menu() {
         if (!isLoadingOrder && dataOrder) {
             setIsScanModalOpen(false);
             const toast = {
-                message: "Cart connected",
+                message: `Add your orders to ${dataOrder?.order?.userID?.firstName}'s cart.`,
                 type: "success",
             };
             toaster?.addToast(toast);
@@ -139,7 +139,7 @@ export default function Menu() {
                 dataOrder?.order?.branchID?._id,
                 `${dataOrder?.order?.branch?.companyID?.name}, ${dataOrder?.order?.branch?.name}`,
             );
-            updateCartID(dataOrder?.order?.id, dataOrder?.order?.branchID?._id);
+            updateCartID(dataOrder?.order?._id, dataOrder?.order?.branchID?._id, dataOrder?.order?.userID?._id);
 
             if (params.id !== dataOrder?.order?.branchID?._id) {
                 router.push(`/menu/${dataOrder?.order?.branchID?._id}`);
@@ -404,7 +404,7 @@ export default function Menu() {
                                 onChange={(e) => {
                                     setQuantity((prev) =>
                                         0 > parseInt(e.target.value || "1") ||
-                                        parseInt(e.target.value || "1") > 10
+                                            parseInt(e.target.value || "1") > 10
                                             ? prev
                                             : parseInt(e.target.value || "0"),
                                     );

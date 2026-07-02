@@ -8,7 +8,7 @@ export interface Item {
 }
 
 export interface Carts {
-    [cartId: string]: { items: Item[]; name: string; id: string };
+    [cartId: string]: { items: Item[]; name: string; id: string, userID: string };
 }
 
 interface CartState {
@@ -18,7 +18,7 @@ interface CartState {
     createNewCart: (cartId: string, name: string) => void;
     deleteCart: (cartId: string) => void;
     addToActiveCart: (item: Item) => void;
-    updateCartID: (id: string | null, cartID?: string) => void;
+    updateCartID: (id: string | null, cartID?: string, userID?: string) => void;
     updateItemFromActiveCart: (productId: string, id: string | null) => void;
     removeFromActiveCart: (productId: string) => void;
 }
@@ -56,7 +56,7 @@ export const useCartStore = create<CartState>()(
                     };
                 }),
 
-            updateCartID: (id, cartID) =>
+            updateCartID: (id, cartID, userID) =>
                 set((state: any) => {
                     const activeId = cartID || state.activeCartId;
                     const currentCart = state.carts[activeId] || { items: [] };
@@ -64,7 +64,7 @@ export const useCartStore = create<CartState>()(
                     return {
                         carts: {
                             ...state.carts,
-                            [activeId]: { ...currentCart, id },
+                            [activeId]: { ...currentCart, id, userID },
                         },
                     };
                 }),

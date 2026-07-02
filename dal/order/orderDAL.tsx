@@ -19,6 +19,10 @@ export const findOrderByID = async (id?: string) => {
                     select: "name picture",
                 },
             })
+            .populate({
+                path: "userID",
+                select: "firstName",
+            })
             .lean()) as any;
     } catch (e: any) {
         error = e.message;

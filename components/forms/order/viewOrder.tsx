@@ -13,6 +13,7 @@ import QrGenerator from "@/components/QRGenerator";
 import { API_URL } from "@/config";
 import { useParams } from "next/navigation";
 import { orderStatusTypes } from "@/assets/enums/enum";
+import { MenuContext } from "@/providers/menu";
 
 type ViewOrderProps = {
     isOpen: boolean;
@@ -21,6 +22,7 @@ type ViewOrderProps = {
 
 export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
     const params = useParams<{ id: string }>();
+    const menuContext = useContext(MenuContext);
     const toaster = useContext(ToastContext);
     const {
         carts,
@@ -60,7 +62,7 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
 
     const { fetchData: fetchDataRemove } = useApiFetch(
         {
-            url: `/api/order/item/delete`,
+            url: `/api/order/item`,
             method: "DELETE",
         },
         false,
@@ -108,7 +110,7 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                 };
                 toaster?.addToast(toast);
             } else {
-                updateCartID(data?.order?._id);
+                updateCartID(data?.order?._id, undefined, data?.order?.userID);
                 data?.order?.items?.forEach((item: any) => {
                     updateItemFromActiveCart(item?.itemID, item?._id);
                 });
@@ -269,11 +271,13 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                                 </div>
                             ))}
                             <div className="flex items-center justify-center mt-2">
-                                <Button
-                                    text="Order"
-                                    onClick={handleOrder}
-                                    isLoading={isLoadingOrderUpdate}
-                                />
+                                {(!activeCart?.userID || (activeCart?.userID === menuContext?.user?._id)) &&
+                                    <Button
+                                        text="Order"
+                                        onClick={handleOrder}
+                                        isLoading={isLoadingOrderUpdate}
+                                    />
+                                }
                                 <Button text="Clear" style="secondary" onClick={handleCartClear} />
                             </div>
                         </div>
