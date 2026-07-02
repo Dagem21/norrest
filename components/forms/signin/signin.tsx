@@ -107,7 +107,7 @@ export default function SignInForm({
                 {errors?.details && (
                     <div>
                         <h1 className="text-red-400 text-sm">
-                            {errors?.details?.response?.data?.error}
+                            {errors?.details?.response?.data?.error || errors?.message}
                         </h1>
                     </div>
                 )}

@@ -29,7 +29,7 @@ export default function Branch() {
     const [isViewModalOpen, setViewModalOpen] = useState(false);
     const [isLoadingImage, setIsLoadingImage] = useState(true);
     const [isQRModalOpen, setQRModalOpen] = useState(false);
-    const [tableNumer, setTableNumber] = useState('');
+    const [tableNumer, setTableNumber] = useState("");
     const [menu, setMenu] = useState<Array<any>>([]);
     const [pageLimit, setPageLimit] = useState({
         page: 1,
@@ -89,7 +89,7 @@ export default function Branch() {
             menuContext?.setTitle(`${data?.branch?.companyID?.name}, ${data?.branch?.name}`);
         } else if (!isLoading && errors?.details) {
             const toast = {
-                message: errors?.details?.response?.data?.error,
+                message: errors?.details?.response?.data?.error || errors?.message,
                 type: "error",
             };
             toaster?.addToast(toast);
@@ -101,7 +101,7 @@ export default function Branch() {
             setMenu(dataMenu?.items);
         } else if (!isLoadingMenu && errorsmenu?.details) {
             const toast = {
-                message: errors?.details?.response?.data?.error,
+                message: errors?.details?.response?.data?.error || errors?.message,
                 type: "error",
             };
             toaster?.addToast(toast);
@@ -198,7 +198,7 @@ export default function Branch() {
                                         (dataPermission?.permission?.branchID === params?.bid ||
                                             (!dataPermission?.permission?.branchID &&
                                                 dataPermission?.permission?.companyID ===
-                                                params?.cid)) &&
+                                                    params?.cid)) &&
                                         dataPermission?.permission?.permissions?.includes(
                                             permissionTypes?.Admin,
                                         ) && (
@@ -269,8 +269,15 @@ export default function Branch() {
                                 <div className="p-2">
                                     <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
                                         <Loading loading={isLoadingOrderCount} />
-                                        {!isLoadingOrderCount && errorsOrderCount?.details && <FontAwesomeIcon icon={faWarning} />}
-                                        {!isLoadingOrderCount && !errorsOrderCount?.details && dataOrderCount?.orderCount?.counts?.reduce((acc: number, current: any) => acc + current.count, 0)}
+                                        {!isLoadingOrderCount && errorsOrderCount?.details && (
+                                            <FontAwesomeIcon icon={faWarning} />
+                                        )}
+                                        {!isLoadingOrderCount &&
+                                            !errorsOrderCount?.details &&
+                                            dataOrderCount?.orderCount?.counts?.reduce(
+                                                (acc: number, current: any) => acc + current.count,
+                                                0,
+                                            )}
                                     </h1>
                                 </div>
                             </Link>
@@ -283,10 +290,15 @@ export default function Branch() {
                                 </h1>
                                 <div className="p-2">
                                     <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
-
                                         <Loading loading={isLoadingOrderCount} />
-                                        {!isLoadingOrderCount && errorsOrderCount?.details && <FontAwesomeIcon icon={faWarning} />}
-                                        {!isLoadingOrderCount && !errorsOrderCount?.details && dataOrderCount?.orderCount?.counts?.find((ct: any) => ct.status === orderStatusTypes.Pending)?.count}
+                                        {!isLoadingOrderCount && errorsOrderCount?.details && (
+                                            <FontAwesomeIcon icon={faWarning} />
+                                        )}
+                                        {!isLoadingOrderCount &&
+                                            !errorsOrderCount?.details &&
+                                            dataOrderCount?.orderCount?.counts?.find(
+                                                (ct: any) => ct.status === orderStatusTypes.Pending,
+                                            )?.count}
                                     </h1>
                                 </div>
                             </Link>
@@ -299,10 +311,16 @@ export default function Branch() {
                                 </h1>
                                 <div className="p-2">
                                     <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
-
                                         <Loading loading={isLoadingOrderCount} />
-                                        {!isLoadingOrderCount && errorsOrderCount?.details && <FontAwesomeIcon icon={faWarning} />}
-                                        {!isLoadingOrderCount && !errorsOrderCount?.details && dataOrderCount?.orderCount?.counts?.find((ct: any) => ct.status === orderStatusTypes.Processing)?.count}
+                                        {!isLoadingOrderCount && errorsOrderCount?.details && (
+                                            <FontAwesomeIcon icon={faWarning} />
+                                        )}
+                                        {!isLoadingOrderCount &&
+                                            !errorsOrderCount?.details &&
+                                            dataOrderCount?.orderCount?.counts?.find(
+                                                (ct: any) =>
+                                                    ct.status === orderStatusTypes.Processing,
+                                            )?.count}
                                     </h1>
                                 </div>
                             </Link>

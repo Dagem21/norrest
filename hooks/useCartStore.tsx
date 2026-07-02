@@ -18,7 +18,7 @@ interface CartState {
     createNewCart: (cartId: string, name: string) => void;
     deleteCart: (cartId: string) => void;
     addToActiveCart: (item: Item) => void;
-    updateActiveCartID: (id: string | null) => void;
+    updateCartID: (id: string | null, cartID?: string) => void;
     updateItemFromActiveCart: (productId: string, id: string | null) => void;
     removeFromActiveCart: (productId: string) => void;
 }
@@ -56,9 +56,9 @@ export const useCartStore = create<CartState>()(
                     };
                 }),
 
-            updateActiveCartID: (id) =>
+            updateCartID: (id, cartID) =>
                 set((state: any) => {
-                    const activeId = state.activeCartId;
+                    const activeId = cartID || state.activeCartId;
                     const currentCart = state.carts[activeId] || { items: [] };
 
                     return {

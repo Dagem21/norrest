@@ -38,7 +38,7 @@ export default function Company() {
             setCompanies(data?.permission);
         } else if (!isLoading && errors?.details) {
             const toast = {
-                message: errors?.details?.response?.data?.error,
+                message: errors?.details?.response?.data?.error || errors?.message,
                 type: "error",
             };
             toaster?.addToast(toast);

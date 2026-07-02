@@ -26,7 +26,7 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
         carts,
         activeCartId,
         setActiveCart,
-        updateActiveCartID,
+        updateCartID,
         deleteCart,
         updateItemFromActiveCart,
         removeFromActiveCart,
@@ -39,7 +39,7 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
 
     const { data, fetchData, isLoading, errors } = useApiFetch(
         {
-            url: `/api/order/create`,
+            url: `/api/order`,
             method: "POST",
         },
         false,
@@ -52,7 +52,7 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
         errors: errorsOrderUpdate,
     } = useApiFetch(
         {
-            url: `/api/order/update`,
+            url: `/api/order`,
             method: "PUT",
         },
         false,
@@ -73,7 +73,7 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
         errors: errorsClear,
     } = useApiFetch(
         {
-            url: `/api/order/delete`,
+            url: `/api/order`,
             method: "DELETE",
         },
         false,
@@ -108,7 +108,7 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                 };
                 toaster?.addToast(toast);
             } else {
-                updateActiveCartID(data?.order?._id);
+                updateCartID(data?.order?._id);
                 data?.order?.items?.forEach((item: any) => {
                     updateItemFromActiveCart(item?.itemID, item?._id);
                 });
@@ -120,7 +120,7 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                 setIsOpenSingin(true);
             } else {
                 const toast = {
-                    message: errors?.details?.response?.data?.error,
+                    message: errors?.details?.response?.data?.error || errors?.message,
                     type: "error",
                 };
                 toaster?.addToast(toast);
@@ -298,7 +298,7 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                 title="Share your order with this QR Code"
             >
                 <QrGenerator
-                    url={`${API_URL}/order/${activeCart?.id}`}
+                    url={`${API_URL}/order?orderID=${activeCart?.id}`}
                     title={`${activeCart?.name}`}
                 />
             </Modal>

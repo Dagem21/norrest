@@ -21,7 +21,7 @@ const menuItems: MenuItem[] = [
         userType: [userTypes.Customer, userTypes.Business],
     },
     {
-        label: "Orders",
+        label: "My Orders",
         href: "/orders",
         icon: <FontAwesomeIcon icon={faUtensils} size="xs" />,
         userType: [userTypes.Customer, userTypes.Business],

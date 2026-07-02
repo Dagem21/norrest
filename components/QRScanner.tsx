@@ -5,7 +5,11 @@ import { Html5Qrcode } from "html5-qrcode";
 import Button from "./ui/button";
 import { useRouter } from "next/navigation";
 
-export default function CustomUiScanner() {
+export default function CustomUiScanner({
+    onScanResult,
+}: {
+    onScanResult?: (result: string) => void;
+}) {
     const router = useRouter();
     const [scanResult, setScanResult] = useState<string | null>(null);
     const [isScanning, setIsScanning] = useState(false);
@@ -32,11 +36,19 @@ export default function CustomUiScanner() {
                 }
 
                 const menuPathRegex = /^\/menu\/[a-zA-Z0-9_-]+\/?$/;
-                if (!menuPathRegex.test(parsedUrl.pathname)) {
+                const orderPathRegex = /\/order\?orderID=[a-zA-Z0-9]+/;
+                if (
+                    !menuPathRegex.test(parsedUrl.pathname) &&
+                    !orderPathRegex.test(parsedUrl.pathname + parsedUrl.search)
+                ) {
                     setScanError("Invalid QR Code.");
+                } else {
+                    if (menuPathRegex.test(parsedUrl.pathname)) {
+                        router.push(scanResult);
+                    } else if (onScanResult) {
+                        onScanResult(scanResult);
+                    }
                 }
-
-                router.push(scanResult);
             }
         } catch (error) {
             setScanError("Invalid QR Code.");

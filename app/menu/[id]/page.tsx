@@ -7,20 +7,23 @@ import Image from "next/image";
 import ViewMenuItem from "@/components/forms/menu/viewMenuItem";
 import Button from "@/components/ui/button";
 import ViewOrder from "@/components/forms/order/viewOrder";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import useApiFetch from "@/hooks/useAPIFetch";
 import Loading from "@/components/loadingComponent";
 import { categoryTypes, orderStatusTypes } from "@/assets/enums/enum";
 import PageNavigator from "@/components/pageNavigator";
 import { ToastContext } from "@/providers/toastProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinus, faPlus, faUtensils } from "@fortawesome/free-solid-svg-icons";
+import { faMinus, faPlus, faQrcode, faUtensils } from "@fortawesome/free-solid-svg-icons";
 import { useCartStore } from "@/hooks/useCartStore";
+import Modal from "@/components/ui/modal";
+import QrScanner from "@/components/QRScanner";
 
 export default function Menu() {
     const params = useParams<{ id: string }>();
     const menuContext = useContext(MenuContext);
     const toaster = useContext(ToastContext);
+    const router = useRouter();
 
     const {
         activeCartId,
@@ -28,8 +31,9 @@ export default function Menu() {
         addToActiveCart,
         createNewCart,
         setActiveCart,
-        updateActiveCartID,
+        updateCartID,
         updateItemFromActiveCart,
+        deleteCart,
     } = useCartStore();
 
     useEffect(() => {
@@ -43,6 +47,7 @@ export default function Menu() {
     const [isLoadingImage, setIsLoadingImage] = useState(true);
     const [quantity, setQuantity] = useState<number>(1);
     const [selectedCatagory, setSelectedCategory] = useState<string | null>();
+    const [isScanModalOpen, setIsScanModalOpen] = useState(false);
     const [pageLimit, setPageLimit] = useState({
         page: 1,
         limit: 10,
@@ -76,7 +81,20 @@ export default function Menu() {
         errors: errorsOrder,
     } = useApiFetch(
         {
-            url: `/api/order/create`,
+            url: `/api/order`,
+            method: "GET",
+        },
+        false,
+    );
+
+    const {
+        data: dataCreate,
+        fetchData: fetchDataCreate,
+        isLoading: isLoadingCreate,
+        errors: errorsCreate,
+    } = useApiFetch(
+        {
+            url: `/api/order`,
             method: "POST",
         },
         false,
@@ -87,7 +105,7 @@ export default function Menu() {
             setMenu(data?.items);
         } else if (!isLoading && errors?.details) {
             const toast = {
-                message: errors?.details?.response?.data?.error,
+                message: errors?.details?.response?.data?.error || errors?.message,
                 type: "error",
             };
             toaster?.addToast(toast);
@@ -97,14 +115,6 @@ export default function Menu() {
     useEffect(() => {
         menuContext?.setTitle(`${data?.branch?.companyID?.name}, ${data?.branch?.name}`);
     }, [data]);
-
-    const handlePageChange = (page: number) => {
-        setPageLimit((prev) => ({ ...prev, page }));
-    };
-
-    const handleLimitChange = (limit: number) => {
-        setPageLimit((prev) => ({ ...prev, limit }));
-    };
 
     useEffect(() => {
         if (!isLoading && selectedCatagory && data) {
@@ -116,22 +126,24 @@ export default function Menu() {
     }, [selectedCatagory, isLoading, data]);
 
     useEffect(() => {
-        if (!isLoading && errorsUpdate?.details?.status === 404) {
-            updateActiveCartID(null);
-            carts[activeCartId].items.forEach((item) => {
-                updateItemFromActiveCart(item?.item?._id, null);
-            });
-        }
-    }, [isLoadingUpdate, dataUpdate, errorsUpdate]);
-
-    useEffect(() => {
         if (!isLoadingOrder && dataOrder) {
-            setModalOpen(false);
+            setIsScanModalOpen(false);
             const toast = {
-                message: "Your order has been submitted.",
+                message: "Cart connected",
                 type: "success",
             };
             toaster?.addToast(toast);
+
+            deleteCart(dataOrder?.order?.branchID?._id);
+            createNewCart(
+                dataOrder?.order?.branchID?._id,
+                `${dataOrder?.order?.branch?.companyID?.name}, ${dataOrder?.order?.branch?.name}`,
+            );
+            updateCartID(dataOrder?.order?.id, dataOrder?.order?.branchID?._id);
+
+            if (params.id !== dataOrder?.order?.branchID?._id) {
+                router.push(`/menu/${dataOrder?.order?.branchID?._id}`);
+            }
         } else if (!isLoadingOrder && errorsOrder?.details) {
             const toast = {
                 message: errorsOrder?.details?.response?.data?.error,
@@ -140,6 +152,40 @@ export default function Menu() {
             toaster?.addToast(toast);
         }
     }, [isLoadingOrder, dataOrder, errorsOrder]);
+
+    useEffect(() => {
+        if (!isLoading && errorsUpdate?.details?.status === 404) {
+            updateCartID(null);
+            carts[activeCartId].items.forEach((item) => {
+                updateItemFromActiveCart(item?.item?._id, null);
+            });
+        }
+    }, [isLoadingUpdate, dataUpdate, errorsUpdate]);
+
+    useEffect(() => {
+        if (!isLoadingCreate && dataCreate) {
+            setModalOpen(false);
+            const toast = {
+                message: "Your order has been submitted.",
+                type: "success",
+            };
+            toaster?.addToast(toast);
+        } else if (!isLoadingCreate && errorsCreate?.details) {
+            const toast = {
+                message: errorsCreate?.details?.response?.data?.error,
+                type: "error",
+            };
+            toaster?.addToast(toast);
+        }
+    }, [isLoadingCreate, dataCreate, errorsCreate]);
+
+    const handlePageChange = (page: number) => {
+        setPageLimit((prev) => ({ ...prev, page }));
+    };
+
+    const handleLimitChange = (limit: number) => {
+        setPageLimit((prev) => ({ ...prev, limit }));
+    };
 
     const handleAddCart = (item: any, quantity: number) => {
         createNewCart(params.id, `${data?.branch?.companyID?.name}, ${data?.branch?.name}`);
@@ -180,18 +226,35 @@ export default function Menu() {
             ],
         };
 
-        fetchDataOrder({ data: { order } });
+        fetchDataCreate({ data: { order } });
+    };
+
+    const handleScanResult = (result: string) => {
+        const parsedUrl = new URL(result);
+        const orderID = parsedUrl.searchParams.get("orderID");
+
+        fetchDataOrder({
+            params: { orderID },
+        });
     };
 
     return (
         <div className="flex flex-col flex-1 items-center p-2">
             <div className="fixed bottom-0 right-0 m-6">
-                <button
-                    className="rounded-full bg-taupe-400 dark:bg-taupe-600 p-3 shadow-lg"
-                    onClick={() => setIsOrderModalOpen(true)}
-                >
-                    <FontAwesomeIcon icon={faUtensils} size="lg" />
-                </button>
+                <div className="flex flex-col gap-2">
+                    <button
+                        className="rounded-full bg-taupe-400 dark:bg-taupe-600 p-3 shadow-lg"
+                        onClick={() => setIsScanModalOpen(true)}
+                    >
+                        <FontAwesomeIcon icon={faQrcode} size="lg" />
+                    </button>
+                    <button
+                        className="rounded-full bg-taupe-400 dark:bg-taupe-600 p-3 shadow-lg"
+                        onClick={() => setIsOrderModalOpen(true)}
+                    >
+                        <FontAwesomeIcon icon={faUtensils} size="lg" />
+                    </button>
+                </div>
             </div>
             <div className="flex flex-col w-full">
                 <div className="flex flex-wrap justify-center gap-2 w-full px-2">
@@ -278,7 +341,7 @@ export default function Menu() {
             </div>
             <ViewMenuItem isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
                 <div className="flex flex-col p-2">
-                    <div className="relative min-w-100 min-h-100 flex-shrink-0 flex items-center justify-center overflow-hidden rounded-lg shadow-lg">
+                    <div className="relative flex-shrink-0 flex items-center justify-center overflow-hidden rounded-lg shadow-lg">
                         <Image
                             className="w-full h-full object-cover"
                             src={selectedItem?.picture?.[1]}
@@ -360,7 +423,11 @@ export default function Menu() {
                         </div>
                     </div>
                     <div className="flex flex-col gap-2 my-2">
-                        <Button text="Order Now" onClick={handleOrder} isLoading={isLoadingOrder} />
+                        <Button
+                            text="Order Now"
+                            onClick={handleOrder}
+                            isLoading={isLoadingCreate}
+                        />
                         <Button
                             text="Add to Orders"
                             style="secondary"
@@ -373,6 +440,17 @@ export default function Menu() {
             </ViewMenuItem>
 
             <ViewOrder isOpen={isOrderModalOpen} onClose={() => setIsOrderModalOpen(false)} />
+
+            <Modal
+                isOpen={isScanModalOpen}
+                onClose={() => setIsScanModalOpen(false)}
+                title="Scan QR Code"
+            >
+                {!isLoadingOrder && <QrScanner onScanResult={handleScanResult} />}
+                <div className="flex items-center">
+                    <Loading loading={isLoadingOrder} />
+                </div>
+            </Modal>
         </div>
     );
 }

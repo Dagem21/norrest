@@ -9,7 +9,17 @@ export const findOrderByID = async (id?: string) => {
     let order,
         error = null;
     try {
-        order = (await orderSchema.findById(id).lean()) as yup.InferType<typeof orderSch> | null;
+        order = (await orderSchema
+            .findById(id)
+            .populate({
+                path: "branchID",
+                select: "name",
+                populate: {
+                    path: "companyID",
+                    select: "name picture",
+                },
+            })
+            .lean()) as any;
     } catch (e: any) {
         error = e.message;
     } finally {
