@@ -182,12 +182,13 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
         }
     };
 
-    const handleItemRemove = (itemID: string, savedID?: string) => {
+    const handleItemRemove = (itemID: string, savedID?: string, quantity?: number) => {
         if (activeCart?.id && savedID) {
             fetchDataRemove({
                 data: {
                     orderID: activeCart?.id,
                     orderItemID: savedID,
+                    quantity,
                 },
             });
         }
@@ -271,13 +272,14 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                                 </div>
                             ))}
                             <div className="flex items-center justify-center mt-2">
-                                {(!activeCart?.userID || (activeCart?.userID === menuContext?.user?._id)) &&
+                                {(!activeCart?.userID ||
+                                    activeCart?.userID === menuContext?.user?._id) && (
                                     <Button
                                         text="Order"
                                         onClick={handleOrder}
                                         isLoading={isLoadingOrderUpdate}
                                     />
-                                }
+                                )}
                                 <Button text="Clear" style="secondary" onClick={handleCartClear} />
                             </div>
                         </div>

@@ -15,7 +15,7 @@ type OrderItemProps = {
     categories: string;
     discount?: number;
     quantity: number;
-    removeFromCart: (id: string, savedID?: string) => void;
+    removeFromCart: (id: string, savedID?: string, quantity?: number) => void;
 };
 
 export default function OrderItem({
@@ -69,8 +69,13 @@ export default function OrderItem({
             </div>
 
             <div className="ml-2">
-                <Button style="secondary" icon={<FontAwesomeIcon icon={faTrash} color="red" />}
-                    onClick={() => { removeFromCart(id, savedID) }} />
+                <Button
+                    style="secondary"
+                    icon={<FontAwesomeIcon icon={faTrash} color="red" />}
+                    onClick={() => {
+                        removeFromCart(id, savedID, quantity);
+                    }}
+                />
             </div>
         </div>
     );

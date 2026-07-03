@@ -45,7 +45,6 @@ export async function GET(request: NextRequest) {
                 headers: { "Content-Type": "application/json" },
             });
         }
-        console.log(error);
         return new Response(JSON.stringify({ error }), {
             status: 400,
             headers: { "Content-Type": "application/json" },
@@ -109,7 +108,6 @@ export async function POST(request: NextRequest) {
             },
             updateOC,
         );
-        console.log("resultOC", resultOC, errorOC);
 
         return new Response(JSON.stringify({ order: result, message: "Order created." }), {
             status: 200,
@@ -122,7 +120,6 @@ export async function POST(request: NextRequest) {
                 headers: { "Content-Type": "application/json" },
             });
         }
-        console.log(error);
         return new Response(JSON.stringify({ error }), {
             status: 400,
             headers: { "Content-Type": "application/json" },
@@ -175,7 +172,6 @@ export async function PUT(request: NextRequest) {
                 headers: { "Content-Type": "application/json" },
             });
         }
-        console.log(error);
         return new Response(JSON.stringify({ error }), {
             status: 400,
             headers: { "Content-Type": "application/json" },
@@ -240,7 +236,6 @@ export async function DELETE(request: NextRequest) {
                 headers: { "Content-Type": "application/json" },
             });
         }
-        console.log(error);
         return new Response(JSON.stringify({ error }), {
             status: 400,
             headers: { "Content-Type": "application/json" },

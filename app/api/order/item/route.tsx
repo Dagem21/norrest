@@ -17,9 +17,7 @@ export async function PUT(request: NextRequest) {
         try {
             const decodedToken = await verifyUserAuth();
             item.userID = decodedToken.userId;
-        } catch (error) { }
-
-        console.log(item);
+        } catch (error) {}
 
         const { order, error: errorOrder } = await findOrderByID(orderID);
         if (!order || errorOrder) {
@@ -39,16 +37,18 @@ export async function PUT(request: NextRequest) {
             updateResult = await updateOrder(
                 { _id: new mongoose.Types.ObjectId(orderID), "items._id": savedItem._id },
                 updateItems,
+                { returnDocument: "after" },
             );
         } else {
             const updateItems = { $push: { items: item } };
             updateResult = await updateOrder(
                 { _id: new mongoose.Types.ObjectId(orderID) },
                 updateItems,
+                { returnDocument: "after" },
             );
         }
 
-        let { result, error } = updateResult;
+        let { result, order: updatedOrder, error } = updateResult;
 
         if (!result || error) {
             return new Response(JSON.stringify({ error: error || "Order not found." }), {
@@ -57,10 +57,26 @@ export async function PUT(request: NextRequest) {
             });
         }
 
-        return new Response(JSON.stringify({ message: "Order updated." }), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-        });
+        let savedItemID;
+        if (savedItem) {
+            savedItemID = savedItem?._id;
+        } else {
+            const newSavedItem = updatedOrder?.items?.find(
+                (it: any) => it.itemID.toString() === itemID,
+            );
+            savedItemID = newSavedItem?._id;
+        }
+
+        return new Response(
+            JSON.stringify({
+                message: "Order updated.",
+                item: { itemID: item.itemID.toString(), _id: savedItemID },
+            }),
+            {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+            },
+        );
     } catch (error: any) {
         if (error.message === "Unauthorized") {
             return new Response(JSON.stringify({ error: "Session expired. Please login again!" }), {
@@ -68,7 +84,6 @@ export async function PUT(request: NextRequest) {
                 headers: { "Content-Type": "application/json" },
             });
         }
-        console.log(error);
         return new Response(JSON.stringify({ error }), {
             status: 400,
             headers: { "Content-Type": "application/json" },
@@ -78,13 +93,24 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
     const body = await request.json();
-    const { orderID, orderItemID } = body;
+    const { orderID, orderItemID, quantity = 1 } = body;
 
     try {
-        const decodedToken = await verifyUserAuth();
+        let decodedToken = null;
+
+        try {
+            decodedToken = await verifyUserAuth();
+        } catch (error) {}
 
         if (!orderID || !orderItemID) {
             return new Response(JSON.stringify({ error: "Order ID or Item ID missing." }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        if (quantity < 1) {
+            return new Response(JSON.stringify({ error: "Invalid quantity." }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
             });
@@ -99,11 +125,9 @@ export async function DELETE(request: NextRequest) {
             });
         }
 
-        const orderItem = order?.items?.find((item: any) => item?._id === orderItemID);
-        if (
-            order.userID?.toString() !== decodedToken.userId &&
-            orderItem?.userID?.toString !== decodedToken.userId
-        ) {
+        const orderItem = order?.items?.find((item: any) => item?._id.toString() === orderItemID);
+
+        if (orderItem?.userID && orderItem?.userID?.toString() !== decodedToken?.userId) {
             return new Response(
                 JSON.stringify({ error: "You can not remove this item from order." }),
                 {
@@ -120,11 +144,22 @@ export async function DELETE(request: NextRequest) {
             });
         }
 
-        const updateItems = { $pull: { items: { _id: orderItemID } } };
-        const { result, error: errorUpdate } = await updateOrder(
-            { _id: new mongoose.Types.ObjectId(orderID) },
-            updateItems,
-        );
+        let updateResult;
+        if (orderItem?.quantity <= quantity) {
+            const updateItems = { $pull: { items: { _id: orderItemID } } };
+            updateResult = await updateOrder(
+                { _id: new mongoose.Types.ObjectId(orderID) },
+                updateItems,
+            );
+        } else {
+            const updateItems = { $inc: { "items.$.quantity": -quantity } };
+            updateResult = await updateOrder(
+                { _id: new mongoose.Types.ObjectId(orderID), "items._id": orderItem._id },
+                updateItems,
+            );
+        }
+
+        const { result, error: errorUpdate } = updateResult;
 
         if (!result || errorUpdate) {
             return new Response(JSON.stringify({ error: errorUpdate || "Order not found." }), {

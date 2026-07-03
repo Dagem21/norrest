@@ -139,7 +139,11 @@ export default function Menu() {
                 dataOrder?.order?.branchID?._id,
                 `${dataOrder?.order?.branch?.companyID?.name}, ${dataOrder?.order?.branch?.name}`,
             );
-            updateCartID(dataOrder?.order?._id, dataOrder?.order?.branchID?._id, dataOrder?.order?.userID?._id);
+            updateCartID(
+                dataOrder?.order?._id,
+                dataOrder?.order?.branchID?._id,
+                dataOrder?.order?.userID?._id,
+            );
 
             if (params.id !== dataOrder?.order?.branchID?._id) {
                 router.push(`/menu/${dataOrder?.order?.branchID?._id}`);
@@ -154,7 +158,9 @@ export default function Menu() {
     }, [isLoadingOrder, dataOrder, errorsOrder]);
 
     useEffect(() => {
-        if (!isLoading && errorsUpdate?.details?.status === 404) {
+        if (!isLoading && dataUpdate) {
+            updateItemFromActiveCart(dataUpdate?.item?.itemID, dataUpdate?.item?._id);
+        } else if (!isLoading && errorsUpdate?.details?.status === 404) {
             updateCartID(null);
             carts[activeCartId].items.forEach((item) => {
                 updateItemFromActiveCart(item?.item?._id, null);
@@ -404,7 +410,7 @@ export default function Menu() {
                                 onChange={(e) => {
                                     setQuantity((prev) =>
                                         0 > parseInt(e.target.value || "1") ||
-                                            parseInt(e.target.value || "1") > 10
+                                        parseInt(e.target.value || "1") > 10
                                             ? prev
                                             : parseInt(e.target.value || "0"),
                                     );

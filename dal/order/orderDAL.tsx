@@ -90,15 +90,15 @@ export const createOrder = async (order: object) => {
 
 export const updateOrder = async (query: object | object, update: object, filter: object = {}) => {
     let result,
+        order,
         error = null;
     try {
-        const orderUp = await orderSchema.findOneAndUpdate(query, update, filter);
-        console.log(orderUp);
-        result = orderUp !== null;
+        order = await orderSchema.findOneAndUpdate(query, update, filter);
+        result = order !== null;
     } catch (e: any) {
         error = e.message;
     } finally {
-        return { result, error };
+        return { result, order, error };
     }
 };
 
