@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
         registerCompany.picture = urls;
 
         let { result, error } = await createCompany(registerCompany);
+        console.log(error);
 
         if (result && !error) {
             const permission = {
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest) {
                 headers: { "Content-Type": "application/json" },
             });
         }
-        return new Response(JSON.stringify({ error }), {
+        return new Response(JSON.stringify({ error: error.message }), {
             status: 400,
             headers: { "Content-Type": "application/json" },
         });
