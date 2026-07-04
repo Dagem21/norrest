@@ -37,11 +37,17 @@ const permissionsSchema = new Schema(
             enum: employeeStatusTypes,
             required: true,
             default: employeeStatusTypes.Active,
-        }
+        },
     },
     { timestamps: true },
 );
-permissionsSchema.index({ branchID: 1, userID: 1 }, { unique: true, sparse: true });
+permissionsSchema.index(
+    { branchID: 1, userID: 1 },
+    {
+        unique: true,
+        partialFilterExpression: { branchID: { $type: "objectId" } },
+    },
+);
 
 const Permission = models.permissions || model("permissions", permissionsSchema);
 export default Permission;

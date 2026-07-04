@@ -268,11 +268,11 @@ export default function Menu() {
                         <div className="relative flex flex-col gap-2 h-fit w-full sm:w-4/7">
                             <div className="bg-taupe-200 dark:bg-taupe-600 p-2 rounded-lg flex flex-col items-center">
                                 <Image
-                                    className="object-cover rounded-lg"
+                                    className="max-w-30 max-h-30 object-cover rounded-lg"
                                     src={data?.branch?.companyID?.picture?.[0]}
                                     alt={"Company profile"}
                                     width={200}
-                                    height={50}
+                                    height={100}
                                 />
                                 <h1 className="text-sm font-bold mt-2">{`${data?.branch?.companyID?.name}, ${data?.branch?.name}`}</h1>
                             </div>
