@@ -148,7 +148,7 @@ export async function PUT(request: NextRequest) {
             });
         }
 
-        if (order?.userID?.toString() !== decodedToken.userId) {
+        if (order?.userID?._id?.toString() !== decodedToken.userId) {
             return new Response(JSON.stringify({ error: "You can not update this order." }), {
                 status: 403,
                 headers: { "Content-Type": "application/json" },
@@ -165,6 +165,10 @@ export async function PUT(request: NextRequest) {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
             });
+        }
+
+        if (status === orderStatusTypes.Pending) {
+            const { notified } = await notifyOrderCreated(order.branchID?._id, order);
         }
 
         return new Response(JSON.stringify({ message: "Order updated." }), {

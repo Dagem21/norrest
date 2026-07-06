@@ -86,7 +86,6 @@ export default function BusinessDashboard() {
                                             title="Branches"
                                             defaultLabel={<FontAwesomeIcon icon={faExternalLink} />}
                                             onSelect={(id) => {
-                                                console.log(id);
                                                 router.push(
                                                     `/company/${permission?.companyID}/branch/${id}`,
                                                 );

@@ -33,6 +33,8 @@ export default function Branch() {
     const [isQRModalOpen, setQRModalOpen] = useState(false);
     const [tableNumer, setTableNumber] = useState("");
     const [menu, setMenu] = useState<Array<any>>([]);
+    const [pendingOrders, setPendingOrders] = useState<any[]>([])
+    const [processingOrders, setProcessingOrders] = useState<any[]>([])
     const [pageLimit, setPageLimit] = useState({
         page: 1,
         limit: 10,
@@ -64,7 +66,6 @@ export default function Branch() {
     const {
         data: dataPermission,
         isLoading: isLoadingPermission,
-        errors: errorsPermission,
     } = useApiFetch(
         {
             url: `/api/at/company/branch/permission?branchID=${params?.bid}`,
@@ -75,12 +76,27 @@ export default function Branch() {
 
     const {
         data: dataOrderCount,
-        fetchData: fetchOrderCount,
         isLoading: isLoadingOrderCount,
         errors: errorsOrderCount,
     } = useApiFetch(
         {
             url: `/api/at/company/branch/orders/count?branchID=${params?.bid}`,
+            method: "GET",
+        },
+        true,
+    );
+
+    const { data: dataOrderPending, isLoading: isLoadingOrderPending } = useApiFetch(
+        {
+            url: `/api/at/company/branch/orders?branchID=${params?.bid}&status=Pending`,
+            method: "GET",
+        },
+        true,
+    );
+
+    const { data: dataOrderProcessing, isLoading: isLoadingOrderProcessing } = useApiFetch(
+        {
+            url: `/api/at/company/branch/orders?branchID=${params?.bid}&status=Processing`,
             method: "GET",
         },
         true,
@@ -110,6 +126,16 @@ export default function Branch() {
         }
     }, [isLoadingMenu, dataMenu, errorsmenu]);
 
+    useEffect(() => {
+        if (!isLoadingOrderPending && dataOrderPending) {
+            const incomingOrders = socketContext?.incomingOrders?.filter((order: any) => order?.branchID?._id === params.bid)
+                .slice(-10)
+                .toReversed() ?? []
+            const pendOrders = dataOrderPending?.orders?.slice(-(10 - incomingOrders.length)) ?? []
+            setPendingOrders([...incomingOrders, ...pendOrders])
+        }
+    }, [dataOrderPending, isLoadingOrderPending, socketContext?.incomingOrders]);
+
     const handleViewMenuItem = (item: any) => {
         setSelectedItem(item);
         setViewModalOpen(true);
@@ -134,38 +160,33 @@ export default function Branch() {
                             </h1>
                             <hr className="m-3 border-taupe-500 dark:border-taupe-400" />
                             <div className="pb-2">
-                                {socketContext?.incomingOrders &&
-                                    socketContext?.incomingOrders?.length === 0 && (
-                                        <h1 className="text-xs text-center">No orders yet.</h1>
-                                    )}
-                                {socketContext?.incomingOrders &&
-                                    socketContext?.incomingOrders?.length > 0 &&
-                                    socketContext?.incomingOrders
-                                        .filter((order: any) => order?.branchID?._id === params.bid)
-                                        ?.slice(-10)
-                                        .toReversed()
-                                        .map((order: any) => (
-                                            <div
-                                                className="w-full flex flex-col shadow p-2 mt-2"
-                                                key={order?._id}
-                                            >
-                                                <div className="w-full">
-                                                    {order?.items?.map((item: any) => (
-                                                        <div
-                                                            className="w-full flex justify-between"
-                                                            key={item?._id}
-                                                        >
-                                                            <p className="m-0 text-sm text-taupe-100">
-                                                                {item?.itemID?.name}
-                                                            </p>
-                                                            <p className="m-0 text-sm text-taupe-100">
-                                                                x {item?.quantity}
-                                                            </p>
-                                                        </div>
-                                                    ))}
-                                                </div>
+                                {pendingOrders && pendingOrders?.length === 0 && (
+                                    <h1 className="text-xs text-center">No orders yet.</h1>
+                                )}
+                                {
+                                    pendingOrders?.length > 0 &&
+                                    pendingOrders.map((order: any) => (
+                                        <div
+                                            className="w-full flex flex-col shadow p-2 mt-2"
+                                            key={order?._id}
+                                        >
+                                            <div className="w-full">
+                                                {order?.items?.map((item: any) => (
+                                                    <div
+                                                        className="w-full flex justify-between"
+                                                        key={item?._id}
+                                                    >
+                                                        <p className="m-0 text-sm text-taupe-100">
+                                                            {item?.itemID?.name}
+                                                        </p>
+                                                        <p className="m-0 text-sm text-taupe-100">
+                                                            x {item?.quantity}
+                                                        </p>
+                                                    </div>
+                                                ))}
                                             </div>
-                                        ))}
+                                        </div>
+                                    ))}
                             </div>
                         </div>
                         <div className="mt-2 p-2 bg-taupe-200 dark:bg-taupe-600 rounded-lg">
@@ -229,7 +250,7 @@ export default function Branch() {
                                         (dataPermission?.permission?.branchID === params?.bid ||
                                             (!dataPermission?.permission?.branchID &&
                                                 dataPermission?.permission?.companyID ===
-                                                    params?.cid)) &&
+                                                params?.cid)) &&
                                         dataPermission?.permission?.permissions?.includes(
                                             permissionTypes?.Admin,
                                         ) && (

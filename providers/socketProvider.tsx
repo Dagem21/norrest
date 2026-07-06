@@ -32,21 +32,15 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
 
     const addNotification = (newNotification: { order: any }) => {
         const id = newNotification.order?._id || Math.random().toString(36).substring(2, 9);
-
-        // Append new toast to the bottom of the list
         setNotifications((prev) => [
             ...prev,
             { id, order: newNotification.order, isVisible: false, shouldRender: true },
         ]);
-
-        // Trigger the slide-in animation right after mounting
         setTimeout(() => {
             setNotifications((prev) =>
                 prev.map((n) => (n.id === id ? { ...n, isVisible: true } : n)),
             );
         }, 10);
-
-        // Auto dismiss this specific toast after 5 seconds
         setTimeout(() => {
             dismissNotification(id);
         }, 5000);
@@ -64,7 +58,6 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
         const userId = menuContext?.user?._id;
         if (!userId) return;
 
-        console.log("SIO", SIO_URL);
         socketRef.current = io(`${SIO_URL}?userId=${userId}`);
 
         socketRef.current.on("order_create", (data: any) => {
@@ -92,11 +85,10 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
                         notif.shouldRender && (
                             <div
                                 key={notif.id}
-                                className={`w-full p-3 rounded bg-taupe-800 shadow-md shadow-taupe-600/30 border-l-4 pointer-events-auto transform transition-all duration-300 ease-out ${
-                                    notif.isVisible
+                                className={`w-full p-3 rounded bg-taupe-800 shadow-md shadow-taupe-600/30 border-l-4 pointer-events-auto transform transition-all duration-300 ease-out ${notif.isVisible
                                         ? "translate-x-0 opacity-100"
                                         : "translate-x-full opacity-0"
-                                }`}
+                                    }`}
                                 style={{ borderColor: "#ffe44c" }}
                             >
                                 <div className="w-full flex flex-col">
