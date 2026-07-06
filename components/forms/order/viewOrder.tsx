@@ -176,6 +176,7 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                         quantity: item.quantity,
                     };
                 }),
+                table: activeCart.table,
             };
 
             fetchData({ data: { order } });
@@ -221,6 +222,7 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                         quantity: item.quantity,
                     };
                 }),
+                table: activeCart.table,
             };
 
             fetchData({ data: { order } });

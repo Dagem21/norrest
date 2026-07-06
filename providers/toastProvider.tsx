@@ -82,7 +82,7 @@ const ToastProvider = ({ children }: { children: ReactNode }) => {
         <ToastContext.Provider value={{ addToast }}>
             {children}
 
-            <div className="fixed top-4 end-4 w-full max-w-sm z-[100] pointer-events-none flex flex-col items-end gap-2 overflow-hidden p-2">
+            <div className="fixed top-1 end-1 w-full max-w-sm z-[100] pointer-events-none flex flex-col items-end gap-2 overflow-hidden p-2">
                 {shouldRender && toast && (
                     <div
                         className={`w-full flex justify-between items-center p-3 rounded bg-taupe-800 shadow-md shadow-taupe-600/30 border-l-4 pointer-events-auto transform transition-all duration-300 ease-out ${

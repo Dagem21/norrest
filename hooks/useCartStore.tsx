@@ -8,14 +8,14 @@ export interface Item {
 }
 
 export interface Carts {
-    [cartId: string]: { items: Item[]; name: string; id: string, userID: string };
+    [cartId: string]: { items: Item[]; name: string; id: string; userID: string; table: number };
 }
 
 interface CartState {
     carts: Carts;
     activeCartId: string;
     setActiveCart: (cartId: string) => void;
-    createNewCart: (cartId: string, name: string) => void;
+    createNewCart: (cartId: string, name: string, table?: number) => void;
     deleteCart: (cartId: string) => void;
     addToActiveCart: (item: Item) => void;
     updateCartID: (id: string | null, cartID?: string, userID?: string) => void;
@@ -31,11 +31,11 @@ export const useCartStore = create<CartState>()(
 
             setActiveCart: (cartId) => set({ activeCartId: cartId }),
 
-            createNewCart: (cartId, name) =>
+            createNewCart: (cartId, name, table) =>
                 set((state: any) => {
                     if (state.carts[cartId]) return {};
                     return {
-                        carts: { ...state.carts, [cartId]: { items: [], name } },
+                        carts: { ...state.carts, [cartId]: { items: [], name, table } },
                         activeCartId: cartId,
                     };
                 }),

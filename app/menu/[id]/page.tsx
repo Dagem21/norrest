@@ -7,7 +7,7 @@ import Image from "next/image";
 import ViewMenuItem from "@/components/forms/menu/viewMenuItem";
 import Button from "@/components/ui/button";
 import ViewOrder from "@/components/forms/order/viewOrder";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import useApiFetch from "@/hooks/useAPIFetch";
 import Loading from "@/components/loadingComponent";
 import { categoryTypes, orderStatusTypes } from "@/assets/enums/enum";
@@ -24,6 +24,20 @@ export default function Menu() {
     const menuContext = useContext(MenuContext);
     const toaster = useContext(ToastContext);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const table = searchParams.get("table");
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+    const [menu, setMenu] = useState<Array<any>>([]);
+    const [selectedItem, setSelectedItem] = useState<any>();
+    const [isLoadingImage, setIsLoadingImage] = useState(true);
+    const [quantity, setQuantity] = useState<number>(1);
+    const [selectedCatagory, setSelectedCategory] = useState<string | null>();
+    const [isScanModalOpen, setIsScanModalOpen] = useState(false);
+    const [pageLimit, setPageLimit] = useState({
+        page: 1,
+        limit: 10,
+    });
 
     const {
         activeCartId,
@@ -39,19 +53,6 @@ export default function Menu() {
     useEffect(() => {
         setActiveCart(params.id);
     }, [params.id]);
-
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
-    const [menu, setMenu] = useState<Array<any>>([]);
-    const [selectedItem, setSelectedItem] = useState<any>();
-    const [isLoadingImage, setIsLoadingImage] = useState(true);
-    const [quantity, setQuantity] = useState<number>(1);
-    const [selectedCatagory, setSelectedCategory] = useState<string | null>();
-    const [isScanModalOpen, setIsScanModalOpen] = useState(false);
-    const [pageLimit, setPageLimit] = useState({
-        page: 1,
-        limit: 10,
-    });
 
     const { data, isLoading, errors } = useApiFetch(
         {
@@ -194,7 +195,11 @@ export default function Menu() {
     };
 
     const handleAddCart = (item: any, quantity: number) => {
-        createNewCart(params.id, `${data?.branch?.companyID?.name}, ${data?.branch?.name}`);
+        createNewCart(
+            params.id,
+            `${data?.branch?.companyID?.name}, ${data?.branch?.name}`,
+            parseInt(table || ""),
+        );
         setActiveCart(params.id);
         addToActiveCart({
             item,

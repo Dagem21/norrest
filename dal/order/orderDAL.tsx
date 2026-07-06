@@ -23,6 +23,7 @@ export const findOrderByID = async (id?: string) => {
                 path: "userID",
                 select: "firstName",
             })
+            .populate("items.itemID")
             .lean()) as any;
     } catch (e: any) {
         error = e.message;
@@ -62,6 +63,7 @@ export const findOrders = async (query: object, page: number = 1, limit: number 
                 },
             })
             .populate("items.itemID")
+            .sort({ updatedAt: -1 })
             .skip((page - 1) * limit)
             .limit(limit)
             .lean();

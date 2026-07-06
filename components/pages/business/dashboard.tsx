@@ -4,6 +4,7 @@ import Loading from "@/components/loadingComponent";
 import Dropdown from "@/components/ui/dropdown";
 import useApiFetch from "@/hooks/useAPIFetch";
 import { MenuContext } from "@/providers/menu";
+import { SocketContext } from "@/providers/socketProvider";
 import { faExternalLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -13,6 +14,7 @@ import { useContext, useEffect } from "react";
 export default function BusinessDashboard() {
     const router = useRouter();
     const menuContext = useContext(MenuContext);
+    const socketContext = useContext(SocketContext);
 
     const { data, fetchData, isLoading, errors } = useApiFetch(
         {
@@ -34,6 +36,40 @@ export default function BusinessDashboard() {
                 <div className="w-sm flex flex-col gap-2">
                     <div className="bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2">
                         <h1 className="text-sm text-center font-bold">Incoming Orders</h1>
+                        {socketContext?.incomingOrders &&
+                            socketContext?.incomingOrders?.length === 0 && (
+                                <h1 className="text-xs text-center">No orders</h1>
+                            )}
+                        {socketContext?.incomingOrders &&
+                            socketContext?.incomingOrders?.length > 0 &&
+                            socketContext?.incomingOrders?.map((order: any) => (
+                                <div
+                                    className="w-full flex flex-col shadow p-2 mt-2"
+                                    key={order?._id}
+                                >
+                                    <p className="m-0 text-xs text-taupe-300">
+                                        {order?.branchID?.companyID?.name}, {order?.branchID?.name}
+                                    </p>
+                                    <div className="w-full">
+                                        {order?.items
+                                            ?.slice(-10)
+                                            .toReversed()
+                                            ?.map((item: any) => (
+                                                <div
+                                                    className="w-full flex justify-between"
+                                                    key={item?._id}
+                                                >
+                                                    <p className="m-0 text-sm text-taupe-100">
+                                                        {item?.itemID?.name}
+                                                    </p>
+                                                    <p className="m-0 text-sm text-taupe-100">
+                                                        x {item?.quantity}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                    </div>
+                                </div>
+                            ))}
                     </div>
                     <div className="bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2">
                         <h1 className="text-sm text-center font-bold mb-2">Companies</h1>

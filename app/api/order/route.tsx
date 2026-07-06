@@ -7,6 +7,7 @@ import { findBranchByID } from "@/dal/company/branchDAL";
 import { updateOrderCount } from "@/dal/order/orderCountDAL";
 import { createOrder } from "@/dal/order/orderDAL";
 import orderSchema from "@/yup/order/order";
+import { notifyOrderCreated } from "@/sio/order";
 
 export async function GET(request: NextRequest) {
     const searchParams = request?.nextUrl?.searchParams;
@@ -101,13 +102,18 @@ export async function POST(request: NextRequest) {
 
         const updateOC = { $inc: { "counts.$.count": 1 } };
 
-        const { result: resultOC, error: errorOC } = await updateOrderCount(
+        await updateOrderCount(
             {
                 branchID: new mongoose.Types.ObjectId(validOrder.branchID),
                 "counts.status": validOrder?.status,
             },
             updateOC,
         );
+
+        if (validOrder.status === orderStatusTypes.Pending) {
+            const { order: newOrder, error } = await findOrderByID(result?._id?.toString());
+            const { notified } = await notifyOrderCreated(validOrder.branchID, newOrder);
+        }
 
         return new Response(JSON.stringify({ order: result, message: "Order created." }), {
             status: 200,

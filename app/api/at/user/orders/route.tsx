@@ -6,6 +6,8 @@ import { NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
     const searchParams = request?.nextUrl?.searchParams;
     const status = searchParams.get("status");
+    const page = searchParams.get("page") || "1";
+    const limit = searchParams.get("limit") || "10";
 
     try {
         const decodedToken = await verifyUserAuth();
@@ -15,7 +17,7 @@ export async function GET(request: NextRequest) {
         };
         if (status) ordersQuery.status = status;
 
-        let { orders, error } = await findOrders(ordersQuery);
+        let { orders, error } = await findOrders(ordersQuery, parseInt(page), parseInt(limit));
         if (!orders || error) {
             return new Response(JSON.stringify({ error }), {
                 status: 400,

@@ -5,6 +5,7 @@ import PageNavigator from "@/components/pageNavigator";
 import Modal from "@/components/ui/modal";
 import useApiFetch from "@/hooks/useAPIFetch";
 import { MenuContext } from "@/providers/menu";
+import { formatDate } from "@/utils/formatDate";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams, useSearchParams } from "next/navigation";
@@ -86,6 +87,12 @@ export default function Orders() {
                                             scope="col"
                                             className="ps-2 pe-6 py-3 font-medium text-nowrap"
                                         >
+                                            Date
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="ps-2 pe-6 py-3 font-medium text-nowrap"
+                                        >
                                             Actions
                                         </th>
                                     </tr>
@@ -110,6 +117,9 @@ export default function Orders() {
                                                 </td>
                                                 <td className="ps-2 pe-6 py-4 text-nowrap">
                                                     {order?.status}
+                                                </td>
+                                                <td className="ps-2 pe-6 py-4 text-nowrap">
+                                                    {formatDate(order?.updatedAt)}
                                                 </td>
                                                 <td className="ps-2 pe-6 py-3 flex gap-1 ">
                                                     <button

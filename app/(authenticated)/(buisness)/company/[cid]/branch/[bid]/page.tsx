@@ -20,10 +20,12 @@ import { ToastContext } from "@/providers/toastProvider";
 import { orderStatusTypes, permissionTypes } from "@/assets/enums/enum";
 import { API_URL } from "@/config";
 import Input from "@/components/ui/input";
+import { SocketContext } from "@/providers/socketProvider";
 
 export default function Branch() {
     const toaster = useContext(ToastContext);
     const menuContext = useContext(MenuContext);
+    const socketContext = useContext(SocketContext);
     const params = useParams<{ cid: string; bid: string }>();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isViewModalOpen, setViewModalOpen] = useState(false);
@@ -132,9 +134,38 @@ export default function Branch() {
                             </h1>
                             <hr className="m-3 border-taupe-500 dark:border-taupe-400" />
                             <div className="pb-2">
-                                <h1 className="text-sm text-center text-taupe-600 dark:text-taupe-200">
-                                    No orders yet.
-                                </h1>
+                                {socketContext?.incomingOrders &&
+                                    socketContext?.incomingOrders?.length === 0 && (
+                                        <h1 className="text-xs text-center">No orders yet.</h1>
+                                    )}
+                                {socketContext?.incomingOrders &&
+                                    socketContext?.incomingOrders?.length > 0 &&
+                                    socketContext?.incomingOrders
+                                        .filter((order: any) => order?.branchID?._id === params.bid)
+                                        ?.slice(-10)
+                                        .toReversed()
+                                        .map((order: any) => (
+                                            <div
+                                                className="w-full flex flex-col shadow p-2 mt-2"
+                                                key={order?._id}
+                                            >
+                                                <div className="w-full">
+                                                    {order?.items?.map((item: any) => (
+                                                        <div
+                                                            className="w-full flex justify-between"
+                                                            key={item?._id}
+                                                        >
+                                                            <p className="m-0 text-sm text-taupe-100">
+                                                                {item?.itemID?.name}
+                                                            </p>
+                                                            <p className="m-0 text-sm text-taupe-100">
+                                                                x {item?.quantity}
+                                                            </p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ))}
                             </div>
                         </div>
                         <div className="mt-2 p-2 bg-taupe-200 dark:bg-taupe-600 rounded-lg">
