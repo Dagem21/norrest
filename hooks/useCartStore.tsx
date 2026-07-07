@@ -74,7 +74,7 @@ export const useCartStore = create<CartState>()(
                     const activeId = state.activeCartId;
                     const currentCart = state.carts[activeId] || { items: [] };
                     const existingItem = currentCart.items.find(
-                        (item: any) => item.item?._id === product.item?._id,
+                        (item: any) => item?.item?._id === product?.item?._id,
                     );
 
                     let updatedCart: Item[];
@@ -107,7 +107,7 @@ export const useCartStore = create<CartState>()(
                             [activeId]: {
                                 ...currentCart,
                                 items: currentCart?.items?.map((item: any) => {
-                                    return item.item?._id === productId ? { ...item, id } : item;
+                                    return item?.item?._id === productId ? { ...item, id } : item;
                                 }),
                             },
                         },

@@ -60,3 +60,33 @@ export async function notifyOrderUpdated(
         return { notified: false };
     }
 }
+
+export async function notifyOrderAddCart(
+    userID: string,
+    order: any,
+): Promise<{ notified: boolean }> {
+    const url = `${SIO_url}/notifications/send/cart`;
+
+    const payload = {
+        userID: userID,
+        message: order,
+    };
+
+    const options = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+    };
+
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            return { notified: false };
+        }
+        return { notified: true };
+    } catch (error) {
+        return { notified: false };
+    }
+}

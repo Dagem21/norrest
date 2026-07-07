@@ -1,5 +1,7 @@
 import { orderStatusTypes } from "@/assets/enums/enum";
+import { findMenuByID } from "@/dal/menu/menuDAL";
 import { findOrderByID, updateOrder } from "@/dal/order/orderDAL";
+import { notifyOrderAddCart } from "@/sio/order";
 import { verifyUserAuth } from "@/utils/authHelper";
 import mongoose from "mongoose";
 import { NextRequest } from "next/server";
@@ -17,7 +19,7 @@ export async function PUT(request: NextRequest) {
         try {
             const decodedToken = await verifyUserAuth();
             item.userID = decodedToken.userId;
-        } catch (error) {}
+        } catch (error) { }
 
         const { order, error: errorOrder } = await findOrderByID(orderID);
         if (!order || errorOrder) {
@@ -27,10 +29,18 @@ export async function PUT(request: NextRequest) {
             });
         }
 
+        const { menu, error: errorMenu } = await findMenuByID(item?.itemID);
+        if (!menu || errorMenu) {
+            return new Response(JSON.stringify({ error: errorMenu || "Item not found." }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
         const items = order?.items;
         const savedItem = items?.find((it: any) => it.itemID.toString() === itemID);
-        let updateResult;
 
+        let updateResult;
         if (savedItem) {
             const updateItems = { $inc: { "items.$.quantity": item?.quantity || 1 } };
 
@@ -49,7 +59,6 @@ export async function PUT(request: NextRequest) {
         }
 
         let { result, order: updatedOrder, error } = updateResult;
-
         if (!result || error) {
             return new Response(JSON.stringify({ error: error || "Order not found." }), {
                 status: 400,
@@ -65,6 +74,13 @@ export async function PUT(request: NextRequest) {
                 (it: any) => it.itemID.toString() === itemID,
             );
             savedItemID = newSavedItem?._id;
+        }
+
+        if (order?.userID?._id?.toString() !== item.userID) {
+            const { notified } = await notifyOrderAddCart(
+                order?.userID?._id?.toString(),
+                { order: { item: menu, quantity }, branchID: order?.branchID?._id?.toString() },
+            );
         }
 
         return new Response(
@@ -100,7 +116,7 @@ export async function DELETE(request: NextRequest) {
 
         try {
             decodedToken = await verifyUserAuth();
-        } catch (error) {}
+        } catch (error) { }
 
         if (!orderID || !orderItemID) {
             return new Response(JSON.stringify({ error: "Order ID or Item ID missing." }), {

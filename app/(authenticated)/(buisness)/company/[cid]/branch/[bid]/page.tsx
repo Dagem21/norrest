@@ -153,13 +153,13 @@ export default function Branch() {
         if (!isLoadingOrderPending && dataOrderPending) {
             const incomingOrders = socketContext?.incomingOrders?.filter(
                 (order: any) => order?.branchID?._id === params.bid,
-            );
+            ) ?? [];
 
-            const pendOrders = [...(incomingOrders ?? []), ...dataOrderPending?.orders]
-                .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-                .slice(-10);
+            const pendOrders = [...incomingOrders, ...dataOrderPending?.orders]
+                .sort((a, b) => { return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime() })
+                .slice(0, 10);
 
-            setPendingOrders(pendOrders);
+            setPendingOrders([...pendOrders]);
         }
     }, [dataOrderPending, isLoadingOrderPending, socketContext?.incomingOrders]);
 
@@ -231,7 +231,7 @@ export default function Branch() {
                                 {pendingOrders?.length > 0 &&
                                     pendingOrders.map((order: any) => (
                                         <div
-                                            className="w-full flex flex-col shadow p-2 mt-2"
+                                            className="w-full flex flex-col shadow p-2 mt-2 cursor-pointer"
                                             key={order?._id}
                                             onClick={() => {
                                                 handleOrderClick(order);
@@ -268,7 +268,7 @@ export default function Branch() {
                                 {processingOrders?.length > 0 &&
                                     processingOrders.map((order: any) => (
                                         <div
-                                            className="w-full flex flex-col shadow p-2 mt-2"
+                                            className="w-full flex flex-col shadow p-2 mt-2 cursor-pointer"
                                             key={order?._id}
                                             onClick={() => {
                                                 handleOrderClick(order);
@@ -343,7 +343,7 @@ export default function Branch() {
                                         (dataPermission?.permission?.branchID === params?.bid ||
                                             (!dataPermission?.permission?.branchID &&
                                                 dataPermission?.permission?.companyID ===
-                                                    params?.cid)) &&
+                                                params?.cid)) &&
                                         dataPermission?.permission?.permissions?.includes(
                                             permissionTypes?.Admin,
                                         ) && (
@@ -547,8 +547,8 @@ export default function Branch() {
                             selectedOrder?.status === orderStatusTypes.Pending
                                 ? orderStatusTypes.Processing
                                 : selectedOrder?.status === orderStatusTypes.Processing
-                                  ? orderStatusTypes.Processed
-                                  : ""
+                                    ? orderStatusTypes.Processed
+                                    : ""
                         }
                         onClick={() => {
                             handleOrderUpdate(
@@ -556,8 +556,8 @@ export default function Branch() {
                                 selectedOrder?.status === orderStatusTypes.Pending
                                     ? orderStatusTypes.Processing
                                     : selectedOrder?.status === orderStatusTypes.Processing
-                                      ? orderStatusTypes.Processed
-                                      : "",
+                                        ? orderStatusTypes.Processed
+                                        : "",
                             );
                         }}
                         isLoading={isLoadingOrderUpdate}
