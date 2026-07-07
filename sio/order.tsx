@@ -30,3 +30,33 @@ export async function notifyOrderCreated(
         return { notified: false };
     }
 }
+
+export async function notifyOrderUpdated(
+    userID: string,
+    order: any,
+): Promise<{ notified: boolean }> {
+    const url = `${SIO_url}/notifications/send/status`;
+
+    const payload = {
+        userID: userID,
+        order: order,
+    };
+
+    const options = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+    };
+
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            return { notified: false };
+        }
+        return { notified: true };
+    } catch (error) {
+        return { notified: false };
+    }
+}

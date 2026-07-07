@@ -21,6 +21,7 @@ import { orderStatusTypes, permissionTypes } from "@/assets/enums/enum";
 import { API_URL } from "@/config";
 import Input from "@/components/ui/input";
 import { SocketContext } from "@/providers/socketProvider";
+import UpdateMenuItemForm from "@/components/forms/menu/updateMenuItem";
 
 export default function Branch() {
     const toaster = useContext(ToastContext);
@@ -28,13 +29,17 @@ export default function Branch() {
     const socketContext = useContext(SocketContext);
     const params = useParams<{ cid: string; bid: string }>();
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
     const [isViewModalOpen, setViewModalOpen] = useState(false);
     const [isLoadingImage, setIsLoadingImage] = useState(true);
     const [isQRModalOpen, setQRModalOpen] = useState(false);
     const [tableNumer, setTableNumber] = useState("");
     const [menu, setMenu] = useState<Array<any>>([]);
-    const [pendingOrders, setPendingOrders] = useState<any[]>([])
-    const [processingOrders, setProcessingOrders] = useState<any[]>([])
+    const [pendingOrders, setPendingOrders] = useState<any[]>([]);
+    const [processingOrders, setProcessingOrders] = useState<any[]>([]);
+
+    const [isModalOpenOrder, setModalOpenOrder] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState<any>();
     const [pageLimit, setPageLimit] = useState({
         page: 1,
         limit: 10,
@@ -63,10 +68,7 @@ export default function Branch() {
         true,
     );
 
-    const {
-        data: dataPermission,
-        isLoading: isLoadingPermission,
-    } = useApiFetch(
+    const { data: dataPermission, isLoading: isLoadingPermission } = useApiFetch(
         {
             url: `/api/at/company/branch/permission?branchID=${params?.bid}`,
             method: "GET",
@@ -86,7 +88,11 @@ export default function Branch() {
         true,
     );
 
-    const { data: dataOrderPending, isLoading: isLoadingOrderPending } = useApiFetch(
+    const {
+        data: dataOrderPending,
+        fetchData: fetchDataOrderPending,
+        isLoading: isLoadingOrderPending,
+    } = useApiFetch(
         {
             url: `/api/at/company/branch/orders?branchID=${params?.bid}&status=Pending`,
             method: "GET",
@@ -94,12 +100,29 @@ export default function Branch() {
         true,
     );
 
-    const { data: dataOrderProcessing, isLoading: isLoadingOrderProcessing } = useApiFetch(
+    const {
+        data: dataOrderProcessing,
+        fetchData: fetchDataOrderProcessing,
+        isLoading: isLoadingOrderProcessing,
+    } = useApiFetch(
         {
             url: `/api/at/company/branch/orders?branchID=${params?.bid}&status=Processing`,
             method: "GET",
         },
         true,
+    );
+
+    const {
+        data: dataOrderUpdate,
+        fetchData: fetchDataOrderUpdate,
+        isLoading: isLoadingOrderUpdate,
+        errors: errorsOrderUpdate,
+    } = useApiFetch(
+        {
+            url: `/api/at/company/branch/orders`,
+            method: "PUT",
+        },
+        false,
     );
 
     useEffect(() => {
@@ -128,17 +151,59 @@ export default function Branch() {
 
     useEffect(() => {
         if (!isLoadingOrderPending && dataOrderPending) {
-            const incomingOrders = socketContext?.incomingOrders?.filter((order: any) => order?.branchID?._id === params.bid)
-                .slice(-10)
-                .toReversed() ?? []
-            const pendOrders = dataOrderPending?.orders?.slice(-(10 - incomingOrders.length)) ?? []
-            setPendingOrders([...incomingOrders, ...pendOrders])
+            const incomingOrders = socketContext?.incomingOrders?.filter(
+                (order: any) => order?.branchID?._id === params.bid,
+            );
+
+            const pendOrders = [...(incomingOrders ?? []), ...dataOrderPending?.orders]
+                .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+                .slice(-10);
+
+            setPendingOrders(pendOrders);
         }
     }, [dataOrderPending, isLoadingOrderPending, socketContext?.incomingOrders]);
+
+    useEffect(() => {
+        if (!isLoadingOrderProcessing && dataOrderProcessing) {
+            setProcessingOrders(dataOrderProcessing?.orders);
+        }
+    }, [dataOrderProcessing, isLoadingOrderProcessing]);
+
+    useEffect(() => {
+        if (!isLoadingOrderUpdate && dataOrderUpdate) {
+            const toast = {
+                message: "Order status updated.",
+                type: "success",
+            };
+            toaster?.addToast(toast);
+            fetchDataOrderPending();
+            socketContext?.clearIncomingOrders();
+            fetchDataOrderProcessing();
+            setModalOpenOrder(false);
+        } else if (!isLoadingOrderUpdate && errorsOrderUpdate?.details) {
+            const toast = {
+                message:
+                    errorsOrderUpdate?.details?.response?.data?.error || errorsOrderUpdate?.message,
+                type: "error",
+            };
+            toaster?.addToast(toast);
+        }
+    }, [isLoadingOrderUpdate, dataOrderUpdate, errorsOrderUpdate]);
 
     const handleViewMenuItem = (item: any) => {
         setSelectedItem(item);
         setViewModalOpen(true);
+    };
+
+    const handleOrderClick = (order: any) => {
+        setSelectedOrder(order);
+        setModalOpenOrder(true);
+    };
+
+    const handleOrderUpdate = (orderID: string, status: string) => {
+        fetchDataOrderUpdate({
+            data: { orderID, status },
+        });
     };
 
     const handlePageChange = (page: number) => {
@@ -156,19 +221,21 @@ export default function Branch() {
                     <div className="h-fit w-screen sm:w-2/7">
                         <div className="p-2 bg-taupe-200 dark:bg-taupe-600 rounded-lg">
                             <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
-                                Incoming Orders
+                                Pending Orders
                             </h1>
                             <hr className="m-3 border-taupe-500 dark:border-taupe-400" />
                             <div className="pb-2">
                                 {pendingOrders && pendingOrders?.length === 0 && (
                                     <h1 className="text-xs text-center">No orders yet.</h1>
                                 )}
-                                {
-                                    pendingOrders?.length > 0 &&
+                                {pendingOrders?.length > 0 &&
                                     pendingOrders.map((order: any) => (
                                         <div
                                             className="w-full flex flex-col shadow p-2 mt-2"
                                             key={order?._id}
+                                            onClick={() => {
+                                                handleOrderClick(order);
+                                            }}
                                         >
                                             <div className="w-full">
                                                 {order?.items?.map((item: any) => (
@@ -191,13 +258,39 @@ export default function Branch() {
                         </div>
                         <div className="mt-2 p-2 bg-taupe-200 dark:bg-taupe-600 rounded-lg">
                             <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
-                                Pending Orders
+                                Processing Orders
                             </h1>
                             <hr className="m-3 border-taupe-500 dark:border-taupe-400" />
                             <div className="pb-2">
-                                <h1 className="text-sm text-center text-taupe-600 dark:text-taupe-200">
-                                    No orders yet.
-                                </h1>
+                                {processingOrders && processingOrders?.length === 0 && (
+                                    <h1 className="text-xs text-center">No orders yet.</h1>
+                                )}
+                                {processingOrders?.length > 0 &&
+                                    processingOrders.map((order: any) => (
+                                        <div
+                                            className="w-full flex flex-col shadow p-2 mt-2"
+                                            key={order?._id}
+                                            onClick={() => {
+                                                handleOrderClick(order);
+                                            }}
+                                        >
+                                            <div className="w-full">
+                                                {order?.items?.map((item: any) => (
+                                                    <div
+                                                        className="w-full flex justify-between"
+                                                        key={item?._id}
+                                                    >
+                                                        <p className="m-0 text-sm text-taupe-100">
+                                                            {item?.itemID?.name}
+                                                        </p>
+                                                        <p className="m-0 text-sm text-taupe-100">
+                                                            x {item?.quantity}
+                                                        </p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
                             </div>
                         </div>
                         {!isLoadingPermission &&
@@ -250,7 +343,7 @@ export default function Branch() {
                                         (dataPermission?.permission?.branchID === params?.bid ||
                                             (!dataPermission?.permission?.branchID &&
                                                 dataPermission?.permission?.companyID ===
-                                                params?.cid)) &&
+                                                    params?.cid)) &&
                                         dataPermission?.permission?.permissions?.includes(
                                             permissionTypes?.Admin,
                                         ) && (
@@ -380,11 +473,117 @@ export default function Branch() {
                     </div>
                 </div>
             </div>
+            <Modal
+                isOpen={isModalOpenOrder}
+                onClose={() => setModalOpenOrder(false)}
+                title="Order Details"
+            >
+                <div className="flex flex-col shadow p-2">
+                    <div className="flex flex-col">
+                        <h1 className="text-sm text-center">Customer</h1>
+                        <hr className="text-taupe-500 my-2" />
+                        <h1 className="flex-1 text-sm text-taupe-300">
+                            Customer Name:{" "}
+                            <span className="text-taupe-100 font-bold">
+                                {selectedOrder?.userID?.firstName || "N/A"}
+                            </span>
+                        </h1>
+                        <h1 className="flex-1 text-sm text-taupe-300">
+                            Phone Number :{" "}
+                            <span className="text-taupe-100 font-bold">
+                                {selectedOrder?.userID?.phoneNumber || "N/A"}
+                            </span>
+                        </h1>
+                        {selectedOrder?.table && (
+                            <h1 className="flex-1 text-sm text-taupe-300">
+                                Table :{" "}
+                                <span className="text-taupe-100 font-bold">
+                                    {selectedOrder?.table}
+                                </span>
+                            </h1>
+                        )}
+                        <hr className="text-taupe-500 my-2" />
+                    </div>
+                    <div className="mb-2">
+                        <h1 className="text-sm text-center">Order Items</h1>
+
+                        <hr className="text-taupe-500 my-2" />
+
+                        {selectedOrder?.items?.length === 0 && (
+                            <h1 className="text-center text-sm">No items in order.</h1>
+                        )}
+                        {selectedOrder?.items?.length > 0 && (
+                            <div className="flex flex-col gap-2">
+                                {selectedOrder?.items?.map((item: any) => {
+                                    return (
+                                        <div
+                                            className="flex items-center justify-between text-sm font-bold"
+                                            key={item?._id}
+                                        >
+                                            <h1>{item?.itemID?.name}</h1>
+                                            <h1>
+                                                {item?.quantity} x {item?.itemID?.price} Birr
+                                            </h1>
+                                        </div>
+                                    );
+                                })}
+
+                                <hr className="text-taupe-500 m-2" />
+
+                                <h1 className="text-end text-sm">
+                                    Total :{" "}
+                                    {selectedOrder?.items?.reduce(
+                                        (acc: number, current: any) =>
+                                            acc + current?.quantity * current?.itemID?.price,
+                                        0,
+                                    )}{" "}
+                                    Birr
+                                </h1>
+                            </div>
+                        )}
+                    </div>
+                    <Button
+                        text={
+                            selectedOrder?.status === orderStatusTypes.Pending
+                                ? orderStatusTypes.Processing
+                                : selectedOrder?.status === orderStatusTypes.Processing
+                                  ? orderStatusTypes.Processed
+                                  : ""
+                        }
+                        onClick={() => {
+                            handleOrderUpdate(
+                                selectedOrder?._id,
+                                selectedOrder?.status === orderStatusTypes.Pending
+                                    ? orderStatusTypes.Processing
+                                    : selectedOrder?.status === orderStatusTypes.Processing
+                                      ? orderStatusTypes.Processed
+                                      : "",
+                            );
+                        }}
+                        isLoading={isLoadingOrderUpdate}
+                    />
+                </div>
+            </Modal>
+
             <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="Add Menu Item">
                 <MenuItemForm
                     onFinish={() => {
                         fetchMenu();
                         setModalOpen(false);
+                    }}
+                />
+            </Modal>
+
+            <Modal
+                isOpen={isUpdateModalOpen}
+                onClose={() => setUpdateModalOpen(false)}
+                title="Update Menu Item"
+            >
+                <UpdateMenuItemForm
+                    order={selectedItem}
+                    onFinish={() => {
+                        fetchMenu();
+                        setUpdateModalOpen(false);
                     }}
                 />
             </Modal>
@@ -407,18 +606,22 @@ export default function Branch() {
 
             <ViewMenuItem isOpen={isViewModalOpen} onClose={() => setViewModalOpen(false)}>
                 <div className="flex flex-col p-2 cursor-pointer">
-                    <div className="flex items-center flex-wrap shadow-lg">
-                        <div>
+                    <div className="relative flex-shrink-0 flex items-center justify-center overflow-hidden rounded-lg inset-shadow-[0_0_20px_2px_rgba(0,0,0,0.3)] p-8">
+                        <div className="shadow-[0_0_10px_2px_rgba(0,0,0,0.3)] rounded-lg">
                             <Image
-                                className="w-screen sm:max-w-sm rounded-lg object-cover"
+                                className="w-full h-full object-cover"
                                 src={selectedItem?.picture?.[1]}
                                 alt={selectedItem?.name}
-                                width={1000}
-                                height={1000}
+                                width={300}
+                                height={300}
                                 onLoad={() => setIsLoadingImage(false)}
                                 onError={() => setIsLoadingImage(false)}
                             />
-                            <Loading loading={isLoadingImage} />
+                            {isLoadingImage && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-taupe-100 dark:bg-taupe-900">
+                                    <Loading loading={isLoadingImage} />
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div className="flex flex-col justify-between my-2">
@@ -446,7 +649,13 @@ export default function Branch() {
                         </div>
                     </div>
                     <div className="flex flex-col gap-2 my-2">
-                        <Button text="Edit" />
+                        <Button
+                            text="Edit"
+                            onClick={() => {
+                                setViewModalOpen(false);
+                                setUpdateModalOpen(true);
+                            }}
+                        />
                     </div>
                 </div>
             </ViewMenuItem>

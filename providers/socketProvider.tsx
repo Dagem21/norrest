@@ -10,8 +10,11 @@ import { SIO_URL } from "@/config";
 interface SocketContextType {
     addNotification: (
         notification: Omit<NotificationItem, "id" | "isVisible" | "shouldRender">,
+        forUser?: boolean,
     ) => void;
     incomingOrders: any[];
+    removeIncomingOrder: (orderID: string) => void;
+    clearIncomingOrders: () => void;
 }
 
 interface NotificationItem {
@@ -19,6 +22,7 @@ interface NotificationItem {
     order: any;
     isVisible: boolean;
     shouldRender: boolean;
+    forUser?: boolean;
 }
 
 export const SocketContext = createContext<SocketContextType | undefined>(undefined);
@@ -30,11 +34,11 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
 
     const socketRef = useRef<Socket | null>(null);
 
-    const addNotification = (newNotification: { order: any }) => {
+    const addNotification = (newNotification: { order: any }, forUser = false) => {
         const id = newNotification.order?._id || Math.random().toString(36).substring(2, 9);
         setNotifications((prev) => [
             ...prev,
-            { id, order: newNotification.order, isVisible: false, shouldRender: true },
+            { id, order: newNotification.order, isVisible: false, shouldRender: true, forUser },
         ]);
         setTimeout(() => {
             setNotifications((prev) =>
@@ -54,6 +58,14 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
         }, 300);
     };
 
+    const removeIncomingOrder = (orderID: string) => {
+        setIncomingOrders((prev) => prev.filter((order: any) => order?._id !== orderID));
+    };
+
+    const clearIncomingOrders = () => {
+        setIncomingOrders([]);
+    };
+
     useEffect(() => {
         const userId = menuContext?.user?._id;
         if (!userId) return;
@@ -61,9 +73,12 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
         socketRef.current = io(`${SIO_URL}?userId=${userId}`);
 
         socketRef.current.on("order_create", (data: any) => {
-            console.log(data);
             setIncomingOrders((prev) => [...prev, data]);
-            addNotification({ order: data });
+            addNotification({ order: data }, false);
+        });
+
+        socketRef.current.on("order_status_update", (data: any) => {
+            addNotification({ order: data }, true);
         });
 
         return () => {
@@ -75,7 +90,9 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
     }, [menuContext?.user?._id]);
 
     return (
-        <SocketContext.Provider value={{ addNotification, incomingOrders }}>
+        <SocketContext.Provider
+            value={{ addNotification, incomingOrders, removeIncomingOrder, clearIncomingOrders }}
+        >
             {children}
 
             {/* Container for notifications stacking downwards */}
@@ -85,33 +102,43 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
                         notif.shouldRender && (
                             <div
                                 key={notif.id}
-                                className={`w-full p-3 rounded bg-taupe-800 shadow-md shadow-taupe-600/30 border-l-4 pointer-events-auto transform transition-all duration-300 ease-out ${notif.isVisible
+                                className={`w-full p-3 rounded bg-taupe-800 shadow-md shadow-taupe-600/30 border-l-4 pointer-events-auto transform transition-all duration-300 ease-out ${
+                                    notif.isVisible
                                         ? "translate-x-0 opacity-100"
                                         : "translate-x-full opacity-0"
-                                    }`}
+                                }`}
                                 style={{ borderColor: "#ffe44c" }}
                             >
-                                <div className="w-full flex flex-col">
-                                    <p className="m-0 text-xs text-taupe-300">
-                                        {notif.order?.branchID?.companyID?.name},{" "}
-                                        {notif.order?.branchID?.name}
-                                    </p>
-                                    <div className="w-full">
-                                        {notif.order?.items?.map((item: any) => (
-                                            <div
-                                                className="w-full flex justify-between"
-                                                key={item?._id}
-                                            >
-                                                <p className="m-0 text-sm text-taupe-100">
-                                                    {item?.itemID?.name}
-                                                </p>
-                                                <p className="m-0 text-sm text-taupe-100">
-                                                    x {item?.quantity}
-                                                </p>
-                                            </div>
-                                        ))}
+                                {notif.forUser ? (
+                                    <div className="w-full flex flex-col">
+                                        <p className="m-0 text-sm text-taupe-100">
+                                            Your order is being processed.
+                                        </p>
                                     </div>
-                                </div>
+                                ) : (
+                                    <div className="w-full flex flex-col">
+                                        <p className="m-0 text-xs text-taupe-300">
+                                            {notif.order?.branchID?.companyID?.name},{" "}
+                                            {notif.order?.branchID?.name}
+                                        </p>
+                                        <div className="w-full">
+                                            {notif.order?.items?.map((item: any) => (
+                                                <div
+                                                    className="w-full flex justify-between"
+                                                    key={item?._id}
+                                                >
+                                                    <p className="m-0 text-sm text-taupe-100">
+                                                        {item?.itemID?.name}
+                                                    </p>
+                                                    <p className="m-0 text-sm text-taupe-100">
+                                                        x {item?.quantity}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
                                 <FontAwesomeIcon
                                     icon={faClose}
                                     onClick={() => dismissNotification(notif.id)}

@@ -4,14 +4,20 @@ import Input from "@/components/ui/input";
 import useApiFetch from "@/hooks/useAPIFetch";
 import { ToastContext } from "@/providers/toastProvider";
 import menuItemSchema from "@/yup/menu/menuItem";
+import menuItemUpdateSchema from "@/yup/menu/menuItemUpdate";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-export default function MenuItemForm({ onFinish }: { onFinish: () => void }) {
-    const params = useParams<{ bid: string }>();
+export default function UpdateMenuItemForm({
+    order,
+    onFinish,
+}: {
+    order: any;
+    onFinish: () => void;
+}) {
     const toaster = useContext(ToastContext);
     const {
         register,
@@ -20,10 +26,14 @@ export default function MenuItemForm({ onFinish }: { onFinish: () => void }) {
         watch,
         reset,
     } = useForm({
-        resolver: yupResolver(menuItemSchema),
+        resolver: yupResolver(menuItemUpdateSchema),
         mode: "onChange",
         defaultValues: {
-            branchID: params?.bid,
+            _id: order?._id,
+            name: order?.name,
+            category: order?.category,
+            ingredients: order?.ingredients,
+            price: order?.price,
         },
     });
 
@@ -31,11 +41,11 @@ export default function MenuItemForm({ onFinish }: { onFinish: () => void }) {
         data,
         fetchData,
         isLoading,
-        errors: errorsAdd,
+        errors: errorsUpdate,
     } = useApiFetch(
         {
             url: "/api/at/menu",
-            method: "POST",
+            method: "PUT",
         },
         false,
     );
@@ -44,12 +54,14 @@ export default function MenuItemForm({ onFinish }: { onFinish: () => void }) {
 
     const handleRegister = (data: any) => {
         const formData = new FormData();
-        formData.append("branchID", data?.branchID);
+        formData.append("id", data?._id);
         formData.append("name", data?.name);
         formData.append("price", data?.price);
         formData.append("ingredients", data?.ingredients);
         formData.append("category", JSON.stringify(data?.category));
-        formData.append("picture", data?.picture[0]);
+        if (data?.picture[0]) {
+            formData.append("picture", data?.picture[0]);
+        }
 
         fetchData({ data: formData });
     };
@@ -57,20 +69,20 @@ export default function MenuItemForm({ onFinish }: { onFinish: () => void }) {
     useEffect(() => {
         if (!isLoading && data) {
             const toast = {
-                message: "Menu item added.",
+                message: "Menu item updated.",
                 type: "success",
             };
             toaster?.addToast(toast);
             onFinish();
             reset();
-        } else if (!isLoading && errorsAdd?.details) {
+        } else if (!isLoading && errorsUpdate?.details) {
             const toast = {
-                message: errorsAdd?.details?.response?.data?.error || errorsAdd?.message,
+                message: errorsUpdate?.details?.response?.data?.error || errorsUpdate?.message,
                 type: "error",
             };
             toaster?.addToast(toast);
         }
-    }, [data, isLoading, errorsAdd]);
+    }, [data, isLoading, errorsUpdate]);
 
     return (
         <form
@@ -148,7 +160,12 @@ export default function MenuItemForm({ onFinish }: { onFinish: () => void }) {
                 </div>
             </div>
 
-            <Button type="submit" text="Add Menu Item" isLoading={isLoading} disabled={isLoading} />
+            <Button
+                type="submit"
+                text="Update Menu Item"
+                isLoading={isLoading}
+                disabled={isLoading}
+            />
         </form>
     );
 }

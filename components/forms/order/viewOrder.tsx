@@ -213,7 +213,7 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                 },
             });
         } else {
-            const order = {
+            const order: any = {
                 branchID: activeCartId || params?.id,
                 status: orderStatusTypes.Pending,
                 items: carts?.[activeCartId]?.items?.map((item) => {
@@ -222,8 +222,9 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                         quantity: item.quantity,
                     };
                 }),
-                table: activeCart.table,
             };
+
+            if (activeCart?.table) order.table = activeCart?.table;
 
             fetchData({ data: { order } });
         }
@@ -276,12 +277,12 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                             <div className="flex items-center justify-center mt-2">
                                 {(!activeCart?.userID ||
                                     activeCart?.userID === menuContext?.user?._id) && (
-                                        <Button
-                                            text="Order"
-                                            onClick={handleOrder}
-                                            isLoading={isLoadingOrderUpdate}
-                                        />
-                                    )}
+                                    <Button
+                                        text="Order"
+                                        onClick={handleOrder}
+                                        isLoading={isLoadingOrderUpdate}
+                                    />
+                                )}
                                 <Button text="Clear" style="secondary" onClick={handleCartClear} />
                             </div>
                         </div>
