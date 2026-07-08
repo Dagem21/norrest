@@ -102,7 +102,7 @@ export default function Menu() {
     );
 
     useEffect(() => {
-        menuContext?.setTitle(`${data?.branch?.companyID?.name}, ${data?.branch?.name}`);
+        menuContext?.setTitle('')
     }, [data]);
 
     useEffect(() => {
@@ -250,17 +250,19 @@ export default function Menu() {
     };
 
     return (
-        <div className="flex flex-col flex-1 items-center p-2">
+        <div className="flex flex-col flex-1 items-center">
             <div className="fixed bottom-0 right-0 m-6">
                 <div className="flex flex-col gap-2">
                     <button
-                        className="rounded-full bg-taupe-400 dark:bg-taupe-600 p-3 shadow-lg"
+                        className="rounded-full bg-taupe-400 dark:bg-taupe-600 p-3 shadow-lg cursor-pointer"
+                        title="Join other cart."
                         onClick={() => setIsScanModalOpen(true)}
                     >
                         <FontAwesomeIcon icon={faQrcode} size="lg" />
                     </button>
                     <button
-                        className="rounded-full bg-taupe-400 dark:bg-taupe-600 p-3 shadow-lg"
+                        className="rounded-full bg-taupe-400 dark:bg-taupe-600 p-3 shadow-lg cursor-pointer"
+                        title="Cart"
                         onClick={() => setIsOrderModalOpen(true)}
                     >
                         <FontAwesomeIcon icon={faUtensils} size="lg" />
@@ -417,7 +419,7 @@ export default function Menu() {
                                 onChange={(e) => {
                                     setQuantity((prev) =>
                                         0 > parseInt(e.target.value || "1") ||
-                                        parseInt(e.target.value || "1") > 10
+                                            parseInt(e.target.value || "1") > 10
                                             ? prev
                                             : parseInt(e.target.value || "0"),
                                     );

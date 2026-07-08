@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import axios from "./axios";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface requestConfigParamType {
     url?: string;
@@ -24,6 +24,8 @@ const useApiFetch = (
     intialFetch = true,
 ) => {
     const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState<any>({});
     const [data, setData] = useState<any>(null);
@@ -43,7 +45,10 @@ const useApiFetch = (
             if (error?.response?.status === 400) {
                 setErrors({ isError: true, message: "Bad request", details: error });
             } else if (error?.response?.status === 401) {
-                router.replace("/signin");
+                const fullPath = searchParams.toString()
+                    ? `${pathname}?${searchParams.toString()}`
+                    : pathname
+                router.replace(`/signin${fullPath ? '?returnTo=' + encodeURIComponent(fullPath) : ''}`);
                 setErrors({ isError: true, message: "Unauthorized", details: error });
             } else if (error?.response?.status === 404) {
                 setErrors({ isError: true, message: "NOT FOUND", details: error });

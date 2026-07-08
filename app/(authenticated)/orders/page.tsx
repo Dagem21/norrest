@@ -1,23 +1,39 @@
 "use client";
 
+import { orderStatusTypes } from "@/assets/enums/enum";
 import Loading from "@/components/loadingComponent";
 import PageNavigator from "@/components/pageNavigator";
+import Button from "@/components/ui/button";
 import Modal from "@/components/ui/modal";
 import useApiFetch from "@/hooks/useAPIFetch";
+import { useCartStore } from "@/hooks/useCartStore";
 import { MenuContext } from "@/providers/menu";
+import { ToastContext } from "@/providers/toastProvider";
 import { formatDate } from "@/utils/formatDate";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
 export default function Orders() {
+    const router = useRouter();
     const searchParams = useSearchParams();
     const orderStatus = searchParams.get("status");
     const menuContext = useContext(MenuContext);
+    const toaster = useContext(ToastContext);
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<any>();
+    const [openOrder, setOpenOrder] = useState(false)
+    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+
+    const {
+        carts,
+        addToActiveCart,
+        setActiveCart,
+        updateCartID,
+        clearCart,
+    } = useCartStore();
 
     useEffect(() => {
         menuContext?.setTitle("My Orders");
@@ -31,6 +47,34 @@ export default function Orders() {
         true,
     );
 
+    const { data: dataDelete, fetchData: fetchDataDelete, isLoading: isLoadingDelete, errors: errorsDelete } = useApiFetch(
+        {
+            url: `/api/at/user/orders`,
+            method: "DELETE",
+        },
+        false,
+    );
+
+    useEffect(() => {
+        if (!isLoadingDelete && dataDelete) {
+            setDeleteModalOpen(false);
+
+            fetchData();
+
+            const toast = {
+                message: "Order deleted.",
+                type: "success",
+            };
+            toaster?.addToast(toast);
+        } else if (!isLoadingDelete && errorsDelete?.details) {
+            const toast = {
+                message: errorsDelete?.details?.response?.data?.error,
+                type: "error",
+            };
+            toaster?.addToast(toast);
+        }
+    }, [isLoadingDelete, dataDelete, errorsDelete]);
+
     const handlePageChange = (page: number) => {
         fetchData({ params: { page } });
     };
@@ -43,6 +87,23 @@ export default function Orders() {
         setSelectedOrder(order);
         setModalOpen(true);
     };
+
+    const handleOrderUpdate = () => {
+        const branchID = selectedOrder?.branchID?._id;
+        clearCart(branchID);
+        setActiveCart(branchID);
+        updateCartID(selectedOrder?._id, branchID);
+        selectedOrder?.items?.forEach((it: any) => {
+            const item = {
+                id: it?._id,
+                quantity: it?.quantity,
+                item: it?.itemID,
+            }
+            addToActiveCart(item, branchID)
+        });
+
+        router.push(`/menu/${branchID}`)
+    }
 
     return (
         <div className="flex flex-col flex-1 items-center">
@@ -121,6 +182,38 @@ export default function Orders() {
                                                     >
                                                         <FontAwesomeIcon icon={faEye} />
                                                     </button>
+                                                    {(order?.status === orderStatusTypes.Cart || order?.status === orderStatusTypes.Pending) &&
+                                                        <button
+                                                            className="bg-yellow-900 p-1 hover:bg-yellow-400 text-white font-bold rounded cursor-pointer"
+                                                            title="Update Order"
+                                                            onClick={() => {
+                                                                const branchID = selectedOrder?.branchID?._id;
+                                                                const cart = carts[branchID];
+                                                                if (cart) {
+                                                                    setSelectedOrder(order);
+                                                                    setOpenOrder(true);
+                                                                }
+                                                                else {
+                                                                    setSelectedOrder(order);
+                                                                    handleOrderUpdate()
+                                                                }
+                                                            }}
+                                                        >
+                                                            <FontAwesomeIcon icon={faPen} />
+                                                        </button>
+                                                    }
+                                                    {(order?.status === orderStatusTypes.Cart || order?.status === orderStatusTypes.Pending) &&
+                                                        <button
+                                                            className="bg-red-900 p-1 hover:bg-red-400 text-white font-bold rounded cursor-pointer"
+                                                            title="Delete Order"
+                                                            onClick={() => {
+                                                                setSelectedOrder(order);
+                                                                setDeleteModalOpen(true);
+                                                            }}
+                                                        >
+                                                            <FontAwesomeIcon icon={faTrash} />
+                                                        </button>
+                                                    }
                                                 </td>
                                             </tr>
                                         ))}
@@ -195,6 +288,55 @@ export default function Orders() {
                                 </h1>
                             </div>
                         )}
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal
+                isOpen={openOrder}
+                onClose={() => setOpenOrder(false)}
+                title="Update Order"
+            >
+                <div>
+                    <h1>This will clear items in your current cart?</h1>
+                    <div className="flex items-center justify-center mt-2">
+                        <Button
+                            text="Continue"
+                            onClick={handleOrderUpdate}
+                        />
+                        <Button
+                            text="Cancel"
+                            style="secondary"
+                            onClick={() => {
+                                setOpenOrder(false);
+                            }}
+                        />
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                title="Delete order"
+            >
+                <div>
+                    <h1>Are you sure you want to delete this order?</h1>
+                    <div className="flex items-center justify-center mt-2">
+                        <Button
+                            text="Delete"
+                            onClick={() => {
+                                fetchDataDelete({ data: { id: selectedOrder?._id } })
+                            }}
+                            isLoading={isLoadingDelete}
+                        />
+                        <Button
+                            text="Cancel"
+                            style="secondary"
+                            onClick={() => {
+                                setDeleteModalOpen(false);
+                            }}
+                        />
                     </div>
                 </div>
             </Modal>

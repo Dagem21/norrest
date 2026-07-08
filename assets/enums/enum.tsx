@@ -35,7 +35,7 @@ export enum categoryTypes {
 }
 
 export enum orderStatusTypes {
-    Draft = "Draft",
+    Cart = "Cart",
     Pending = "Pending",
     Processing = "Processing",
     Processed = "Processed",

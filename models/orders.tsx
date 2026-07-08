@@ -36,7 +36,7 @@ const orderSchema = new Schema(
         status: {
             type: String,
             enum: Object.values(orderStatusTypes),
-            default: orderStatusTypes.Draft,
+            default: orderStatusTypes.Cart,
             required: true,
         },
         waiterID: {

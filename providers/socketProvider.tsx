@@ -31,15 +31,7 @@ export const SocketContext = createContext<SocketContextType | undefined>(undefi
 const SocketProvider = ({ children }: { children: ReactNode }) => {
     const menuContext = useContext(MenuContext);
 
-    const {
-        activeCartId,
-        carts,
-        addToActiveCart,
-        createNewCart,
-        setActiveCart,
-        updateCartID,
-        updateItemFromActiveCart,
-    } = useCartStore();
+    const { addToActiveCart } = useCartStore();
 
     const [notifications, setNotifications] = useState<NotificationItem[]>([]);
     const [incomingOrders, setIncomingOrders] = useState<any[]>([]);
@@ -98,8 +90,7 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
             const branchID = data?.branchID
 
             if (order && branchID) {
-                setActiveCart(branchID)
-                addToActiveCart(order)
+                addToActiveCart(order, branchID)
             }
 
             addNotification({ order: data }, "UpdateCart");

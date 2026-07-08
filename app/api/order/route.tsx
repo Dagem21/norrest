@@ -219,7 +219,7 @@ export async function DELETE(request: NextRequest) {
             });
         }
 
-        if (order.status !== orderStatusTypes.Draft) {
+        if (order.status !== orderStatusTypes.Cart) {
             return new Response(JSON.stringify({ error: "Order is already being processed." }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },

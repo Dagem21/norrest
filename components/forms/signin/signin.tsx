@@ -7,7 +7,7 @@ import { useAppStore } from "@/hooks/useAppStore";
 import { faAt, faEye, faEyeSlash, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function SignInForm({
@@ -20,6 +20,9 @@ export default function SignInForm({
     onclose?: () => void;
 }) {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get("returnTo") || "/dashboard";
+
     const { login } = useAppStore();
 
     const [credentials, setCredentials] = useState({
@@ -41,7 +44,7 @@ export default function SignInForm({
             if (data) {
                 login(data?.user);
                 if (redirect) {
-                    router.replace(to || "/dashboard");
+                    router.replace(to || callbackUrl);
                 } else if (onclose) {
                     onclose();
                 }

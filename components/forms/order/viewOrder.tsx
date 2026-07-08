@@ -102,7 +102,7 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
 
     useEffect(() => {
         if (!isLoading && data) {
-            if (data?.order?.status !== orderStatusTypes.Draft) {
+            if (data?.order?.status !== orderStatusTypes.Cart) {
                 deleteCart(activeCartId);
                 const toast = {
                     message: "Order submitted.",
@@ -169,7 +169,7 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
             }
             const order: any = {
                 branchID: activeCartId || params?.id,
-                status: orderStatusTypes.Draft,
+                status: orderStatusTypes.Cart,
                 items: activeCart?.items?.map((item) => {
                     return {
                         itemID: item.item._id,
@@ -277,12 +277,12 @@ export default function ViewOrder({ isOpen, onClose }: ViewOrderProps) {
                             <div className="flex items-center justify-center mt-2">
                                 {(!activeCart?.userID ||
                                     activeCart?.userID === menuContext?.user?._id) && (
-                                    <Button
-                                        text="Order"
-                                        onClick={handleOrder}
-                                        isLoading={isLoadingOrderUpdate}
-                                    />
-                                )}
+                                        <Button
+                                            text="Order"
+                                            onClick={handleOrder}
+                                            isLoading={isLoadingOrderUpdate}
+                                        />
+                                    )}
                                 <Button text="Clear" style="secondary" onClick={handleCartClear} />
                             </div>
                         </div>

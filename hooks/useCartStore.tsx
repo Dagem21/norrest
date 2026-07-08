@@ -17,10 +17,11 @@ interface CartState {
     setActiveCart: (cartId: string) => void;
     createNewCart: (cartId: string, name: string, table?: number) => void;
     deleteCart: (cartId: string) => void;
-    addToActiveCart: (item: Item) => void;
+    addToActiveCart: (item: Item, cartID?: string) => void;
     updateCartID: (id: string | null, cartID?: string, userID?: string) => void;
     updateItemFromActiveCart: (productId: string, id: string | null) => void;
     removeFromActiveCart: (productId: string) => void;
+    clearCart: (cartID?: string) => void;
 }
 
 export const useCartStore = create<CartState>()(
@@ -69,9 +70,9 @@ export const useCartStore = create<CartState>()(
                     };
                 }),
 
-            addToActiveCart: (product) =>
+            addToActiveCart: (product, cartID) =>
                 set((state: any) => {
-                    const activeId = state.activeCartId;
+                    const activeId = cartID || state.activeCartId;
                     const currentCart = state.carts[activeId] || { items: [] };
                     const existingItem = currentCart.items.find(
                         (item: any) => item?.item?._id === product?.item?._id,
@@ -113,6 +114,7 @@ export const useCartStore = create<CartState>()(
                         },
                     };
                 }),
+
             removeFromActiveCart: (productId) =>
                 set((state: any) => {
                     const activeId = state.activeCartId;
@@ -128,6 +130,15 @@ export const useCartStore = create<CartState>()(
                                 ),
                             },
                         },
+                    };
+                }),
+
+            clearCart: (cartID) =>
+                set((state: any) => {
+                    const activeId = cartID || state.activeCartId;
+
+                    return {
+                        carts: { ...state.carts, [activeId]: { items: [] } },
                     };
                 }),
         }),

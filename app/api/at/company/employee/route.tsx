@@ -359,8 +359,8 @@ export async function DELETE(request: NextRequest) {
     try {
         const decodedToken = await verifyUserAuth();
 
-        if (!branchID) {
-            return new Response(JSON.stringify({ error: "Missing branch ID." }), {
+        if (!branchID || !id) {
+            return new Response(JSON.stringify({ error: "Missing branch ID or user ID." }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
             });
