@@ -46,6 +46,7 @@ export async function GET(request: NextRequest) {
                 headers: { "Content-Type": "application/json" },
             });
         }
+        console.log(error);
         return new Response(JSON.stringify({ error }), {
             status: 400,
             headers: { "Content-Type": "application/json" },

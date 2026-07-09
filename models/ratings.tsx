@@ -7,9 +7,9 @@ const ratingSchema = new Schema(
             ref: "users",
             required: true,
         },
-        menuID: {
+        branchID: {
             type: Types.ObjectId,
-            ref: "menus",
+            ref: "branches",
             required: true,
         },
         rating: {

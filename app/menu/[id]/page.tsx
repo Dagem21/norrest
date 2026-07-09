@@ -14,10 +14,11 @@ import { categoryTypes, orderStatusTypes } from "@/assets/enums/enum";
 import PageNavigator from "@/components/pageNavigator";
 import { ToastContext } from "@/providers/toastProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinus, faPlus, faQrcode, faUtensils } from "@fortawesome/free-solid-svg-icons";
+import { faMinus, faPlus, faQrcode, faStar, faUtensils } from "@fortawesome/free-solid-svg-icons";
 import { useCartStore } from "@/hooks/useCartStore";
 import Modal from "@/components/ui/modal";
 import QrScanner from "@/components/QRScanner";
+import RatingForm from "@/components/forms/menu/rating";
 
 export default function Menu() {
     const params = useParams<{ id: string }>();
@@ -34,6 +35,8 @@ export default function Menu() {
     const [quantity, setQuantity] = useState<number>(1);
     const [selectedCatagory, setSelectedCategory] = useState<string | null>();
     const [isScanModalOpen, setIsScanModalOpen] = useState(false);
+    const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+    const [isAddRatingModalOpen, setAddRatingModalOpen] = useState(false);
     const [pageLimit, setPageLimit] = useState({
         page: 1,
         limit: 10,
@@ -101,8 +104,21 @@ export default function Menu() {
         false,
     );
 
+    const {
+        data: dataRating,
+        fetchData: fetchDataRating,
+        isLoading: isLoadingRating,
+        errors: errorsRating,
+    } = useApiFetch(
+        {
+            url: `/api/at/rating?branchID=${params.id}`,
+            method: "GET",
+        },
+        false,
+    );
+
     useEffect(() => {
-        menuContext?.setTitle('')
+        menuContext?.setTitle("");
     }, [data]);
 
     useEffect(() => {
@@ -255,6 +271,18 @@ export default function Menu() {
                 <div className="flex flex-col gap-2">
                     <button
                         className="rounded-full bg-taupe-400 dark:bg-taupe-600 p-3 shadow-lg cursor-pointer"
+                        title="Rating."
+                        onClick={() => {
+                            if (!dataRating) {
+                                fetchDataRating();
+                            }
+                            setIsRatingModalOpen(true);
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faStar} size="lg" />
+                    </button>
+                    <button
+                        className="rounded-full bg-taupe-400 dark:bg-taupe-600 p-3 shadow-lg cursor-pointer"
                         title="Join other cart."
                         onClick={() => setIsScanModalOpen(true)}
                     >
@@ -353,8 +381,8 @@ export default function Menu() {
                 </div>
             </div>
             <ViewMenuItem isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-                <div className="flex flex-col">
-                    <div className="relative flex-shrink-0 flex items-center justify-center overflow-hidden rounded-lg inset-shadow-[0_0_20px_2px_rgba(0,0,0,0.3)] p-8">
+                <div className="flex flex-col inset-shadow-[0_0_20px_2px_rgba(0,0,0,0.3)]">
+                    <div className="relative flex-shrink-0 flex items-center justify-center overflow-hidden rounded-lg p-5">
                         <div className="shadow-[0_0_10px_2px_rgba(0,0,0,0.3)] rounded-lg">
                             <Image
                                 className="w-full h-full object-cover"
@@ -372,7 +400,7 @@ export default function Menu() {
                             )}
                         </div>
                     </div>
-                    <div className="flex flex-col justify-between my-2">
+                    <div className="flex flex-col justify-between px-5">
                         <div className="flex items-center justify-between tracking-wide">
                             <h1 className="text-md font-bold">{selectedItem?.name}</h1>
                             <div className="flex items-center gap-2">
@@ -396,7 +424,7 @@ export default function Menu() {
                             <p className="text-xs">{selectedItem?.category?.join(",")}</p>
                         </div>
                     </div>
-                    <div className="px-2">
+                    <div className="px-5">
                         <div
                             className={`flex items-center text-sm border border-gray-400 rounded-md transition duration-300 ease shadow-sm 
                                     hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow`}
@@ -419,7 +447,7 @@ export default function Menu() {
                                 onChange={(e) => {
                                     setQuantity((prev) =>
                                         0 > parseInt(e.target.value || "1") ||
-                                            parseInt(e.target.value || "1") > 10
+                                        parseInt(e.target.value || "1") > 10
                                             ? prev
                                             : parseInt(e.target.value || "0"),
                                     );
@@ -437,7 +465,7 @@ export default function Menu() {
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-col gap-2 my-2">
+                    <div className="flex flex-col gap-2 mt-2 mb-4 px-3">
                         <Button
                             text="Order Now"
                             onClick={handleOrder}
@@ -465,6 +493,75 @@ export default function Menu() {
                 <div className="flex items-center">
                     <Loading loading={isLoadingOrder} />
                 </div>
+            </Modal>
+
+            <Modal
+                isOpen={isRatingModalOpen}
+                onClose={() => setIsRatingModalOpen(false)}
+                title="Rating"
+            >
+                <div>
+                    <Loading loading={isLoadingRating} />
+                    {!isLoadingRating && dataRating?.ratings?.length === 0 && (
+                        <h1 className="text-sm text-center">No rating found.</h1>
+                    )}
+                    {!isLoadingRating && dataRating?.ratings?.length > 0 && (
+                        <div>
+                            {dataRating?.ratings?.map((rating: any) => (
+                                <div className="mb-2" key={rating?._id}>
+                                    <div className="flex items-center justify-between">
+                                        <h1 className="text-sm font-bold text-taupe-300">
+                                            {rating?.userID?.firstName}
+                                        </h1>
+                                        <div className="flex">
+                                            {[1, 2, 3, 4, 5].map((starIdx) => {
+                                                const isActive = starIdx <= rating?.rating;
+
+                                                return (
+                                                    <svg
+                                                        key={starIdx}
+                                                        className="w-5 h-5"
+                                                        aria-hidden="true"
+                                                        viewBox="0 0 24 24"
+                                                        fill={isActive ? "orange" : "white"}
+                                                    >
+                                                        <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                                                    </svg>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                    <h1 className="text-xs text-taupe-300">{rating?.comment}</h1>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    <div className="w-full flex items-center justify-center mt-4">
+                        <Button
+                            text="Add your rating"
+                            onClick={() => {
+                                setIsRatingModalOpen(false);
+                                setAddRatingModalOpen(true);
+                            }}
+                        />
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal
+                isOpen={isAddRatingModalOpen}
+                onClose={() => setAddRatingModalOpen(false)}
+                title="Rating"
+            >
+                <RatingForm
+                    rating={dataRating?.ratings?.find(
+                        (rating: any) => rating?.userID?._id === menuContext?.user?._id,
+                    )}
+                    onFinish={() => {
+                        setAddRatingModalOpen(false);
+                        fetchDataRating();
+                    }}
+                />
             </Modal>
         </div>
     );

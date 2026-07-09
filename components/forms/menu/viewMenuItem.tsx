@@ -51,7 +51,7 @@ export default function ViewMenuItem({ isOpen, onClose, children }: ViewMenuItem
                 className={`w-full max-w-lg max-h-[90vh] rounded-2xl bg-taupe-200 dark:bg-taupe-600 shadow-xl flex flex-col`}
                 onClick={(event) => event.stopPropagation()}
             >
-                <div className="p-5 overflow-y-auto flex-1 min-h-0">{children}</div>
+                <div className="overflow-y-auto flex-1 min-h-0">{children}</div>
             </div>
         </div>
     );

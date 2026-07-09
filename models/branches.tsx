@@ -28,7 +28,15 @@ const branchSchema = new Schema(
             enum: branchStatusTypes,
             required: true,
             default: branchStatusTypes.Active,
-        }
+        },
+        rating: {
+            type: Number,
+            default: 0,
+        },
+        totalRatings: {
+            type: Number,
+            default: 0,
+        },
     },
     { timestamps: true },
 );

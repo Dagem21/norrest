@@ -15,6 +15,8 @@ const branchSchema = yup.object().shape({
             return String(value).startsWith("9") || String(value).startsWith("7");
         }),
     address: yup.string().required("Address is required."),
+    rating: yup.number(),
+    totalRatings: yup.number(),
 });
 
 export default branchSchema;

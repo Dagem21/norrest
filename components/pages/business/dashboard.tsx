@@ -30,7 +30,7 @@ export default function BusinessDashboard() {
     return (
         <div className="flex flex-col flex-1 items-center">
             <div className="flex flex-wrap w-full gap-2">
-                <div className="w-sm h-fit flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2">
+                <div className="min-w-sm h-fit flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2">
                     sdf
                 </div>
                 <div className="w-sm flex flex-col gap-2">
@@ -71,8 +71,7 @@ export default function BusinessDashboard() {
                                 </div>
                             ))}
                     </div>
-                    <div className="bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2">
-                        <h1 className="text-sm text-center font-bold mb-2">Companies</h1>
+                    <div className="bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2 pt-4">
                         <div className="flex flex-col gap-2">
                             {!isLoading &&
                                 data?.permission?.permissions?.length > 0 &&

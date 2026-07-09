@@ -31,24 +31,13 @@ export const findRatings = async (query: object) => {
     let ratings,
         error = null;
     try {
-        ratings = await ratingSchema.aggregate([
-            {
-                $match: query,
-            },
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "userID",
-                    foreignField: "_id",
-                    pipeline: [{ $project: { firstName: 1, _id: 0 } }],
-                    as: "user",
-                },
-            },
-            {
-                $unwind: "$user",
-            },
-            { $unset: "user.password" },
-        ]);
+        ratings = (await ratingSchema
+            .find(query)
+            .populate({
+                path: "userID",
+                select: "firstName",
+            })
+            .lean()) as any;
     } catch (e: any) {
         error = e.message;
     } finally {

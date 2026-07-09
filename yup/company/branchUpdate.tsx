@@ -24,6 +24,8 @@ const branchUpdateSchema = yup.object().shape({
         }),
     address: yup.string(),
     status: yup.string(),
+    rating: yup.number(),
+    totalRatings: yup.number(),
 });
 
 export default branchUpdateSchema;
