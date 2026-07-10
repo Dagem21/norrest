@@ -1,10 +1,13 @@
 "use client";
 
+import { orderStatusTypes } from "@/assets/enums/enum";
 import Loading from "@/components/loadingComponent";
 import PageNavigator from "@/components/pageNavigator";
+import Button from "@/components/ui/button";
 import Modal from "@/components/ui/modal";
 import useApiFetch from "@/hooks/useAPIFetch";
 import { MenuContext } from "@/providers/menu";
+import { ToastContext } from "@/providers/toastProvider";
 import { formatDate } from "@/utils/formatDate";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,6 +15,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
 export default function Orders() {
+    const toaster = useContext(ToastContext);
     const params = useParams<{ cid: string; bid: string }>();
     const searchParams = useSearchParams();
     const orderStatus = searchParams.get("status");
@@ -31,6 +35,38 @@ export default function Orders() {
         true,
     );
 
+    const {
+        data: dataOrderUpdate,
+        fetchData: fetchDataOrderUpdate,
+        isLoading: isLoadingOrderUpdate,
+        errors: errorsOrderUpdate,
+    } = useApiFetch(
+        {
+            url: `/api/at/company/branch/orders`,
+            method: "PUT",
+        },
+        false,
+    );
+
+    useEffect(() => {
+        if (!isLoadingOrderUpdate && dataOrderUpdate) {
+            const toast = {
+                message: "Order status updated.",
+                type: "success",
+            };
+            toaster?.addToast(toast);
+            fetchData();
+            setModalOpen(false);
+        } else if (!isLoadingOrderUpdate && errorsOrderUpdate?.details) {
+            const toast = {
+                message:
+                    errorsOrderUpdate?.details?.response?.data?.error || errorsOrderUpdate?.message,
+                type: "error",
+            };
+            toaster?.addToast(toast);
+        }
+    }, [isLoadingOrderUpdate, dataOrderUpdate, errorsOrderUpdate]);
+
     const handlePageChange = (page: number) => {
         fetchData({ params: { page } });
     };
@@ -42,6 +78,12 @@ export default function Orders() {
     const handleOrderView = (order: any) => {
         setSelectedOrder(order);
         setModalOpen(true);
+    };
+
+    const handleOrderUpdate = (orderID: string, status: string) => {
+        fetchDataOrderUpdate({
+            data: { orderID, status },
+        });
     };
 
     return (
@@ -152,32 +194,44 @@ export default function Orders() {
                     </div>
                 </div>
             </div>
+
             <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="Order Details">
-                <div className="flex flex-col">
-                    <div className="grid grid-cols-2 mb-4 shadow p-2">
-                        <h1 className="text-sm text-taupe-300">
+                <div className="flex flex-col shadow p-2">
+                    <div className="flex flex-col">
+                        <h1 className="text-sm text-center">Customer</h1>
+                        <hr className="text-taupe-500 my-2" />
+                        <h1 className="flex-1 text-sm text-taupe-300">
                             Customer Name:{" "}
                             <span className="text-taupe-100 font-bold">
                                 {selectedOrder?.userID?.firstName || "N/A"}
                             </span>
                         </h1>
-                        <h1 className="text-sm text-taupe-300">
+                        <h1 className="flex-1 text-sm text-taupe-300">
                             Phone Number :{" "}
                             <span className="text-taupe-100 font-bold">
                                 {selectedOrder?.userID?.phoneNumber || "N/A"}
                             </span>
                         </h1>
+                        {selectedOrder?.table && (
+                            <h1 className="flex-1 text-sm text-taupe-300">
+                                Table :{" "}
+                                <span className="text-taupe-100 font-bold">
+                                    {selectedOrder?.table}
+                                </span>
+                            </h1>
+                        )}
+                        <hr className="text-taupe-500 my-2" />
                     </div>
-                    <div className="shadow">
-                        <h1 className="text-center font-bold">Order Items</h1>
+                    <div className="mb-2">
+                        <h1 className="text-sm text-center">Order Items</h1>
 
-                        <hr className="text-taupe-500 my-2 mx-4" />
+                        <hr className="text-taupe-500 my-2" />
 
                         {selectedOrder?.items?.length === 0 && (
                             <h1 className="text-center text-sm">No items in order.</h1>
                         )}
                         {selectedOrder?.items?.length > 0 && (
-                            <div className="flex flex-col gap-2 p-2">
+                            <div className="flex flex-col gap-2">
                                 {selectedOrder?.items?.map((item: any) => {
                                     return (
                                         <div
@@ -206,6 +260,26 @@ export default function Orders() {
                             </div>
                         )}
                     </div>
+                    <Button
+                        text={
+                            selectedOrder?.status === orderStatusTypes.Pending
+                                ? orderStatusTypes.Processing
+                                : selectedOrder?.status === orderStatusTypes.Processing
+                                  ? orderStatusTypes.Processed
+                                  : ""
+                        }
+                        onClick={() => {
+                            handleOrderUpdate(
+                                selectedOrder?._id,
+                                selectedOrder?.status === orderStatusTypes.Pending
+                                    ? orderStatusTypes.Processing
+                                    : selectedOrder?.status === orderStatusTypes.Processing
+                                      ? orderStatusTypes.Processed
+                                      : "",
+                            );
+                        }}
+                        isLoading={isLoadingOrderUpdate}
+                    />
                 </div>
             </Modal>
         </div>

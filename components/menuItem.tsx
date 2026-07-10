@@ -9,6 +9,8 @@ type MenuItemProps = {
     description?: string;
     categories: string;
     discount?: number;
+    discountStart?: Date;
+    discountEnd?: Date;
 };
 
 export default function MenuItem({
@@ -55,7 +57,7 @@ export default function MenuItem({
                 </span>
                 {discount && (
                     <span className="font-bold text-sm text-taupe-200 block">
-                        $ {price - price * discount} Birr
+                        $ {price - price * (discount / 100)} Birr
                     </span>
                 )}
             </div>

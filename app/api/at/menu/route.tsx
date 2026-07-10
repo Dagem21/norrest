@@ -112,18 +112,23 @@ export async function PUT(request: NextRequest) {
     const formData = await request.formData();
 
     try {
-        const menuItem = {
+        const menuItem: any = {
             _id: formData?.get("id"),
             name: formData?.get("name"),
             price: formData?.get("price"),
             ingredients: formData?.get("ingredients"),
             category: formData?.get("category") as string,
             picture: formData?.get("picture"),
+            discount: formData?.get("discount"),
+            discountStart: formData?.get("discountStart"),
+            discountEnd: formData?.get("discountEnd"),
         };
 
-        menuItem.category = JSON.parse(menuItem.category);
-
         const decodedToken = await verifyUserAuth();
+
+        Object.keys(menuItem).forEach((key) => {
+            if (!menuItem[key]) delete menuItem[key];
+        });
 
         const validatedMenuItem = await menuItemUpdateSchema.validate(menuItem, {
             abortEarly: false,
@@ -186,10 +191,6 @@ export async function PUT(request: NextRequest) {
         }
 
         const updateMenuItem: any = { ...validatedMenuItem };
-
-        Object.keys(updateMenuItem).forEach((key) => {
-            if (!updateMenuItem[key]) delete updateMenuItem[key];
-        });
 
         if (updateMenuItem?.picture) {
             const imageBuffers = await createFile(updateMenuItem?.picture as File);

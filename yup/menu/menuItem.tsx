@@ -4,7 +4,11 @@ const menuItemSchema = yup.object().shape({
     _id: yup.string().optional(),
     branchID: yup.string().required("Branch ID is required."),
     name: yup.string().required("Name is required."),
-    price: yup.number().typeError("Price must be a number.").required("Price is required."),
+    price: yup
+        .number()
+        .typeError("Price must be a number.")
+        .required("Price is required.")
+        .min(1, "Minimum price is 1."),
     ingredients: yup.string().optional(),
     category: yup.array().of(yup.string().required()).min(1, "Select at least one category."),
     picture: yup

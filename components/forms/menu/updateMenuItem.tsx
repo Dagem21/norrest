@@ -100,7 +100,12 @@ export default function UpdateMenuItemForm({
                 <label htmlFor="price" className="block mb-2 text-xs">
                     Price
                 </label>
-                <Input placeholder="Type here..." {...register("price")} error={errors?.price} />
+                <Input
+                    placeholder="Type here..."
+                    {...register("price")}
+                    error={errors?.price}
+                    end="Birr"
+                />
             </div>
 
             <div>

@@ -29,6 +29,7 @@ import { API_URL } from "@/config";
 import Input from "@/components/ui/input";
 import { SocketContext } from "@/providers/socketProvider";
 import UpdateMenuItemForm from "@/components/forms/menu/updateMenuItem";
+import DiscountMenuItemForm from "@/components/forms/menu/menuDiscount";
 
 export default function Branch() {
     const toaster = useContext(ToastContext);
@@ -37,6 +38,7 @@ export default function Branch() {
     const params = useParams<{ cid: string; bid: string }>();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
+    const [isDiscountModalOpen, setDiscountModalOpen] = useState(false);
     const [isViewModalOpen, setViewModalOpen] = useState(false);
     const [isLoadingImage, setIsLoadingImage] = useState(true);
     const [isQRModalOpen, setQRModalOpen] = useState(false);
@@ -425,6 +427,9 @@ export default function Branch() {
                                                             categories={item?.category?.join(", ")}
                                                             description={item?.ingredients}
                                                             image={item?.picture?.[0]}
+                                                            discount={item?.discount}
+                                                            discountStart={item?.discountStart}
+                                                            discountEnd={item?.discountEnd}
                                                         />
                                                     </div>
                                                 ))}
@@ -521,6 +526,7 @@ export default function Branch() {
                     </div>
                 </div>
             </div>
+
             <Modal
                 isOpen={isModalOpenOrder}
                 onClose={() => setModalOpenOrder(false)}
@@ -637,6 +643,20 @@ export default function Branch() {
             </Modal>
 
             <Modal
+                isOpen={isDiscountModalOpen}
+                onClose={() => setDiscountModalOpen(false)}
+                title="Add Discount"
+            >
+                <DiscountMenuItemForm
+                    order={selectedItem}
+                    onFinish={() => {
+                        fetchMenu();
+                        setDiscountModalOpen(false);
+                    }}
+                />
+            </Modal>
+
+            <Modal
                 isOpen={isQRModalOpen}
                 onClose={() => setQRModalOpen(false)}
                 title="Menu QR Code"
@@ -685,7 +705,8 @@ export default function Branch() {
                                     <span className="font-bold text-sm text-taupe-200">
                                         ${" "}
                                         {selectedItem?.price -
-                                            selectedItem?.price * selectedItem?.discount}{" "}
+                                            selectedItem?.price *
+                                                (selectedItem?.discount / 100)}{" "}
                                         Birr
                                     </span>
                                 )}
@@ -702,6 +723,15 @@ export default function Branch() {
                             onClick={() => {
                                 setViewModalOpen(false);
                                 setUpdateModalOpen(true);
+                            }}
+                        />
+
+                        <Button
+                            text="Add Discount"
+                            style="secondary"
+                            onClick={() => {
+                                setViewModalOpen(false);
+                                setDiscountModalOpen(true);
                             }}
                         />
                     </div>

@@ -30,7 +30,7 @@ export default function BusinessDashboard() {
     return (
         <div className="flex flex-col flex-1 items-center">
             <div className="flex flex-wrap w-full gap-2">
-                <div className="min-w-sm h-fit flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2">
+                <div className="h-fit flex-1 bg-taupe-200 dark:bg-taupe-600 rounded-lg p-2">
                     sdf
                 </div>
                 <div className="w-sm flex flex-col gap-2">

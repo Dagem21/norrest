@@ -413,7 +413,8 @@ export default function Menu() {
                                     <span className="font-bold text-sm text-taupe-200">
                                         ${" "}
                                         {selectedItem?.price -
-                                            selectedItem?.price * selectedItem?.discount}{" "}
+                                            selectedItem?.price *
+                                                (selectedItem?.discount / 100)}{" "}
                                         Birr
                                     </span>
                                 )}
