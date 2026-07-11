@@ -24,6 +24,7 @@ export async function POST(request: NextRequest) {
             phoneNumber: formData?.get("phoneNumber"),
             website: formData?.get("website"),
             picture: formData?.get("picture"),
+            description: formData?.get("description"),
         };
 
         const validatedCompany = await companySchema.validate(company, { abortEarly: false });
@@ -37,7 +38,6 @@ export async function POST(request: NextRequest) {
         registerCompany.picture = urls;
 
         let { result, error } = await createCompany(registerCompany);
-        console.log(error);
 
         if (result && !error) {
             const permission = {
@@ -45,13 +45,7 @@ export async function POST(request: NextRequest) {
                 branchID: null,
                 userID: decodedToken?.userId,
                 role: roleTypes.Owner,
-                permissions: [
-                    permissionTypes.Admin,
-                    permissionTypes.Read,
-                    permissionTypes.Create,
-                    permissionTypes.Delete,
-                    permissionTypes.Update,
-                ],
+                permissions: Object.values(permissionTypes),
             };
 
             const { result: permResult, error: permError } = await createPermission(permission);
@@ -197,6 +191,7 @@ export async function PUT(request: NextRequest) {
             phoneNumber: formData?.get("phoneNumber"),
             website: formData?.get("website"),
             picture: formData?.get("picture"),
+            description: formData?.get("description"),
         };
 
         const validatedCompany = await companyUpdateSchema.validate(company, { abortEarly: false });

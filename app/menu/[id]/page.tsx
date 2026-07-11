@@ -297,6 +297,7 @@ export default function Menu() {
                     </button>
                 </div>
             </div>
+
             <div className="flex flex-col w-full">
                 <div className="flex flex-wrap justify-center gap-2 w-full px-2">
                     {!isLoading && data && (
@@ -380,6 +381,7 @@ export default function Menu() {
                     <Loading loading={isLoading} />
                 </div>
             </div>
+
             <ViewMenuItem isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
                 <div className="flex flex-col inset-shadow-[0_0_20px_2px_rgba(0,0,0,0.3)]">
                     <div className="relative flex-shrink-0 flex items-center justify-center overflow-hidden rounded-lg p-5">

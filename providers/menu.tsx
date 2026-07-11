@@ -7,8 +7,8 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 interface MenuContextType {
     showMenu: boolean;
     setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
-    title: string;
-    setTitle: React.Dispatch<React.SetStateAction<string>>;
+    title: ReactNode;
+    setTitle: React.Dispatch<React.SetStateAction<ReactNode>>;
     user: any;
     setUser: React.Dispatch<React.SetStateAction<any>>;
 }
@@ -21,7 +21,7 @@ interface MenuProviderProps {
 
 export const MenuProvider = ({ children }: MenuProviderProps) => {
     const [showMenu, setShowMenu] = useState<boolean>(false);
-    const [title, setTitle] = useState<string>("");
+    const [title, setTitle] = useState<ReactNode>("");
     const [user, setUser] = useState<any>();
 
     const { isLoggedIn, user: userStore } = useAppStore();

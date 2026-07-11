@@ -130,6 +130,10 @@ export async function PUT(request: NextRequest) {
             if (!menuItem[key]) delete menuItem[key];
         });
 
+        if (menuItem?.category) {
+            menuItem.category = JSON.parse(menuItem.category);
+        }
+
         const validatedMenuItem = await menuItemUpdateSchema.validate(menuItem, {
             abortEarly: false,
         });

@@ -26,7 +26,8 @@ export default function DiscountMenuItemForm({
         defaultValues: {
             _id: order?._id,
             discount: order?.discount,
-            discountStart: order?.discountStart?.slice(0, 16),
+            discountStart:
+                order?.discountStart?.slice(0, 16) || new Date().toISOString().slice(0, 16),
             discountEnd: order?.discountEnd?.slice(0, 16),
         },
     });

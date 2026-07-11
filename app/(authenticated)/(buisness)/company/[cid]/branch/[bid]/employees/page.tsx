@@ -5,7 +5,14 @@ import Modal from "@/components/ui/modal";
 import PageNavigator from "@/components/pageNavigator";
 import { MenuContext } from "@/providers/menu";
 import { formatDate } from "@/utils/formatDate";
-import { faBan, faCheckCircle, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+    faBan,
+    faCheckCircle,
+    faHome,
+    faPen,
+    faPlus,
+    faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
 import Button from "@/components/ui/button";
@@ -13,8 +20,9 @@ import useApiFetch from "@/hooks/useAPIFetch";
 import { useParams } from "next/navigation";
 import Loading from "@/components/loadingComponent";
 import UpdateEmployeeForm from "@/components/forms/user/updateEmployee";
-import { userStatusTypes } from "@/assets/enums/enum";
+import { permissionTypes, userStatusTypes } from "@/assets/enums/enum";
 import { ToastContext } from "@/providers/toastProvider";
+import Link from "next/link";
 
 export default function Employee() {
     const params = useParams<{ cid: string; bid: string }>();
@@ -28,8 +36,20 @@ export default function Employee() {
     const menuContext = useContext(MenuContext);
 
     useEffect(() => {
-        menuContext?.setTitle("Employees");
-    });
+        menuContext?.setTitle(
+            <Link href={`/company/${params.cid}/branch/${params.bid}`}>
+                <FontAwesomeIcon icon={faHome} /> Employees
+            </Link>,
+        );
+    }, [params]);
+
+    const { data: dataPermission, isLoading: isLoadingPermission } = useApiFetch(
+        {
+            url: `/api/at/company/branch/permission?branchID=${params?.bid}`,
+            method: "GET",
+        },
+        true,
+    );
 
     const { data, fetchData, isLoading, errors } = useApiFetch(
         {
@@ -146,11 +166,15 @@ export default function Employee() {
                             Employees Directory
                         </h1>
 
-                        <Button
-                            type="button"
-                            onClick={() => setModalOpen(true)}
-                            icon={<FontAwesomeIcon icon={faPlus} />}
-                        />
+                        {dataPermission?.permission?.permissions?.some((item: permissionTypes) =>
+                            [permissionTypes.Admin, permissionTypes.EmployeeCreate].includes(item),
+                        ) && (
+                            <Button
+                                type="button"
+                                onClick={() => setModalOpen(true)}
+                                icon={<FontAwesomeIcon icon={faPlus} />}
+                            />
+                        )}
                     </div>
                     <div className="relative overflow-x-auto bg-neutral-primary-soft shadow-xl rounded-lg">
                         <table className="w-full text-sm text-left rtl:text-right text-body">
@@ -227,30 +251,53 @@ export default function Employee() {
                                                 {formatDate("2023-10-01 10:00:00")}
                                             </td>
                                             <td className="ps-2 pe-6 py-3 flex gap-1 ">
-                                                <button
-                                                    className="bg-blue-950 p-1 hover:bg-blue-700 text-white font-bold rounded"
-                                                    title="Edit"
-                                                    onClick={() => {
-                                                        handleEdit(permission);
-                                                    }}
-                                                >
-                                                    <FontAwesomeIcon icon={faPen} />
-                                                </button>
-
-                                                {permission?.status === userStatusTypes.Active && (
+                                                {dataPermission?.permission?.permissions?.some(
+                                                    (item: permissionTypes) =>
+                                                        [
+                                                            permissionTypes.Admin,
+                                                            permissionTypes.EmployeeUpdate,
+                                                        ].includes(item),
+                                                ) && (
                                                     <button
-                                                        className="bg-yellow-900 p-1 hover:bg-yellow-700 text-white font-bold rounded"
-                                                        title="Disable"
+                                                        className="bg-blue-950 p-1 hover:bg-blue-700 text-white font-bold rounded"
+                                                        title="Edit"
                                                         onClick={() => {
-                                                            handleDisable(permission);
+                                                            handleEdit(permission);
                                                         }}
                                                     >
-                                                        <FontAwesomeIcon icon={faBan} />
+                                                        <FontAwesomeIcon icon={faPen} />
                                                     </button>
                                                 )}
 
-                                                {permission?.status ===
-                                                    userStatusTypes.Deactivated && (
+                                                {dataPermission?.permission?.permissions?.some(
+                                                    (item: permissionTypes) =>
+                                                        [
+                                                            permissionTypes.Admin,
+                                                            permissionTypes.EmployeeUpdate,
+                                                        ].includes(item),
+                                                ) &&
+                                                    permission?.status ===
+                                                        userStatusTypes.Active && (
+                                                        <button
+                                                            className="bg-yellow-900 p-1 hover:bg-yellow-700 text-white font-bold rounded"
+                                                            title="Disable"
+                                                            onClick={() => {
+                                                                handleDisable(permission);
+                                                            }}
+                                                        >
+                                                            <FontAwesomeIcon icon={faBan} />
+                                                        </button>
+                                                    )}
+
+                                                {dataPermission?.permission?.permissions?.some(
+                                                    (item: permissionTypes) =>
+                                                        [
+                                                            permissionTypes.Admin,
+                                                            permissionTypes.EmployeeUpdate,
+                                                        ].includes(item),
+                                                ) &&
+                                                    permission?.status ===
+                                                        userStatusTypes.Deactivated && (
                                                         <button
                                                             className="bg-green-900 p-1 hover:bg-green-700 text-white font-bold rounded"
                                                             title="Activate"
@@ -262,15 +309,23 @@ export default function Employee() {
                                                         </button>
                                                     )}
 
-                                                <button
-                                                    className="bg-red-950 p-1 hover:bg-red-700 text-white font-bold rounded"
-                                                    title="Remove"
-                                                    onClick={() => {
-                                                        handleDelete(permission);
-                                                    }}
-                                                >
-                                                    <FontAwesomeIcon icon={faTrash} />
-                                                </button>
+                                                {dataPermission?.permission?.permissions?.some(
+                                                    (item: permissionTypes) =>
+                                                        [
+                                                            permissionTypes.Admin,
+                                                            permissionTypes.EmployeeDelete,
+                                                        ].includes(item),
+                                                ) && (
+                                                    <button
+                                                        className="bg-red-950 p-1 hover:bg-red-700 text-white font-bold rounded"
+                                                        title="Remove"
+                                                        onClick={() => {
+                                                            handleDelete(permission);
+                                                        }}
+                                                    >
+                                                        <FontAwesomeIcon icon={faTrash} />
+                                                    </button>
+                                                )}
                                             </td>
                                         </tr>
                                     ))}
@@ -384,7 +439,7 @@ export default function Employee() {
                         <Button
                             text="Remove"
                             onClick={() => {
-                                fetchDataDelete({ data: { id: selectedEmpoyee?._id } })
+                                fetchDataDelete({ data: { id: selectedEmpoyee?._id } });
                             }}
                             isLoading={isLoadingDelete}
                         />

@@ -32,6 +32,7 @@ const companySchema = yup.object().shape({
             if (!file || typeof file.size !== "number") return false;
             return file.size <= 10 * 1024 * 1024; // 10MB
         }),
+    description: yup.string(),
 });
 
 export default companySchema;

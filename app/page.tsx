@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import profile from "../assets/images/radblu.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,14 +9,38 @@ import {
     faMailBulk,
     faMapLocation,
     faPhone,
+    faQrcode,
     faShippingFast,
 } from "@fortawesome/free-solid-svg-icons";
 import { faInstagram, faTelegram, faTiktok, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import Link from "next/link";
+import useApiFetch from "@/hooks/useAPIFetch";
+import Loading from "@/components/loadingComponent";
+import { useState } from "react";
+import Modal from "@/components/ui/modal";
+import QrScanner from "@/components/QRScanner";
 
 export default function Home() {
+    const [isScanModalOpen, setIsScanModalOpen] = useState(false);
+
+    const { data, fetchData, isLoading, errors } = useApiFetch(
+        {
+            url: "/api/branch?page=1&limit=6",
+            method: "GET",
+        },
+        true,
+    );
+
     return (
         <div className="flex flex-col flex-1 items-center font-sans">
+            <div className="fixed bottom-0 right-0 m-6">
+                <button
+                    className="rounded-full bg-taupe-400 dark:bg-taupe-600 p-3 shadow-lg cursor-pointer"
+                    onClick={() => setIsScanModalOpen(true)}
+                >
+                    <FontAwesomeIcon icon={faQrcode} size="lg" />
+                </button>
+            </div>
             <div
                 id="home"
                 className="flex flex-col items-center justify-center w-full min-h-screen  rounded-lg"
@@ -95,102 +121,44 @@ export default function Home() {
                             Top Rated Restaurants
                         </h2>
                         <ul className="flex flex-wrap justify-center space-y-1 text-sm w-full rounded-lg px-2 gap-2">
-                            <li className="text-taupe-900 dark:text-taupe-200 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
-                                <Link
-                                    href={`/menu`}
-                                    className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-400 dark:bg-taupe-600"
-                                >
-                                    <Image
-                                        src={profile}
-                                        alt="Picture of the author"
-                                        className="w-15 h-15 rounded-full object-cover"
-                                    />
-                                    <div className="px-3">
-                                        <p className="text-sm font-bold">The Gourmet Kitchen</p>
-                                        <p className="text-xs">Italian Cuisine</p>
-                                    </div>
-                                </Link>
-                            </li>
-                            <li className="text-taupe-900 dark:text-taupe-200 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
-                                <Link
-                                    href={`/menu`}
-                                    className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-400 dark:bg-taupe-600"
-                                >
-                                    <Image
-                                        src={profile}
-                                        alt="Picture of the author"
-                                        className="w-15 h-15 rounded-full object-cover"
-                                    />
-                                    <div className="px-3">
-                                        <p className="text-sm font-bold">Pizza Paradise</p>
-                                        <p className="text-xs">Italian Cuisine</p>
-                                    </div>
-                                </Link>
-                            </li>
-                            <li className="text-taupe-900 dark:text-taupe-200 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
-                                <Link
-                                    href={`/menu`}
-                                    className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-400 dark:bg-taupe-600"
-                                >
-                                    <Image
-                                        src={profile}
-                                        alt="Picture of the author"
-                                        className="w-15 h-15 rounded-full object-cover"
-                                    />
-                                    <div className="px-3">
-                                        <p className="text-sm font-bold">Sushi World</p>
-                                        <p className="text-xs">Japanese Cuisine</p>
-                                    </div>
-                                </Link>
-                            </li>
-                            <li className="text-taupe-900 dark:text-taupe-200 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
-                                <Link
-                                    href={`/menu`}
-                                    className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-400 dark:bg-taupe-600"
-                                >
-                                    <Image
-                                        src={profile}
-                                        alt="Picture of the author"
-                                        className="w-15 h-15 rounded-full object-cover"
-                                    />
-                                    <div className="px-3">
-                                        <p className="text-sm font-bold">The Gourmet Kitchen</p>
-                                        <p className="text-xs">Italian Cuisine</p>
-                                    </div>
-                                </Link>
-                            </li>
-                            <li className="text-taupe-900 dark:text-taupe-200 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
-                                <Link
-                                    href={`/menu`}
-                                    className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-400 dark:bg-taupe-600"
-                                >
-                                    <Image
-                                        src={profile}
-                                        alt="Picture of the author"
-                                        className="w-15 h-15 rounded-full object-cover"
-                                    />
-                                    <div className="px-3">
-                                        <p className="text-sm font-bold">Pizza Paradise</p>
-                                        <p className="text-xs">Italian Cuisine</p>
-                                    </div>
-                                </Link>
-                            </li>
-                            <li className="text-taupe-900 dark:text-taupe-200 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
-                                <Link
-                                    href={`/menu`}
-                                    className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-400 dark:bg-taupe-600"
-                                >
-                                    <Image
-                                        src={profile}
-                                        alt="Picture of the author"
-                                        className="w-15 h-15 rounded-full object-cover"
-                                    />
-                                    <div className="px-3">
-                                        <p className="text-sm font-bold">Sushi World</p>
-                                        <p className="text-xs">Japanese Cuisine</p>
-                                    </div>
-                                </Link>
-                            </li>
+                            <Loading loading={isLoading} />
+                            {!isLoading &&
+                                data &&
+                                data?.branches?.map((branch: any) => (
+                                    <li
+                                        className="w-full max-w-sm cursor-pointer text-taupe-900 dark:text-taupe-200 md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]"
+                                        key={branch?._id}
+                                    >
+                                        <Link
+                                            href={`/menu/${branch?._id}`}
+                                            className="flex items-center gap-2 rounded-lg bg-taupe-400 py-5 pe-10 ps-5 dark:bg-taupe-600"
+                                        >
+                                            <Image
+                                                src={
+                                                    branch?.companyID?.picture?.[0] ||
+                                                    "/placeholder.png"
+                                                }
+                                                width={64}
+                                                height={64}
+                                                alt={`${branch?.companyID?.name || "Company"} logo`}
+                                                className="h-16 w-16 shrink-0 rounded-full object-cover"
+                                            />
+
+                                            <div className="min-w-0 px-3 tracking-wide">
+                                                <p className="truncate text-sm font-bold">
+                                                    {branch?.companyID?.name}
+                                                </p>
+                                                <p className="truncate text-xs font-bold text-taupe-300">
+                                                    {branch?.name}
+                                                </p>
+                                                {/* Swapped truncate for line-clamp-2 */}
+                                                <p className="line-clamp-2 text-xs text-taupe-400">
+                                                    {branch?.companyID?.description}
+                                                </p>
+                                            </div>
+                                        </Link>
+                                    </li>
+                                ))}
                         </ul>
                         <div className="mt-2 flex items-center justify-center">
                             <h2 className="text-sm font-bold text-center mb-4 cursor-pointer">
@@ -207,7 +175,9 @@ export default function Home() {
             >
                 <div className="flex flex-col w-full h-screen">
                     <div className="flex flex-col justify-center w-full rounded-lg mb-6 grow-1">
-                        <h2 className="text-lg text-center font-bold mb-4">Services</h2>
+                        <h2 className="text-lg text-center font-bold mb-4 text-taupe-100 dark:text-taupe-900">
+                            Services
+                        </h2>
                         <ul className="flex flex-wrap justify-center space-y-1 text-sm w-full rounded-lg px-2 gap-2">
                             <li className="hover:text-taupe-500 cursor-pointer w-full md:basis-[calc(50%-1rem)] lg:basis-[calc(30%-1rem)]">
                                 <div className="flex items-center gap-2 rounded-lg py-5 ps-5 pe-10 bg-taupe-200 dark:bg-taupe-900 shadow-md shadow-taupe-500 dark:shadow-taupe-600">
@@ -342,6 +312,14 @@ export default function Home() {
                     </div>
                 </div>
             </div>
+
+            <Modal
+                isOpen={isScanModalOpen}
+                onClose={() => setIsScanModalOpen(false)}
+                title="Scan QR Code"
+            >
+                <QrScanner />
+            </Modal>
         </div>
     );
 }

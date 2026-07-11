@@ -1,6 +1,6 @@
 "use client";
 
-import { orderStatusTypes } from "@/assets/enums/enum";
+import { orderStatusTypes, permissionTypes } from "@/assets/enums/enum";
 import Loading from "@/components/loadingComponent";
 import PageNavigator from "@/components/pageNavigator";
 import Button from "@/components/ui/button";
@@ -30,6 +30,14 @@ export default function Orders() {
     const { data, fetchData, isLoading, errors } = useApiFetch(
         {
             url: `/api/at/company/branch/orders?branchID=${params?.bid}${orderStatus ? `&status=${orderStatus}` : ""}`,
+            method: "GET",
+        },
+        true,
+    );
+
+    const { data: dataPermission, isLoading: isLoadingPermission } = useApiFetch(
+        {
+            url: `/api/at/company/branch/permission?branchID=${params?.bid}`,
             method: "GET",
         },
         true,
@@ -142,9 +150,9 @@ export default function Orders() {
                                 <tbody>
                                     {!isLoading &&
                                         data?.orders?.length > 0 &&
-                                        data?.orders?.map((order: any) => (
+                                        data?.orders?.map((order: any, index: number) => (
                                             <tr className="bg-neutral-primary" key={order?._id}>
-                                                <td className="ps-2 pe-6 py-4">1</td>
+                                                <td className="ps-2 pe-6 py-4">{index + 1}</td>
                                                 <th
                                                     scope="row"
                                                     className="ps-2 pe-6 py-4 font-medium text-heading whitespace-nowrap"
@@ -260,26 +268,30 @@ export default function Orders() {
                             </div>
                         )}
                     </div>
-                    <Button
-                        text={
-                            selectedOrder?.status === orderStatusTypes.Pending
-                                ? orderStatusTypes.Processing
-                                : selectedOrder?.status === orderStatusTypes.Processing
-                                  ? orderStatusTypes.Processed
-                                  : ""
-                        }
-                        onClick={() => {
-                            handleOrderUpdate(
-                                selectedOrder?._id,
+                    {dataPermission?.permission?.permissions?.some((item: permissionTypes) =>
+                        [permissionTypes.Admin, permissionTypes.OrderUpdate].includes(item),
+                    ) && (
+                        <Button
+                            text={
                                 selectedOrder?.status === orderStatusTypes.Pending
                                     ? orderStatusTypes.Processing
                                     : selectedOrder?.status === orderStatusTypes.Processing
                                       ? orderStatusTypes.Processed
-                                      : "",
-                            );
-                        }}
-                        isLoading={isLoadingOrderUpdate}
-                    />
+                                      : ""
+                            }
+                            onClick={() => {
+                                handleOrderUpdate(
+                                    selectedOrder?._id,
+                                    selectedOrder?.status === orderStatusTypes.Pending
+                                        ? orderStatusTypes.Processing
+                                        : selectedOrder?.status === orderStatusTypes.Processing
+                                          ? orderStatusTypes.Processed
+                                          : "",
+                                );
+                            }}
+                            isLoading={isLoadingOrderUpdate}
+                        />
+                    )}
                 </div>
             </Modal>
         </div>

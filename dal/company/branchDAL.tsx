@@ -38,11 +38,23 @@ export const findBranch = async (query: object) => {
     }
 };
 
-export const findBranchs = async (query: object) => {
+export const findBranchs = async (query: object, page: number = 1, limit: number = 10) => {
     let branches,
         error = null;
     try {
-        branches = await branchSchema.find(query).lean();
+        branches = await branchSchema
+            .find(query)
+            .populate({
+                path: "companyID",
+                select: "name picture description",
+            })
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .lean();
+
+        const total = await branchSchema.countDocuments(query);
+        const totalPages = Math.ceil((total ?? 0) / limit);
+        branches = { branches: branches, page, limit, total, totalPages };
     } catch (e: any) {
         error = e.message;
     } finally {
@@ -87,4 +99,3 @@ export const deleteBranch = async (id: string) => {
         return { result, error };
     }
 };
-

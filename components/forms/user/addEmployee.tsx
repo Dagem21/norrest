@@ -1,12 +1,10 @@
-import { permissionTypes, roleTypes } from "@/assets/enums/enum";
+import { permissionDisplayNames, permissionTypes, roleTypes } from "@/assets/enums/enum";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import Select from "@/components/ui/select";
 import useApiFetch from "@/hooks/useAPIFetch";
 import { ToastContext } from "@/providers/toastProvider";
 import employeeSchema from "@/yup/userRegistration/companyEmployee";
-import { faAt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useParams } from "next/navigation";
 import { useContext, useEffect } from "react";
@@ -19,13 +17,18 @@ export default function EmployeeForm({ onFinish }: { onFinish: () => void }) {
         register,
         formState: { errors },
         handleSubmit,
-        watch,
     } = useForm({
         resolver: yupResolver(employeeSchema),
         mode: "onChange",
         defaultValues: {
             companyID: params.cid,
             branchID: params.bid,
+            permissions: [
+                permissionTypes.OrderRead,
+                permissionTypes.OrderUpdate,
+                permissionTypes.OrderDelete,
+                permissionTypes.MenuRead,
+            ],
         },
     });
 
@@ -59,9 +62,6 @@ export default function EmployeeForm({ onFinish }: { onFinish: () => void }) {
         }
     }, [data, isLoading, errorsRegister]);
 
-    const phoneNumber = watch("phoneNumber");
-    const email = watch("email");
-
     const handleRegister = (data: any) => {
         fetchData({ data: { employee: data } });
     };
@@ -71,36 +71,17 @@ export default function EmployeeForm({ onFinish }: { onFinish: () => void }) {
             onSubmit={handleSubmit(handleRegister)}
             className="max-w-md mx-auto flex flex-col gap-4"
         >
-            <div className="flex flex-col">
-                <div>
-                    <label htmlFor="phone" className="block mb-2 text-xs">
-                        Phone Number
-                    </label>
-                    <Input
-                        type="tel"
-                        placeholder="Type here..."
-                        start="+251"
-                        {...register("phoneNumber")}
-                        error={errors?.phoneNumber}
-                        disabled={email ? true : false}
-                    />
-                </div>
-
-                <h1 className="text-center text-sm">--- OR ---</h1>
-
-                <div>
-                    <label htmlFor="email" className="block mb-2 text-xs">
-                        Email
-                    </label>
-                    <Input
-                        type="email"
-                        placeholder="Type here..."
-                        start={<FontAwesomeIcon icon={faAt} />}
-                        {...register("email")}
-                        error={errors?.email}
-                        disabled={phoneNumber ? true : false}
-                    />
-                </div>
+            <div>
+                <label htmlFor="phone" className="block mb-2 text-xs">
+                    Phone Number
+                </label>
+                <Input
+                    type="tel"
+                    placeholder="912345678 / example@gmail.com"
+                    start="+251/@"
+                    {...register("emailOrPhone")}
+                    error={errors?.emailOrPhone}
+                />
             </div>
 
             <div>
@@ -118,7 +99,7 @@ export default function EmployeeForm({ onFinish }: { onFinish: () => void }) {
 
             <fieldset className="border border-gray-400 p-3 rounded-lg">
                 <legend className="text-xs">Permissions</legend>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {Object.values(permissionTypes).map((permission, i) => (
                         <div className="flex items-start" key={i}>
                             <div className="flex items-center h-5">
@@ -127,13 +108,17 @@ export default function EmployeeForm({ onFinish }: { onFinish: () => void }) {
                                     type="checkbox"
                                     value={permission}
                                     {...register("permissions")}
+                                    disabled={[
+                                        permissionTypes.MenuRead,
+                                        permissionTypes.OrderRead,
+                                    ].includes(permission)}
                                 />
                             </div>
                             <label
                                 htmlFor="remember"
                                 className="ms-2 text-sm text-taupe-800 dark:text-taupe-300"
                             >
-                                {permission}
+                                {permissionDisplayNames[permission]}
                             </label>
                         </div>
                     ))}

@@ -44,6 +44,7 @@ const companyUpdateSchema = yup.object().shape({
             return file.size <= 10 * 1024 * 1024; // 10MB
         }),
     status: yup.string(),
+    description: yup.string(),
 });
 
 export default companyUpdateSchema;

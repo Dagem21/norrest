@@ -6,11 +6,41 @@ export enum userTypes {
 
 export enum permissionTypes {
     Admin = "Admin",
-    Read = "Read",
-    Update = "Update",
-    Delete = "Delete",
-    Create = "Create",
+
+    "OrderRead" = "OrderRead",
+    OrderUpdate = "OrderUpdate",
+    OrderDelete = "OrderDelete",
+    OrderCreate = "OrderCreate",
+
+    MenuRead = "MenuRead",
+    MenuUpdate = "MenuUpdate",
+    MenuDelete = "MenuDelete",
+    MenuCreate = "MenuCreate",
+
+    EmployeeRead = "EmployeeRead",
+    EmployeeUpdate = "EmployeeUpdate",
+    EmployeeDelete = "EmployeeDelete",
+    EmployeeCreate = "EmployeeCreate",
 }
+
+export const permissionDisplayNames: Record<permissionTypes, string> = {
+    [permissionTypes.Admin]: "Full Administrator Access",
+
+    [permissionTypes.OrderCreate]: "Create Orders",
+    [permissionTypes.OrderRead]: "View Orders",
+    [permissionTypes.OrderUpdate]: "Edit Orders",
+    [permissionTypes.OrderDelete]: "Delete Orders",
+
+    [permissionTypes.MenuCreate]: "Create Menu Items",
+    [permissionTypes.MenuRead]: "View Menus",
+    [permissionTypes.MenuUpdate]: "Edit Menu Items",
+    [permissionTypes.MenuDelete]: "Delete Menu Items",
+
+    [permissionTypes.EmployeeCreate]: "Add New Employees",
+    [permissionTypes.EmployeeRead]: "View Employee Profiles",
+    [permissionTypes.EmployeeUpdate]: "Edit Employee Info",
+    [permissionTypes.EmployeeDelete]: "Remove Employees",
+};
 
 export enum roleTypes {
     Owner = "Owner",

@@ -1,10 +1,7 @@
-import { permissionTypes } from "@/assets/enums/enum";
 import { findBranchByID } from "@/dal/company/branchDAL";
-import { findCompanyByID } from "@/dal/company/companyDAL";
 import { findOrderCount } from "@/dal/order/orderCountDAL";
-import { findPermission, findUserCompanies } from "@/dal/permissions/permissionsDAL";
+import { findPermission } from "@/dal/permissions/permissionsDAL";
 import { verifyUserAuth } from "@/utils/authHelper";
-import mongoose from "mongoose";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {

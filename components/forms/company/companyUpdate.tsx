@@ -34,6 +34,7 @@ export default function UpdateCompanyForm({
             email: company?.email,
             name: company?.name,
             website: company?.website,
+            description: company?.description,
         },
     });
 
@@ -53,7 +54,7 @@ export default function UpdateCompanyForm({
     useEffect(() => {
         if (!isLoading && data) {
             const toast = {
-                message: "Company registerd.",
+                message: "Company updated.",
                 type: "success",
             };
             toaster?.addToast(toast);
@@ -75,6 +76,7 @@ export default function UpdateCompanyForm({
         formData.append("email", data?.email);
         formData.append("phoneNumber", data?.phoneNumber);
         formData.append("website", data?.website);
+        formData.append("description", data?.description);
         if (data?.picture?.[0]) {
             formData.append("picture", data?.picture?.[0]);
         }
@@ -122,6 +124,17 @@ export default function UpdateCompanyForm({
                     placeholder="Type here..."
                     {...register("website")}
                     error={errors?.website}
+                />
+            </div>
+            <div className="mb-4">
+                <label htmlFor="website" className="block mb-2.5 text-xs">
+                    Description
+                </label>
+                <textarea
+                    className="w-full p-2 outline-none rounded-md accent-taupe-900 border border-gray-400 rounded-md transition duration-300 ease shadow-sm 
+                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow"
+                    {...register("description")}
+                    rows={4}
                 />
             </div>
             <div className="grid gap-4 mb-4 md:grid-cols-2">

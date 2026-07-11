@@ -108,6 +108,17 @@ export default function CompanyRegisterForm({ onFinish }: { onFinish: () => void
                     error={errors?.website}
                 />
             </div>
+            <div className="mb-4">
+                <label htmlFor="website" className="block mb-2.5 text-xs">
+                    Description
+                </label>
+                <textarea
+                    className="w-full p-2 outline-none rounded-md accent-taupe-900 border border-gray-400 rounded-md transition duration-300 ease shadow-sm 
+                        hover:border-slate-300 focus-within:border-slate-400 focus-within:shadow"
+                    {...register("description")}
+                    rows={4}
+                />
+            </div>
             <div className="grid gap-4 mb-4 md:grid-cols-2">
                 <div>
                     <label htmlFor="website" className="block mb-2.5 text-xs">

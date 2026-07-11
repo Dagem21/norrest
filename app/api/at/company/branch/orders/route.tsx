@@ -1,4 +1,4 @@
-import { orderStatusTypes } from "@/assets/enums/enum";
+import { orderStatusTypes, permissionTypes } from "@/assets/enums/enum";
 import { findBranchByID } from "@/dal/company/branchDAL";
 import { updateOrderCount } from "@/dal/order/orderCountDAL";
 import { findOrderByID, findOrders, updateOrder } from "@/dal/order/orderDAL";
@@ -64,7 +64,12 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        if (userPermission?.branchID && userPermission?.branchID?.toString() !== branchID) {
+        if (
+            (userPermission?.branchID && userPermission?.branchID?.toString() !== branchID) ||
+            !userPermission?.permissions?.some((item: any) =>
+                [permissionTypes.Admin, permissionTypes.OrderRead].includes(item),
+            )
+        ) {
             return new Response(
                 JSON.stringify({ error: "You do not have permission to perform this action." }),
                 {
@@ -170,8 +175,11 @@ export async function PUT(request: NextRequest) {
         }
 
         if (
-            userPermission?.branchID &&
-            userPermission?.branchID?.toString() !== order?.branchID?._id?.toString()
+            (userPermission?.branchID &&
+                userPermission?.branchID?.toString() !== order?.branchID?._id?.toString()) ||
+            !userPermission?.permissions?.some((item: any) =>
+                [permissionTypes.Admin, permissionTypes.OrderUpdate].includes(item),
+            )
         ) {
             return new Response(
                 JSON.stringify({ error: "You do not have permission to perform this action." }),

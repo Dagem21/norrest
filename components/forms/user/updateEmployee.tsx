@@ -1,4 +1,9 @@
-import { employeeStatusTypes, permissionTypes, roleTypes } from "@/assets/enums/enum";
+import {
+    employeeStatusTypes,
+    permissionDisplayNames,
+    permissionTypes,
+    roleTypes,
+} from "@/assets/enums/enum";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import Select from "@/components/ui/select";
@@ -101,7 +106,7 @@ export default function UpdateEmployeeForm({
 
             <fieldset className="border border-gray-400 p-3 rounded-lg">
                 <legend className="text-xs">Permissions</legend>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {Object.values(permissionTypes).map((permission, i) => (
                         <div className="flex items-start" key={i}>
                             <div className="flex items-center h-5">
@@ -116,7 +121,7 @@ export default function UpdateEmployeeForm({
                                 htmlFor="remember"
                                 className="ms-2 text-sm text-taupe-800 dark:text-taupe-300"
                             >
-                                {permission}
+                                {permissionDisplayNames[permission]}
                             </label>
                         </div>
                     ))}

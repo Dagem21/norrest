@@ -33,16 +33,15 @@ export async function POST(request: NextRequest) {
 
         const validatedUser = await employeeSchema.validate(employee, { abortEarly: false });
 
-        if (employee?.phoneNumber) employee.phoneNumber = "+251" + employee.phoneNumber;
-        const isValidPhone = validatePhone(employee?.phoneNumber);
-        const isValidEmail = validateEmail(employee?.email);
+        const isValidPhone = validatePhone("+251" + employee.emailOrPhone);
+        const isValidEmail = validateEmail(employee?.emailOrPhone);
 
         const userQuery: { email?: string; phoneNumber?: string } = {};
         if (isValidPhone) {
-            const formattedPhone = formatPhone(employee?.phoneNumber);
+            const formattedPhone = formatPhone(employee?.emailOrPhone);
             userQuery.phoneNumber = formattedPhone;
         } else if (isValidEmail) {
-            userQuery.email = employee?.email;
+            userQuery.email = employee?.emailOrPhone;
         }
 
         const { permission, error: errorPerm } = await findPermission({
@@ -64,7 +63,8 @@ export async function POST(request: NextRequest) {
 
         if (
             (permission?.branchID && permission?.branchID !== validatedUser?.branchID) ||
-            !permission?.permissions.includes(permissionTypes.Admin)
+            (!permission?.permissions.includes(permissionTypes.Admin) &&
+                !permission?.permissions.includes(permissionTypes.EmployeeCreate))
         ) {
             return new Response(
                 JSON.stringify({ error: "You do not have permission to perform this action." }),
@@ -177,7 +177,8 @@ export async function GET(request: NextRequest) {
 
         if (
             (userPermission?.branchID && !branchID) ||
-            !userPermission?.permissions.includes(permissionTypes.Admin)
+            (!userPermission?.permissions.includes(permissionTypes.Admin) &&
+                !userPermission?.permissions.includes(permissionTypes.EmployeeRead))
         ) {
             return new Response(
                 JSON.stringify({ error: "You do not have permission to perform this action." }),
@@ -261,7 +262,8 @@ export async function PUT(request: NextRequest) {
         if (
             !permissionUser ||
             errorUserPerm ||
-            !permissionUser?.permissions.includes(permissionTypes.Admin)
+            (!permissionUser?.permissions.includes(permissionTypes.Admin) &&
+                !permissionUser?.permissions.includes(permissionTypes.EmployeeUpdate))
         ) {
             return new Response(
                 JSON.stringify({
@@ -387,7 +389,8 @@ export async function DELETE(request: NextRequest) {
         if (
             !permissionUser ||
             errorUserPerm ||
-            !permissionUser?.permissions.includes(permissionTypes.Admin)
+            (!permissionUser?.permissions.includes(permissionTypes.Admin) &&
+                !permissionUser?.permissions.includes(permissionTypes.EmployeeDelete))
         ) {
             return new Response(
                 JSON.stringify({

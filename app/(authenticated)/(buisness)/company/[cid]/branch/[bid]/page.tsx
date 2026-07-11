@@ -8,6 +8,7 @@ import useApiFetch from "@/hooks/useAPIFetch";
 import { MenuContext } from "@/providers/menu";
 import {
     faGear,
+    faHome,
     faPlus,
     faQrcode,
     faStar,
@@ -47,7 +48,6 @@ export default function Branch() {
     const [pendingOrders, setPendingOrders] = useState<any[]>([]);
     const [processingOrders, setProcessingOrders] = useState<any[]>([]);
     const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
-
     const [isModalOpenOrder, setModalOpenOrder] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<any>();
     const [pageLimit, setPageLimit] = useState({
@@ -56,6 +56,14 @@ export default function Branch() {
     });
 
     const [selectedItem, setSelectedItem] = useState<any>();
+
+    const { data: dataPermission, isLoading: isLoadingPermission } = useApiFetch(
+        {
+            url: `/api/at/company/branch/permission?branchID=${params?.bid}`,
+            method: "GET",
+        },
+        true,
+    );
 
     const { data, isLoading, errors } = useApiFetch(
         {
@@ -73,14 +81,6 @@ export default function Branch() {
     } = useApiFetch(
         {
             url: `/api/at/menu?branchID=${params?.bid}`,
-            method: "GET",
-        },
-        true,
-    );
-
-    const { data: dataPermission, isLoading: isLoadingPermission } = useApiFetch(
-        {
-            url: `/api/at/company/branch/permission?branchID=${params?.bid}`,
             method: "GET",
         },
         true,
@@ -150,7 +150,12 @@ export default function Branch() {
 
     useEffect(() => {
         if (!isLoading && data) {
-            menuContext?.setTitle(`${data?.branch?.companyID?.name}, ${data?.branch?.name}`);
+            menuContext?.setTitle(
+                <Link href={`/company`}>
+                    <FontAwesomeIcon icon={faHome} />{" "}
+                    {`${data?.branch?.companyID?.name}, ${data?.branch?.name}`}
+                </Link>,
+            );
         } else if (!isLoading && errors?.details) {
             const toast = {
                 message: errors?.details?.response?.data?.error || errors?.message,
@@ -324,37 +329,47 @@ export default function Branch() {
                                 dataPermission &&
                                 (dataPermission?.permission?.branchID === params?.bid ||
                                     (!dataPermission?.permission?.branchID &&
-                                        dataPermission?.permission?.companyID === params?.cid)) &&
-                                dataPermission?.permission?.permissions?.includes(
-                                    permissionTypes?.Admin,
-                                ) && (
+                                        dataPermission?.permission?.companyID === params?.cid)) && (
                                     <>
-                                        <Link
-                                            className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
-                                            href={`/company/${params.cid}/branch/${params.bid}/settings`}
-                                        >
-                                            <FontAwesomeIcon
-                                                className="m-2"
-                                                icon={faGear}
-                                                size="lg"
-                                            />
-                                            <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
-                                                Settings
-                                            </h1>
-                                        </Link>
-                                        <Link
-                                            className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
-                                            href={`/company/${params.cid}/branch/${params.bid}/employees`}
-                                        >
-                                            <FontAwesomeIcon
-                                                className="m-2"
-                                                icon={faUsers}
-                                                size="lg"
-                                            />
-                                            <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
-                                                Employees
-                                            </h1>
-                                        </Link>
+                                        {dataPermission?.permission?.permissions?.some(
+                                            (item: permissionTypes) =>
+                                                [permissionTypes.Admin].includes(item),
+                                        ) && (
+                                            <Link
+                                                className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
+                                                href={`/company/${params.cid}/branch/${params.bid}/settings`}
+                                            >
+                                                <FontAwesomeIcon
+                                                    className="m-2"
+                                                    icon={faGear}
+                                                    size="lg"
+                                                />
+                                                <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
+                                                    Settings
+                                                </h1>
+                                            </Link>
+                                        )}
+                                        {dataPermission?.permission?.permissions?.some(
+                                            (item: permissionTypes) =>
+                                                [
+                                                    permissionTypes.Admin,
+                                                    permissionTypes.EmployeeRead,
+                                                ].includes(item),
+                                        ) && (
+                                            <Link
+                                                className="flex-1 p-2 flex flex-col items-center bg-taupe-200 dark:bg-taupe-600 rounded-lg cursor-pointer hover:bg-taupe-300 dark:hover:bg-taupe-500 transition duration-300"
+                                                href={`/company/${params.cid}/branch/${params.bid}/employees`}
+                                            >
+                                                <FontAwesomeIcon
+                                                    className="m-2"
+                                                    icon={faUsers}
+                                                    size="lg"
+                                                />
+                                                <h1 className="text-sm font-bold text-center text-taupe-600 dark:text-taupe-200">
+                                                    Employees
+                                                </h1>
+                                            </Link>
+                                        )}
                                     </>
                                 )}
                             <div
@@ -394,8 +409,12 @@ export default function Branch() {
                                             (!dataPermission?.permission?.branchID &&
                                                 dataPermission?.permission?.companyID ===
                                                     params?.cid)) &&
-                                        dataPermission?.permission?.permissions?.includes(
-                                            permissionTypes?.Admin,
+                                        dataPermission?.permission?.permissions?.some(
+                                            (item: permissionTypes) =>
+                                                [
+                                                    permissionTypes.Admin,
+                                                    permissionTypes.MenuCreate,
+                                                ].includes(item),
                                         ) && (
                                             <FontAwesomeIcon
                                                 className="cursor-pointer"
@@ -596,26 +615,30 @@ export default function Branch() {
                             </div>
                         )}
                     </div>
-                    <Button
-                        text={
-                            selectedOrder?.status === orderStatusTypes.Pending
-                                ? orderStatusTypes.Processing
-                                : selectedOrder?.status === orderStatusTypes.Processing
-                                  ? orderStatusTypes.Processed
-                                  : ""
-                        }
-                        onClick={() => {
-                            handleOrderUpdate(
-                                selectedOrder?._id,
+                    {dataPermission?.permission?.permissions?.some((item: permissionTypes) =>
+                        [permissionTypes.Admin, permissionTypes.OrderUpdate].includes(item),
+                    ) && (
+                        <Button
+                            text={
                                 selectedOrder?.status === orderStatusTypes.Pending
                                     ? orderStatusTypes.Processing
                                     : selectedOrder?.status === orderStatusTypes.Processing
                                       ? orderStatusTypes.Processed
-                                      : "",
-                            );
-                        }}
-                        isLoading={isLoadingOrderUpdate}
-                    />
+                                      : ""
+                            }
+                            onClick={() => {
+                                handleOrderUpdate(
+                                    selectedOrder?._id,
+                                    selectedOrder?.status === orderStatusTypes.Pending
+                                        ? orderStatusTypes.Processing
+                                        : selectedOrder?.status === orderStatusTypes.Processing
+                                          ? orderStatusTypes.Processed
+                                          : "",
+                                );
+                            }}
+                            isLoading={isLoadingOrderUpdate}
+                        />
+                    )}
                 </div>
             </Modal>
 
@@ -717,24 +740,31 @@ export default function Branch() {
                             <p className="text-xs">{selectedItem?.category?.join(",")}</p>
                         </div>
                     </div>
-                    <div className="flex flex-col gap-2 px-5 mb-4">
-                        <Button
-                            text="Edit"
-                            onClick={() => {
-                                setViewModalOpen(false);
-                                setUpdateModalOpen(true);
-                            }}
-                        />
+                    {(dataPermission?.permission?.permissions?.includes(
+                        permissionTypes.MenuUpdate,
+                    ) ||
+                        dataPermission?.permission?.permissions?.includes(
+                            permissionTypes.Admin,
+                        )) && (
+                        <div className="flex flex-col gap-2 px-5 mb-4">
+                            <Button
+                                text="Edit"
+                                onClick={() => {
+                                    setViewModalOpen(false);
+                                    setUpdateModalOpen(true);
+                                }}
+                            />
 
-                        <Button
-                            text="Add Discount"
-                            style="secondary"
-                            onClick={() => {
-                                setViewModalOpen(false);
-                                setDiscountModalOpen(true);
-                            }}
-                        />
-                    </div>
+                            <Button
+                                text="Add Discount"
+                                style="secondary"
+                                onClick={() => {
+                                    setViewModalOpen(false);
+                                    setDiscountModalOpen(true);
+                                }}
+                            />
+                        </div>
+                    )}
                 </div>
             </ViewMenuItem>
 
