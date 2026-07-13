@@ -4,7 +4,7 @@ import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import useApiFetch from "@/hooks/useAPIFetch";
 import { useAppStore } from "@/hooks/useAppStore";
-import { faAt, faEye, faEyeSlash, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faAt, faClose, faEye, faEyeSlash, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -58,7 +58,10 @@ export default function SignInForm({
     };
 
     return (
-        <div className="w-full max-w-md bg-taupe-200 dark:bg-taupe-600/60 shadow rounded-lg px-4 py-8">
+        <div className="relative w-full max-w-md bg-taupe-200 dark:bg-taupe-600/60 shadow rounded-lg px-4 py-8">
+            <Link href='/' className="absolute top-0 right-0 m-4 p-2 cursor-pointer">
+                <FontAwesomeIcon icon={faClose} />
+            </Link>
             <h1 className="text-lg font-bold text-center">Sign In</h1>
             <h1 className="text-xs font-medium text-center">Login to explore more services</h1>
             <hr className="m-3 border-taupe-500 dark:border-taupe-400" />

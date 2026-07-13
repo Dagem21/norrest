@@ -6,10 +6,16 @@ export async function uploadImage(images: Array<any>): Promise<string[]> {
 
     for (let index = 0; index < images.length; index++) {
         const image = images[index];
-        const blob = await put(image?.name, image?.image, {
+        if (!image || !image.image) continue;
+
+        // Convert the Base64 string back into a Node Buffer on the server side
+        const fileData = Buffer.from(image.image, "base64");
+
+        const blob = await put(image.name, fileData, {
             access: "public",
             token: process.env.VERCEL_OIDC_TOKEN,
         });
+
         fileNames.push(blob.url);
     }
 
