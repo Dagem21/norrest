@@ -14,7 +14,7 @@ export const findBranchByID = async (id?: string) => {
             .findById(id)
             .populate({
                 path: "companyID",
-                select: "name picture",
+                select: "name picture description",
             })
             .lean()) as any;
     } catch (e: any) {

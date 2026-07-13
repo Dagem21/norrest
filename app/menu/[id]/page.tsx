@@ -267,7 +267,7 @@ export default function Menu() {
 
     return (
         <div className="flex flex-col flex-1 items-center">
-            <div className="fixed bottom-0 right-0 m-6">
+            <div className="fixed bottom-0 right-0 m-6 z-60">
                 <div className="flex flex-col gap-2">
                     <button
                         className="rounded-full bg-taupe-400 dark:bg-taupe-600 p-3 shadow-lg cursor-pointer"
@@ -311,6 +311,9 @@ export default function Menu() {
                                     height={100}
                                 />
                                 <h1 className="text-sm font-bold mt-2">{`${data?.branch?.companyID?.name}, ${data?.branch?.name}`}</h1>
+                                {data?.branch?.companyID?.description && (
+                                    <h1 className="text-xs text-taupe-400 mt-2 mx-2 text-center">{`${data?.branch?.companyID?.description}`}</h1>
+                                )}
                             </div>
                             <div className="p-2 bg-taupe-200 dark:bg-taupe-600 rounded-lg">
                                 <div>
@@ -383,7 +386,7 @@ export default function Menu() {
             </div>
 
             <ViewMenuItem isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-                <div className="flex flex-col inset-shadow-[0_0_20px_2px_rgba(0,0,0,0.3)]">
+                <div className="flex flex-col inset-shadow-[0_0_20px_2px_rgba(0,0,0,0.3)] py-4">
                     <div className="relative flex-shrink-0 flex items-center justify-center overflow-hidden rounded-lg p-5">
                         <div className="shadow-[0_0_10px_2px_rgba(0,0,0,0.3)] rounded-lg">
                             <Image

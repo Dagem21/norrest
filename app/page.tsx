@@ -131,7 +131,7 @@ export default function Home() {
                                     >
                                         <Link
                                             href={`/menu/${branch?._id}`}
-                                            className="flex items-center gap-2 rounded-lg bg-taupe-400 py-5 pe-10 ps-5 dark:bg-taupe-600"
+                                            className="flex items-center gap-2 rounded-lg bg-taupe-400 p-5 dark:bg-taupe-600"
                                         >
                                             <Image
                                                 src={
@@ -141,17 +141,58 @@ export default function Home() {
                                                 width={64}
                                                 height={64}
                                                 alt={`${branch?.companyID?.name || "Company"} logo`}
-                                                className="h-16 w-16 shrink-0 rounded-full object-cover"
+                                                className="h-16 w-16 shrink-0 object-cover rounded-[32px] hover:rounded-lg transition-all duration-300 ease-in-out"
                                             />
 
-                                            <div className="min-w-0 px-3 tracking-wide">
-                                                <p className="truncate text-sm font-bold">
-                                                    {branch?.companyID?.name}
-                                                </p>
-                                                <p className="truncate text-xs font-bold text-taupe-300">
-                                                    {branch?.name}
-                                                </p>
-                                                {/* Swapped truncate for line-clamp-2 */}
+                                            <div className="min-w-0 ps-3 tracking-wide w-full">
+                                                <div className="flex items-start justify-between">
+                                                    <div>
+                                                        <p className="truncate text-sm font-bold">
+                                                            {branch?.companyID?.name}
+                                                        </p>
+                                                        <p className="truncate text-xs font-bold text-taupe-300">
+                                                            {branch?.name}
+                                                        </p>
+                                                    </div>
+                                                    {branch?.rating && (
+                                                        <div className="flex flex-col items-end justify-end">
+                                                            <div className="truncate text-sm font-bold">
+                                                                <div className="flex">
+                                                                    {[1, 2, 3, 4, 5].map(
+                                                                        (starIdx) => {
+                                                                            const isActive =
+                                                                                starIdx <=
+                                                                                branch?.rating;
+
+                                                                            return (
+                                                                                <svg
+                                                                                    key={starIdx}
+                                                                                    className="w-3 h-3"
+                                                                                    aria-hidden="true"
+                                                                                    viewBox="0 0 24 24"
+                                                                                    fill={
+                                                                                        isActive
+                                                                                            ? "orange"
+                                                                                            : "white"
+                                                                                    }
+                                                                                >
+                                                                                    <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                                                                                </svg>
+                                                                            );
+                                                                        },
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                            <p className="truncate text-xs font-bold text-taupe-300">
+                                                                {branch?.totalRatings}{" "}
+                                                                {branch?.totalRatings > 1
+                                                                    ? "ratings"
+                                                                    : "rating"}
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                </div>
+
                                                 <p className="line-clamp-2 text-xs text-taupe-400">
                                                     {branch?.companyID?.description}
                                                 </p>
