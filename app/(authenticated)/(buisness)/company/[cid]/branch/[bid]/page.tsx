@@ -12,6 +12,7 @@ import {
     faPlus,
     faQrcode,
     faStar,
+    faTrash,
     faUsers,
     faWarning,
 } from "@fortawesome/free-solid-svg-icons";
@@ -39,6 +40,7 @@ export default function Branch() {
     const params = useParams<{ cid: string; bid: string }>();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
+    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isDiscountModalOpen, setDiscountModalOpen] = useState(false);
     const [isViewModalOpen, setViewModalOpen] = useState(false);
     const [isLoadingImage, setIsLoadingImage] = useState(true);
@@ -148,6 +150,19 @@ export default function Branch() {
         false,
     );
 
+    const {
+        data: dataDelete,
+        fetchData: fetchDataDelete,
+        isLoading: isLoadingDelete,
+        errors: errorsDelete,
+    } = useApiFetch(
+        {
+            url: "/api/at/menu",
+            method: "DELETE",
+        },
+        false,
+    );
+
     useEffect(() => {
         if (!isLoading && data) {
             menuContext?.setTitle(
@@ -220,6 +235,24 @@ export default function Branch() {
             toaster?.addToast(toast);
         }
     }, [isLoadingOrderUpdate, dataOrderUpdate, errorsOrderUpdate]);
+
+    useEffect(() => {
+        if (!isLoadingDelete && dataDelete) {
+            const toast = {
+                message: "Menu item deleted.",
+                type: "success",
+            };
+            toaster?.addToast(toast);
+            fetchMenu();
+            setDeleteModalOpen(false);
+        } else if (!isLoadingDelete && errorsDelete?.details) {
+            const toast = {
+                message: errorsDelete?.details?.response?.data?.error || errorsDelete?.message,
+                type: "error",
+            };
+            toaster?.addToast(toast);
+        }
+    }, [isLoadingDelete, dataDelete, errorsDelete]);
 
     const handleViewMenuItem = (item: any) => {
         setSelectedItem(item);
@@ -666,6 +699,32 @@ export default function Branch() {
             </Modal>
 
             <Modal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                title="Remove Menu Item"
+            >
+                <div>
+                    <h1>Are you sure you want to remove this menu item?</h1>
+                    <div className="flex items-center justify-center mt-2">
+                        <Button
+                            text="Remove"
+                            onClick={() => {
+                                fetchDataDelete({ data: { id: selectedItem?._id } });
+                            }}
+                            isLoading={isLoadingDelete}
+                        />
+                        <Button
+                            text="Cancel"
+                            style="secondary"
+                            onClick={() => {
+                                setDeleteModalOpen(false);
+                            }}
+                        />
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal
                 isOpen={isDiscountModalOpen}
                 onClose={() => setDiscountModalOpen(false)}
                 title="Add Discount"
@@ -746,7 +805,7 @@ export default function Branch() {
                         dataPermission?.permission?.permissions?.includes(
                             permissionTypes.Admin,
                         )) && (
-                        <div className="flex flex-col gap-2 px-5 mb-4">
+                        <div className="flex flex-col gap-2 px-5 mb-2">
                             <Button
                                 text="Edit"
                                 onClick={() => {
@@ -754,17 +813,45 @@ export default function Branch() {
                                     setUpdateModalOpen(true);
                                 }}
                             />
-
-                            <Button
-                                text="Add Discount"
-                                style="secondary"
-                                onClick={() => {
-                                    setViewModalOpen(false);
-                                    setDiscountModalOpen(true);
-                                }}
-                            />
                         </div>
                     )}
+
+                    <div className="flex px-5 mb-4">
+                        {(dataPermission?.permission?.permissions?.includes(
+                            permissionTypes.MenuUpdate,
+                        ) ||
+                            dataPermission?.permission?.permissions?.includes(
+                                permissionTypes.Admin,
+                            )) && (
+                            <div className="flex-1 flex flex-col">
+                                <Button
+                                    text="Add Discount"
+                                    style="secondary"
+                                    onClick={() => {
+                                        setViewModalOpen(false);
+                                        setDiscountModalOpen(true);
+                                    }}
+                                />
+                            </div>
+                        )}
+                        {(dataPermission?.permission?.permissions?.includes(
+                            permissionTypes.MenuDelete,
+                        ) ||
+                            dataPermission?.permission?.permissions?.includes(
+                                permissionTypes.Admin,
+                            )) && (
+                            <Button
+                                className="bg-red-800"
+                                icon={<FontAwesomeIcon icon={faTrash} />}
+                                style="teritary"
+                                title="Delete"
+                                onClick={() => {
+                                    setViewModalOpen(false);
+                                    setDeleteModalOpen(true);
+                                }}
+                            />
+                        )}
+                    </div>
                 </div>
             </ViewMenuItem>
 

@@ -48,6 +48,11 @@ const menuSchema = new Schema(
             ref: "users",
             required: true,
         },
+        status: {
+            type: String,
+            required: true,
+            default: "Active",
+        },
     },
     { timestamps: true },
 );

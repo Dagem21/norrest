@@ -282,7 +282,7 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const { items, error } = await findMenus({ branchID });
+        const { items, error } = await findMenus({ branchID, status: { $ne: "Deleted" } });
         if (!items || error) {
             return new Response(JSON.stringify({ error }), {
                 status: 400,
@@ -302,6 +302,102 @@ export async function GET(request: NextRequest) {
             });
         }
         return new Response(JSON.stringify({ error }), {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+        });
+    }
+}
+
+export async function DELETE(request: NextRequest) {
+    const body = await request.json();
+    let { id } = body;
+    try {
+        const decodedToken = await verifyUserAuth();
+
+        if (!id) {
+            return new Response(JSON.stringify({ error: "Missing menu item ID." }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        const { menu, error: errorMenu } = await findMenuByID(id);
+        if (!menu || errorMenu) {
+            return new Response(
+                JSON.stringify({
+                    error: errorMenu || "Menu item not found.",
+                }),
+                {
+                    status: 404,
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
+        }
+
+        const { branch, error: branchError } = await findBranchByID(menu?.branchID?.toString());
+        if (!branch || branchError) {
+            return new Response(
+                JSON.stringify({
+                    error: branchError || "Branch not found.",
+                }),
+                {
+                    status: 404,
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
+        }
+
+        const { permission, error: errorPerm } = await findPermission({
+            companyID: branch?.companyID,
+            userID: decodedToken?.userId,
+        });
+
+        if (!permission || errorPerm) {
+            return new Response(
+                JSON.stringify({
+                    error: errorPerm || "You do not have permission to perform this action.",
+                }),
+                {
+                    status: 403,
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
+        }
+
+        if (
+            (permission?.branchID && permission?.branchID !== menu?.branchID) ||
+            !permission?.permissions.includes(permissionTypes.Admin)
+        ) {
+            return new Response(
+                JSON.stringify({ error: "You do not have permission to perform this action." }),
+                {
+                    status: 403,
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
+        }
+
+        const { result, error } = await updateMenu(id, { status: "Deleted" });
+
+        if (result && !error) {
+            return new Response(JSON.stringify({ message: "Menu item update." }), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+            });
+        } else {
+            return new Response(JSON.stringify({ error: error || "Could not update item." }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+    } catch (error: any) {
+        if (error.message === "Unauthorized") {
+            return new Response(JSON.stringify({ error: "Session expired. Please login again!" }), {
+                status: 401,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+        return new Response(JSON.stringify({ error: error.message }), {
             status: 400,
             headers: { "Content-Type": "application/json" },
         });

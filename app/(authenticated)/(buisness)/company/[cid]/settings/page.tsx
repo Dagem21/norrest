@@ -64,7 +64,6 @@ export default function Setting() {
         false,
     );
 
-
     useEffect(() => {
         if (!isLoadingDelete && dataDelete) {
             setDeleteModalOpen(false);
@@ -254,56 +253,61 @@ export default function Setting() {
                                 </thead>
                                 <tbody>
                                     {!isLoadingBranch &&
-                                        dataBranch?.branches?.length > 0 &&
-                                        dataBranch?.branches?.map((branch: any, index: number) => (
-                                            <tr className="bg-neutral-primary" key={branch?._id}>
-                                                <td className="ps-2 pe-6 py-4">{index + 1}</td>
-                                                <th
-                                                    scope="row"
-                                                    className="ps-2 pe-6 py-4 font-medium text-heading whitespace-nowrap"
+                                        dataBranch?.branches?.branches?.length > 0 &&
+                                        dataBranch?.branches?.branches?.map(
+                                            (branch: any, index: number) => (
+                                                <tr
+                                                    className="bg-neutral-primary"
+                                                    key={branch?._id}
                                                 >
-                                                    {branch?.name}
-                                                </th>
-                                                <td className="ps-2 pe-6 py-4 text-nowrap">
-                                                    {branch?.email}
-                                                </td>
-                                                <td className="ps-2 pe-6 py-4 text-nowrap">
-                                                    {branch?.phoneNumber}
-                                                </td>
-                                                <td className="ps-2 pe-6 py-4 text-nowrap">
-                                                    {branch?.address}
-                                                </td>
-                                                <td className="ps-2 py-3 flex gap-3">
-                                                    <button
-                                                        className="bg-blue-950 py-1 px-2 hover:bg-blue-700 text-white font-bold rounded"
-                                                        title="Edit"
-                                                        onClick={() => handleEdit(branch)}
+                                                    <td className="ps-2 pe-6 py-4">{index + 1}</td>
+                                                    <th
+                                                        scope="row"
+                                                        className="ps-2 pe-6 py-4 font-medium text-heading whitespace-nowrap"
                                                     >
-                                                        <FontAwesomeIcon icon={faPen} />
-                                                    </button>
-                                                    <Link
-                                                        className="bg-taupe-900 py-1 px-2 hover:bg-taupe-700 text-white font-bold rounded"
-                                                        title="Setting"
-                                                        href={`/company/${params.cid}/branch/${branch?._id}/settings`}
-                                                    >
-                                                        <FontAwesomeIcon icon={faGear} />
-                                                    </Link>
-                                                    <button
-                                                        className="bg-red-950 py-1 px-2 hover:bg-red-700 text-white font-bold rounded"
-                                                        title="Remove"
-                                                        onClick={() => {
-                                                            setSelectedBranch(branch);
-                                                            setDeleteModalOpen(true);
-                                                        }}
-                                                    >
-                                                        <FontAwesomeIcon icon={faTrash} />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                                        {branch?.name}
+                                                    </th>
+                                                    <td className="ps-2 pe-6 py-4 text-nowrap">
+                                                        {branch?.email}
+                                                    </td>
+                                                    <td className="ps-2 pe-6 py-4 text-nowrap">
+                                                        {branch?.phoneNumber}
+                                                    </td>
+                                                    <td className="ps-2 pe-6 py-4 text-nowrap">
+                                                        {branch?.address}
+                                                    </td>
+                                                    <td className="ps-2 py-3 flex gap-3">
+                                                        <button
+                                                            className="bg-blue-950 py-1 px-2 hover:bg-blue-700 text-white font-bold rounded"
+                                                            title="Edit"
+                                                            onClick={() => handleEdit(branch)}
+                                                        >
+                                                            <FontAwesomeIcon icon={faPen} />
+                                                        </button>
+                                                        <Link
+                                                            className="bg-taupe-900 py-1 px-2 hover:bg-taupe-700 text-white font-bold rounded"
+                                                            title="Setting"
+                                                            href={`/company/${params.cid}/branch/${branch?._id}/settings`}
+                                                        >
+                                                            <FontAwesomeIcon icon={faGear} />
+                                                        </Link>
+                                                        <button
+                                                            className="bg-red-950 py-1 px-2 hover:bg-red-700 text-white font-bold rounded"
+                                                            title="Remove"
+                                                            onClick={() => {
+                                                                setSelectedBranch(branch);
+                                                                setDeleteModalOpen(true);
+                                                            }}
+                                                        >
+                                                            <FontAwesomeIcon icon={faTrash} />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ),
+                                        )}
                                 </tbody>
                             </table>
-                            {!isLoadingBranch && dataBranch?.branches?.length === 0 && (
+                            {!isLoadingBranch && dataBranch?.branches?.branches?.length === 0 && (
                                 <h1 className="text-sm text-center my-2">No branches yet.</h1>
                             )}
                             <div className="w-fit m-auto my-2">
@@ -361,7 +365,7 @@ export default function Setting() {
                         <Button
                             text="Remove"
                             onClick={() => {
-                                fetchDataDelete({ data: { branchID: selectedBranch?._id } })
+                                fetchDataDelete({ data: { branchID: selectedBranch?._id } });
                             }}
                             isLoading={isLoadingDelete}
                         />

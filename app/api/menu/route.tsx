@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const { items, error } = await findMenus({ branchID });
+        const { items, error } = await findMenus({ branchID, status: { $ne: "Deleted" } });
         if (!items || error) {
             return new Response(JSON.stringify({ error }), {
                 status: 400,

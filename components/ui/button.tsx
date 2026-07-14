@@ -10,6 +10,7 @@ type ButtonProps = {
     type?: "button" | "submit" | "reset" | undefined;
     style?: "primary" | "secondary" | "teritary" | undefined;
     isLoading?: boolean;
+    className?: string;
 };
 
 export default function Button({
@@ -21,6 +22,7 @@ export default function Button({
     type,
     style = "primary",
     isLoading = false,
+    className,
 }: ButtonProps) {
     return (
         <button
@@ -30,6 +32,7 @@ export default function Button({
                 ${style === "secondary" && "border border-taupe-600 dark:border-taupe-800"}
                 ${style === "teritary" && ""} 
                 mx-2 hover:bg-taupe-500 text-white font-bold py-2 px-4 rounded-lg cursor-pointer
+                ${className}
             `}
             onClick={onClick}
             disabled={disabled || isLoading}
